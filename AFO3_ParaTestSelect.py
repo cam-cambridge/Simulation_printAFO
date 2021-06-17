@@ -1,9 +1,9 @@
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Automatically change the AFO materials properties in input file for batch Simulation
-# Input:  FL_side_var_amplification: the variables of amplification for the side AFO materials
-#            FL_side_var_shift: the variables of shift for the side AFO materials
-#            FL_front_var_amplification: the variables of amplification for the front AFO materials
-#            FL_front_var_shift: the variables of shift for the front AFO materials
+# Input:  FL_side_var_amplification: the variables of amplification for the side AFO materials, baseline value times the variables
+#            FL_side_var_shift: the variables of shift for the side AFO materials, baseline value add negative variables means shift to left
+#            FL_front_var_amplification: the variables of amplification for the front AFO materials, baseline value times the variables
+#            FL_front_var_shift: the variables of shift for the front AFO materials, baseline value add negative variables means shift to left
 # Output: the new input file that has changed based on the variables
 def AFOmaterialVariables(FL_side_var_amplification, FL_side_var_shift, FL_front_var_amplification, FL_front_var_shift):
     # Extract AFO_FLrelationship from the input file
@@ -13,10 +13,10 @@ def AFOmaterialVariables(FL_side_var_amplification, FL_side_var_shift, FL_front_
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for side AFO
     AFO_FLrelationship_side[1]=AFO_FLrelationship_side[1]*FL_side_var_amplification
-    AFO_FLrelationship_side[0]=AFO_FLrelationship_side[0]-FL_side_var_shift
+    AFO_FLrelationship_side[0]=AFO_FLrelationship_side[0]+FL_side_var_shift
     # New FL relationship for front AFO
     AFO_FLrelationship_front[1]=AFO_FLrelationship_front[1]*FL_front_var_amplification
-    AFO_FLrelationship_front[0]=AFO_FLrelationship_front[0]-FL_front_var_shift
+    AFO_FLrelationship_front[0]=AFO_FLrelationship_front[0]+FL_front_var_shift
 
     # Put the new AFO FL relationship to the new input file
     ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', 'AFO_FLrelationship_side', AFO_FLrelationship_side)
