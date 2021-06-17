@@ -59,14 +59,11 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             # AFO_representation, AFO_material, Platform_inclination=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input1.txt')
             [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt')
             # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
-            AFO2_MBDModel.AFO_MBDfile(Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)            
+            AFO2_MBDModel.AFO_MBDfile(Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
              #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
 
             os.chdir(os.path.join(path_simulation, 'Gait simulation data/Model outputs/3_RRA'))
             os.system('Fullbodymodel_Walk_RRA_modification_AFO.osim')
-
-
-
 
             #FD_AFO(path_simulation)
         else:
