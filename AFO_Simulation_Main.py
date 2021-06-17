@@ -6,9 +6,40 @@ import AFO3_ParaTestSelect
 import numpy as np
 import AFO4_ResultsCollection
 import AFO5_DoE
+
+# Batch simulation for the drop landing
+"""
+# The variables of AFO materials in binary system
+FL_amplification_side_Varbin=8                     # The s.t. variables in binary system for side AFO in terms of amplification
+FL_amplification_front_Varbin=8                   # The s.t. variables in binary system for front AFO in terms of amplification
+FL_shift_side_Varbin=5                                   # The s.t. variables in binary system for side AFO in terms of shift
+FL_shift_front_Varbin=5                                 # The s.t. variables in binary system for side AFO in terms of amplification
+# Change the variables of AFO materials from binary system to decimal numbers
+FL_amplification_side_Vardeci=2**FL_amplification_side_Varbin-1
+FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
+FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
+FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
+"""
+for asi in range (0,10):                                        # The number of the amplification variables for side FL relationship
+    for afj in range (0,10):                                    # The number of the amplification variables for front FL relationship
+        for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
+            for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
+                FL_amplification_side_Vardeci=asi*10+1
+                FL_amplification_front_Vardeci=asi*10+1
+                FL_shift_side_Vardeci=ssm*0.04-0.2
+                FL_shift_front_Vardeci=sfn*0.04-0.2
+                # Change the AFO material properties in input file
+                AFO3_ParaTestSelect.AFOmaterialVariables(FL_amplification_side_Vardeci, FL_shift_side_Vardeci, FL_amplification_front_Vardeci, FL_shift_front_Vardeci)
+                ResultDirectory='SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)
+                AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory)
+                # Restore the AFO material properties in input file to the baseline materials
+                AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
+                print(ResultDirectory)
+
+
 #AFO0_Simulation.Simulation('walk', 'simulation', 'directory')
 #AFO0_Simulation.Simulation('AFODroplanding', 'model', 'directory')
-AFO0_Simulation.Simulation('gait_AFO', 'model', 'directory')
+#AFO0_Simulation.Simulation('gait_AFO', 'model', 'directory')
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Gait simulation
@@ -79,14 +110,6 @@ print(s)
 # Drop landing DoE
 #  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 """
-
-
-
-
-
-
-
-
 
 
 
