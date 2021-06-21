@@ -6,6 +6,8 @@ import AFO3_ParaTestSelect
 import numpy as np
 import AFO4_ResultsCollection
 import AFO5_DoE
+import time
+import stopit
 
 # Batch simulation for the drop landing
 """
@@ -20,6 +22,7 @@ FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
 FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
 FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
 """
+
 for asi in range (0,10):                                        # The number of the amplification variables for side FL relationship
     for afj in range (0,10):                                    # The number of the amplification variables for front FL relationship
         for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
