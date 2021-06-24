@@ -14,12 +14,13 @@ def Simulationresultscollection(output_folder, Results_parameter, DL_results):
 
     #directory=os.path.join(path, results_directory)
     if not os.path.isdir(DL_results_directory):
-        print("No specified directory found, please create one!")
+        # print("No specified directory found, please create one!")
         # os.makedirs(directory)
+        AFO_POI=np.array([])
     results_file_initial=os.path.join(DL_results_directory, DL_results)
     if not os.path.exists(results_file_initial):
-        print("No specified file found, please check! ")
-
+        # print("No specified file found, please check! ")
+        AFO_POI=np.array([])
     npos=[]
     AFO_POI=[]
     with open (results_file_initial,"r",encoding="utf-8") as f:
@@ -116,3 +117,14 @@ def DoEResultsfromExcel (File_folder, File_excel, Results_collect_parameters):
         Matrix_RoI.append(RoI_data)
         Matrix_RoI_max.append(RoI_data.max())
     return Matrix_RoI_max
+
+def ReadExcel(Excel_folder, Excel_file, Sheet_name):
+    import os
+    import pandas as pd
+    # The folder path of pthon script
+    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
+    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+    # The joining of the folders python simulation, drop landing (DL) and output folders
+    Excel_file=os.path.join(path_simulation, Excel_folder, Excel_file)
+    data=pd.read_excel(Excel_file, sheet_name=Sheet_name)
+    return data
