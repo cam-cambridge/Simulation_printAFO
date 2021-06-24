@@ -6,6 +6,9 @@ import AFO3_ParaTestSelect
 import numpy as np
 import AFO4_ResultsCollection
 import AFO5_DoE
+import pandas as pd
+import plotly
+import plotly.graph_objs as go
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Batch simulation for the drop landing
@@ -22,6 +25,7 @@ FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
 FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
 FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
 """
+"""
 for asi in range (0,10):                                        # The number of the amplification variables for side FL relationship
     for afj in range (0,10):                                    # The number of the amplification variables for front FL relationship
         for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
@@ -37,9 +41,49 @@ for asi in range (0,10):                                        # The number of 
                 # Restore the AFO material properties in input file to the baseline materials
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 print(ResultDirectory)
+"""
+"""
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Put the simulation results from the results folders to an excel file
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
+Subtalar_matrix=[]
+for asi in range (0,9):                                        # The number of the amplification variables for side FL relationship
+    for afj in range (0,10):                                    # The number of the amplification variables for front FL relationship
+        for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
+            for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
+                output_folder=ResultDirectory='Drop landing\SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)                # The folder of the FD results
+                data= AFO4_ResultsCollection.Simulationresultscollection(output_folder, Results_parameter, 'default_states_degrees.mot')                        # put the specified results into a matrix
+                if data.size==0:                                # If the folder does not exit, skip the current loop to the next one.
+                    continue
+                else:
+                    Subtalar_matrix.append([asi*10+1, afj*10+1, ssm*0.04-0.2, sfn*0.04-0.2, max(data[:,1])])           # Put the four variables and the subtalar angles into a list
+Subtalar_matrix=np.array(Subtalar_matrix)                                                        # Transform the list to the matrix
+Excel_title=['Side_amplification','Front_amplification','Side_shift','Front_shift','Max subtalar']              # Define the title of the excel
+AFO4_ResultsCollection.DLResultstoExcel('Drop landing', 'DL Results.xls', 'Platform 30', Excel_title, Subtalar_matrix)          # Put the four variables and subtalar angles to an excel
+"""
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Draw 5D figures for the 4 variables
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+data=AFO4_ResultsCollection.ReadExcel('Drop landing', 'DL Results.xls','Platform 30')
+fig1=go.Scatter3d(x=data['Side_amplification'],
+                               y=data['Side_shift'],
+                               z=data['Front_shift'],
+                               marker=dict(size=data['Front_amplification']/8,
+                                                    color=data['Max subtalar'],
+                                                    opacity=0.9,
+                                                    reversescale=True,
+                                                    colorscale='rainbow'),
+                                line=dict(width=0.02),
+                                mode='markers')
+mylayout=go.Layout(scene=dict(xaxis=dict(title="Side_amplification"),
+                                                    yaxis=dict(title="Front_amplification"),
+                                                    zaxis=dict(title="Side_shift")),)
 
-
-
+plotly.offline.plot({"data": [fig1],
+                                "layout": mylayout},
+                                 auto_open=True,
+                                 filename=("AFO properties.html"))
 
 
 
