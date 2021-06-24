@@ -6,10 +6,10 @@ import AFO3_ParaTestSelect
 import numpy as np
 import AFO4_ResultsCollection
 import AFO5_DoE
-import time
-import stopit
 
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Batch simulation for the drop landing
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 """
 # The variables of AFO materials in binary system
 FL_amplification_side_Varbin=8                     # The s.t. variables in binary system for side AFO in terms of amplification
@@ -22,13 +22,12 @@ FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
 FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
 FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
 """
-
 for asi in range (0,10):                                        # The number of the amplification variables for side FL relationship
     for afj in range (0,10):                                    # The number of the amplification variables for front FL relationship
         for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
             for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
                 FL_amplification_side_Vardeci=asi*10+1
-                FL_amplification_front_Vardeci=asi*10+1
+                FL_amplification_front_Vardeci=afj*10+1
                 FL_shift_side_Vardeci=ssm*0.04-0.2
                 FL_shift_front_Vardeci=sfn*0.04-0.2
                 # Change the AFO material properties in input file
@@ -38,6 +37,10 @@ for asi in range (0,10):                                        # The number of 
                 # Restore the AFO material properties in input file to the baseline materials
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 print(ResultDirectory)
+
+
+
+
 
 
 #AFO0_Simulation.Simulation('walk', 'simulation', 'directory')
