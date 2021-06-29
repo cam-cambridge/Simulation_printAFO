@@ -21,28 +21,29 @@ def Simulationresultscollection(output_folder, Results_parameter, DL_results):
     if not os.path.exists(results_file_initial):
         # print("No specified file found, please check! ")
         AFO_POI=np.array([])
-    npos=[]
-    AFO_POI=[]
-    with open (results_file_initial,"r",encoding="utf-8") as f:
-        lines=f.readlines()
-    with open (os.path.join(DL_results_directory,'Results_file_final.txt'),"w",encoding="utf-8") as f_w:
-        for line in lines:
-            linestr=line.strip()
-            if len(linestr)==0:
-                continue
-            if linestr.startswith('time'):
-                strlist=linestr.split('\t')
-                for i in range(len(Results_parameter)):
-                    npos.append(strlist.index(Results_parameter[i]))
-                    f_w.writelines([strlist[npos[i]],"  "])
-                f_w.writelines("\n")
-            elif linestr[0].isdigit():
-                strlist=linestr.split('\t')
-                for j in range(len(npos)):
-                    f_w.writelines(strlist[npos[j]])
-                    AFO_POI.append(float(strlist[npos[j]]))
-                f_w.writelines("\n")
-    AFO_POI=np.array(AFO_POI).reshape(-1,len(Results_parameter))
+    else:
+        npos=[]
+        AFO_POI=[]
+        with open (results_file_initial,"r",encoding="utf-8") as f:
+            lines=f.readlines()
+        with open (os.path.join(DL_results_directory,'Results_file_final.txt'),"w",encoding="utf-8") as f_w:
+            for line in lines:
+                linestr=line.strip()
+                if len(linestr)==0:
+                    continue
+                if linestr.startswith('time'):
+                    strlist=linestr.split('\t')
+                    for i in range(len(Results_parameter)):
+                        npos.append(strlist.index(Results_parameter[i]))
+                        f_w.writelines([strlist[npos[i]],"  "])
+                    f_w.writelines("\n")
+                elif linestr[0].isdigit():
+                    strlist=linestr.split('\t')
+                    for j in range(len(npos)):
+                        f_w.writelines(strlist[npos[j]])
+                        AFO_POI.append(float(strlist[npos[j]]))
+                    f_w.writelines("\n")
+        AFO_POI=np.array(AFO_POI).reshape(-1,len(Results_parameter))
     return AFO_POI
 
 #------------------------------------------------------------------------------------------------------------------------------------------
