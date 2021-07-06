@@ -37,7 +37,7 @@ for asi in range (4,13):                                        # The number of 
                 # Change the AFO material properties in input file
                 AFO3_ParaTestSelect.AFOmaterialVariables(FL_amplification_side_Vardeci, FL_shift_side_Vardeci, FL_amplification_front_Vardeci, FL_shift_front_Vardeci)
                 ResultDirectory='SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)
-                AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory)
+                AFO0_Simulation.Simulation('AFODroplanding', 'model', ResultDirectory)
                 # Restore the AFO material properties in input file to the baseline materials
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 # print(ResultDirectory)
@@ -47,30 +47,33 @@ for asi in range (4,13):                                        # The number of 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Put the simulation results from the results folders to an excel documents
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-"""
+
 Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
 Subtalar_matrix=[]
 for asi in range (4,13):                                        # The number of the amplification variables for side FL relationship
     for afj in range (4,13):                                    # The number of the amplification variables for front FL relationship
         for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
             for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
-                output_folder=ResultDirectory='Drop landing_platform25\SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)                # The folder of the FD results
+                output_folder=ResultDirectory='Drop landing_platform30\SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)                # The folder of the FD results
                 data= AFO4_ResultsCollection.Simulationresultscollection(output_folder, Results_parameter, 'default_states_degrees.mot')                        # put the specified results into a matrix
                 if data.size==0:                                # If the folder does not exit, skip the current loop to the next one.
                     continue
                 else:
-                    Subtalar_matrix.append([asi*10, afj*10, ssm*0.04-0.2, sfn*0.04-0.2, max(data[:,1])])           # Put the four variables and the subtalar angles into a list
+                    Subtalar_matrix.append([asi*10, afj*10, ssm*0.04-0.2, sfn*0.04-0.2, max(data[:,1]), max(data[:,2])])           # Put the four variables and the subtalar angles into a list
 Subtalar_matrix=np.array(Subtalar_matrix)                                                        # Transform the list to the matrix
-Excel_title=['Side_amplification','Front_amplification','Side_shift','Front_shift','Max subtalar']              # Define the title of the excel
-AFO4_ResultsCollection.DLResultstoExcel('Drop landing_platform25', 'DL Results.xls', 'Platform 25', Excel_title, Subtalar_matrix)          # Put the four variables and subtalar angles to an excel
+Excel_title=['Side_amplification','Front_amplification','Side_shift','Front_shift','Max subtalar angle', 'Max ankle angle']              # Define the title of the excel
+AFO4_ResultsCollection.DLResultstoExcel('Drop landing_platform30', 'DL Results.xls', 'Platform 30', Excel_title, Subtalar_matrix)          # Put the four variables and subtalar angles to an excel
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-"""
 
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Put the results in a matrix from an excel file and plot the results in a 4D scatter figures
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Put the results from an excel file into a matrix
-data=AFO4_ResultsCollection.ReadExcel('Drop landing_platform25', 'DL Results.xls','Platform 25')
+Result_folder='Drop landing_platform30'
+Result_file='DL Results.xls'
+Result_sheet_name='Platform 30'
+data=AFO4_ResultsCollection.ReadExcel(Result_folder, Result_file, Result_sheet_name)
 data_smallthan30=data[data['Max subtalar']<30].values                          # Matix including subtalar angles smaller than 30 degree
 data_bigthan30=data[data['Max subtalar']>=30].values                           # Matix including subtalar angles bigger than 30 degree
 # Plot 4D scrater figures for the results
@@ -86,8 +89,8 @@ z11=data_smallthan30[:,3]
 z22=data_bigthan30[:,3]
 c1=data_smallthan30[:,4]
 c2=data_bigthan30[:,4]
-#img=ax.scatter(x2,y2,z22,s=100,c=c2,cmap=plt.autumn())
-img=ax.scatter(x1,y1,z11,s=100,c=c1,cmap=plt.summer())
+#img=ax.scatter(x2,y2,z2,s=100,c=c2,cmap=plt.bone())
+img=ax.scatter(x1,y1,z11,s=100,c=c1,cmap=plt.autumn())
 # Choice available: hot, cool, gray, bone, white, spring, summer, autumn, winter
 ax.set_xlabel("Side_amplifcation")
 ax.set_ylabel("Front_amplification")
@@ -96,7 +99,7 @@ fig.colorbar(img)
 
 plt.show()
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+"""
 
 
 
