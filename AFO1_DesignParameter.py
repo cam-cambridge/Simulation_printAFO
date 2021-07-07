@@ -1,10 +1,12 @@
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Input:    Input_directory: the folder that include the AFO input design DesignParameters
-             #  Input_file: the text file including the design parameters of AFO: AFO input.txt
-# Output:     AFO_representation: the local coordinates of the two endpoints for the AFO strips
-                # AFO_material: the force magnitude and force-length relationship for the AFO strips in side and front
-                # Platform_inclination: the inclination of the platform
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Collect 3 design parameters of the AFO  (AFO_representation, AFO_material, Platform_inclination)  for model development from the module - AFOParameterInput
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def AFODesignParameter(Input_directory, Input_file):
+    # Input:        (1)  Input_directory: the folder that include the AFO input design parameter file - AFO input.txt
+    #                  (2)  Input_file: the text file including the design parameters of AFO: AFO input.txt
+    # Output:    (1)  AFO_representation: the local coordinates of the two endpoints for the AFO strips
+    #                 (2)  AFO_material: the force magnitude and force-length relationship for the AFO strips in side and front
+    #                 (3)  Platform_inclination: the inclination of the platform
     import os
     import math
     import numpy as np
@@ -28,10 +30,12 @@ def AFODesignParameter(Input_directory, Input_file):
     Platform_inclination=DesignParameters[18]
     return AFO_representation, AFO_material, Platform_inclination
 
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Collect AFO design parameters from the file File_AFO input.txt
-# File_AFOinput: a text file containing the design parameters for AFO
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Collect all the AFO design parameters from the txt file: AFO input.txt
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def AFOParameterInput(File_AFOinput):
+    #  Input:      (1)  File_AFOinput: a text file containing the design parameters for AFO
+    # Output:    (1)  The all AFO design parameters in a matrix format
     import re
     import numpy as np
     with open(File_AFOinput) as f:
@@ -91,14 +95,15 @@ def AFOParameterInput(File_AFOinput):
     AFO_strip_dia=float(re.findall(r"\d+\.?\d*",dataset[20])[0])
     return wrapCylinder_location, wrapCylinder_radius, wrapEllipsoid_location, wrapEllipsoid_dim, wrapEllipsoid_Orinentation, AFO_side_top_iniPosAngle, AFO_side_top_rangeAngle, AFO_side_bottom_iniPosAngle, AFO_side_bottom_rangeAngle, AFO_front_top_iniPosAngle, AFO_front_top_rangeAngle, AFO_front_bottom_iniPosAngle, AFO_front_bottom_rangeAngle, AFO_height, num_side, num_front, AFO_FLrelationship_side, AFO_FLrelationship_front, Platform_inclination, AFO_material_strength, AFO_strip_dia
 
-#------------------------------------------------------------------------------------------------------------------------------------------
-# Create the end points of the AFO strips in global and local coordinate system
-# Input: design parameters collected from the AFO input.txt file
-# Output: The coordinates values of endpoints of AFO strips in global and local coordinate systems
-                # AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
-                # AFO_bottom_local=[AFO_bottom_local_side, AFO_bottom_local_front]
-                # AFO_length=[AFO_length_side, AFO_length_front]
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def AFORepresentation(DesignParameter):
+    # Input:       (1)   All the design parameters collected from the AFO input file - AFO design.txt
+    # Output:    (2)   The coordinates values of endpoints of AFO strips in global and local coordinate systems:
+    #                         (2.1)    AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
+    #                         (2.2)    AFO_bottom_local=[AFO_bottom_local_side, AFO_bottom_local_front]
+    #                         (2.3)    AFO_length=[AFO_length_side, AFO_length_front]
     import math
     import numpy as np
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -244,11 +249,17 @@ def AFORepresentation(DesignParameter):
     AFO_length=[AFO_length_side, AFO_length_front]
     return AFO_top_local, AFO_bottom_local, AFO_length
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Change the coordinate values of the endpoints from Global coordinate system to Locol coordinate system
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def MBDGlobalToLocal(AFO_top, AFO_bottom, AFO_length, tibial_center, calcn_center):
+    #   Input:           (1 & 2)  AFO_top & AFO_bottom:           the matrix of endpoints on the top of the AFO in the Global coordinate system
+    #                        (3)        AFO _length:                               the length of the AFO
+    #                        (4 & 5)  tibial_center & calcn_center:    the coordinate values of the body centers for the tibial and calcn bone
+    #  Output:         (1)         AFO_top_tibial:                         the matrix representing coordinate values of the points on the top of the AFO strips in tibial local coordinate system
+    #                       (2)         AFO_bottom_calcn:                   the matrix representing coordinate values of the points at the bottom of the AFO strips in the calcn local coordinate system
+    #                       (3)         AFO_length:                               the length of the AFO
     import numpy as np
-    # AFO_top_tibia: The matrix representing coordinate values of the points on the top of the AFO strips in tibial local coordinate system
-    # AFO_bottom_calcn: The matrix representing coordinate values of the points at the bottom of the AFO strips in the calcn local coordinate system
     # The tibial local coordinate systems
     # tibial_center=np.array([-0.0752, -0.46192,0.0835])
     tibial_x=np.array([1,0,0])
@@ -268,11 +279,12 @@ def MBDGlobalToLocal(AFO_top, AFO_bottom, AFO_length, tibial_center, calcn_cente
     AFO_bottom_calcn=np.array(transformation(AFO_bottom,calcn_center,calcn_vector))
     return AFO_top_tibial, AFO_bottom_calcn, AFO_length
 
-#--------------------------------------------------------------------------------------------------------------------------
-# Matrix operations: Dot，Cross and Normalization
-# input arguments for Dot and Cross: two matrix, i.e. M1=[1.0,2.0,3.0],M2=[2.0,4.0,7.0]
-# input argument for Normalization: one matrix, i.e. M=[1,2,3]
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Matrix operations: Dot，Cross and Normalization
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 class MatrixOperation:
+    # input arguments for Dot and Cross: two matrix, i.e. M1=[1.0,2.0,3.0],M2=[2.0,4.0,7.0]
+    # input argument for Normalization: one matrix, i.e. M=[1,2,3]
     def Dot(M1,M2):
         return M1[0]*M2[0]+M1[1]*M2[1]+M1[2]*M2[2]
     def Cross(M1,M2):
@@ -290,12 +302,13 @@ class MatrixOperation:
             T=[]
         return M
 
-#--------------------------------------------------------------------------------------------------------------------------
-# Matrix transformation between two coordinate systems
-# input arguments: two matrix: M1(n*4 matrix): the original matrix,
-                         # M2(1*3 matrix): the origin of the new (local) coordinate system
-                         # M3(3*3 matrix): the x,y,z vectors of the new (local) coordinate system
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Matrix transformation between two coordinate systems
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def transformation(M_origin,Coord_local_origin,Coord_local_vector):
+    # input arguments: two matrix: M1(n*4 matrix): the original matrix,
+                             # M2(1*3 matrix): the origin of the new (local) coordinate system
+                             # M3(3*3 matrix): the x,y,z vectors of the new (local) coordinate system
         x_global=[1,0,0]
         y_global=[0,1,0]
         z_global=[0,0,1]
