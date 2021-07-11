@@ -130,6 +130,36 @@ def AFORepresentation(DesignParameter):
     [AFO_front_top_iniPosAngle, AFO_front_top_rangeAngle]=[AFO_front_top_iniPosAngle/180*math.pi, AFO_front_top_rangeAngle/180*math.pi]
     [AFO_front_bottom_iniPosAngle, AFO_front_bottom_rangeAngle]=[AFO_front_bottom_iniPosAngle/180*math.pi, AFO_front_bottom_rangeAngle/180*math.pi]
 
+    tabus_GlobalCS_origin=[-0.0752, -0.8919, 0.0835]
+    AFO_bottom_location=[0, 0, 0]
+    AFO_cylinder_radius=0.1
+    AFO_length=0.1
+    AFO_side_num=4
+    AFO_side_top_iniPosAngle=60
+    AFO_side_top_rangeAngle=60
+    AFO_lateralside_orientations=[15, 15, 15, 15]
+
+    AFO_top_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)+np.array([0, AFO_length, 0])
+    AFO_bottom_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)
+    AFO_top_lateral=AFO_bottom_lateral=[]
+    for i in range (int(AFO_side_num)):
+        # The endpoints for the top side of the AFO
+        top_lateral_endpoint_angle=(AFO_side_top_iniPosAngle+i*AFO_side_top_rangeAngle/(AFO_side_num-1))/180*math.pi
+        x_top_lateral=AFO_top_center[0]+math.cos(top_lateral_endpoint_angle)*AFO_cylinder_radius
+        y_top_lateral=AFO_top_center[1]
+        z_top_lateral=AFO_top_center[2]+math.sin(top_lateral_endpoint_angle)*AFO_cylinder_radius
+        AFO_top_lateral=np.append(AFO_top_lateral, np.array([x_top_lateral, y_top_lateral, z_top_lateral]))
+        # The endpoints for the bottom of the AFO
+        bottom_lateral_endpoint_angle=top_lateral_endpoint_angle+AFO_length*math.tan(AFO_lateralside_orientations[i]/180*math.pi)/AFO_cylinder_radius
+        x_bottom_lateral=AFO_bottom_center[0]+math.cos(bottom_lateral_endpoint_angle)*AFO_cylinder_radius
+        y_bottom_lateral=AFO_bottom_center[1]
+        z_bottom_lateral=AFO_bottom_center[2]+math.sin(bottom_lateral_endpoint_angle)*AFO_cylinder_radius
+        AFO_bottom_lateral=np.append(AFO_bottom_lateral, np.array([x_bottom_lateral, y_bottom_lateral, z_bottom_lateral]))
+    AFO_top_lateral=AFO_top_lateral.reshape(-1,3)
+    AFO_bottom_lateral=AFO_bottom_lateral.reshape(-1,3)
+    print(AFO_top_lateral)
+    print(AFO_bottom_lateral)
+
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # The ellipsoid wrap surface in the calcn, the AFO at the bottom (ground coordinate system)
     # The AFO on the left and right sides of the foot_bottom
