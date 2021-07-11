@@ -25,11 +25,11 @@ FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
 FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
 FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
 """
-"""
-for asi in range (4,13):                                        # The number of the amplification variables for side FL relationship
-    for afj in range (4,13):                                    # The number of the amplification variables for front FL relationship
-        for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
-            for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
+
+for asi in range (4,5):                                        # The number of the amplification variables for side FL relationship
+    for afj in range (4,5):                                    # The number of the amplification variables for front FL relationship
+        for ssm in range (0,1):                              # The number of the shift variables for side FL relationship
+            for sfn in range (0,1):                           # The number of the shift variables for front FL relationship
                 FL_amplification_side_Vardeci=asi*10
                 FL_amplification_front_Vardeci=afj*10
                 FL_shift_side_Vardeci=ssm*0.04-0.2
@@ -42,8 +42,8 @@ for asi in range (4,13):                                        # The number of 
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 # print(ResultDirectory)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-"""
 
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Put the simulation results from the results folders to an excel documents
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -64,7 +64,7 @@ Subtalar_matrix=np.array(Subtalar_matrix)                                       
 Excel_title=['Side_amplification','Front_amplification','Side_shift','Front_shift','Max subtalar angle', 'Max ankle angle']              # Define the title of the excel
 AFO4_ResultsCollection.DLResultstoExcel('Drop landing_platform30', 'DL Results.xls', 'Platform 30', Excel_title, Subtalar_matrix)          # Put the four variables and subtalar angles to an excel
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+"""
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Put the results in a matrix from an excel file and plot the results in a 4D scatter figures
