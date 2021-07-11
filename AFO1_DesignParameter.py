@@ -130,6 +130,11 @@ def AFORepresentation(DesignParameter):
     [AFO_front_top_iniPosAngle, AFO_front_top_rangeAngle]=[AFO_front_top_iniPosAngle/180*math.pi, AFO_front_top_rangeAngle/180*math.pi]
     [AFO_front_bottom_iniPosAngle, AFO_front_bottom_rangeAngle]=[AFO_front_bottom_iniPosAngle/180*math.pi, AFO_front_bottom_rangeAngle/180*math.pi]
 
+
+
+
+    #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # The new AFO design considering stripe orientations
     tabus_GlobalCS_origin=[-0.0752, -0.8919, 0.0835]
     AFO_bottom_location=[0, 0, 0]
     AFO_cylinder_radius=0.1
@@ -159,6 +164,9 @@ def AFORepresentation(DesignParameter):
     AFO_bottom_lateral=AFO_bottom_lateral.reshape(-1,3)
     print(AFO_top_lateral)
     print(AFO_bottom_lateral)
+
+
+
 
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # The ellipsoid wrap surface in the calcn, the AFO at the bottom (ground coordinate system)
