@@ -108,6 +108,7 @@ def AFORepresentation(DesignParameter):
     import numpy as np
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # The design parameters for AFO in the MBD model, collected from the AFO input.txt file
+    """
     wrapCylinder_location=DesignParameter[0]
     wrapCylinder_radius=DesignParameter[1]
     wrapEllipsoid_location=DesignParameter[2]
@@ -129,158 +130,72 @@ def AFORepresentation(DesignParameter):
     [AFO_side_bottom_iniPosAngle, AFO_side_bottom_rangeAngle]=[AFO_side_bottom_iniPosAngle/180*math.pi, AFO_side_bottom_rangeAngle/180*math.pi]
     [AFO_front_top_iniPosAngle, AFO_front_top_rangeAngle]=[AFO_front_top_iniPosAngle/180*math.pi, AFO_front_top_rangeAngle/180*math.pi]
     [AFO_front_bottom_iniPosAngle, AFO_front_bottom_rangeAngle]=[AFO_front_bottom_iniPosAngle/180*math.pi, AFO_front_bottom_rangeAngle/180*math.pi]
+    """
 
-
-
-
-    #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # The new AFO design considering stripe orientations
     tabus_GlobalCS_origin=[-0.0752, -0.8919, 0.0835]
     AFO_bottom_location=[0, 0, 0]
-    AFO_cylinder_radius=0.1
-    AFO_length=0.1
-    AFO_side_num=4
-    AFO_side_top_iniPosAngle=60
-    AFO_side_top_rangeAngle=60
-    AFO_lateralside_orientations=[15, 15, 15, 15]
+    AFO_cylinder_radius=0.05
+    AFO_length=0.12
+    AFO_side_num=5
+    AFO_front_num=5
+    AFO_lateralside_top_iniPosAngle=60
+    AFO_lateralside_top_rangeAngle=40
+    AFO_lateralside_orientations=[10, 10, 10, 10,10]
+    AFO_medialside_top_iniPosAngle=240
+    AFO_medialside_top_rangeAngle=40
+    AFO_medialside_orientations=[-5,-5,-5,-5,-5]
+    AFO_lateralfront_top_iniPosAngle=310
+    AFO_lateralfront_top_rangeAngle=15
+    AFO_lateralfront_orientations=[-60,-60,-60,-60,-60]
+    AFO_medialfront_top_iniPosAngle=30
+    AFO_medialfront_top_rangeAngle=15
+    AFO_medialfront_orientations=[60,60,60,60,60]
+
 
     AFO_top_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)+np.array([0, AFO_length, 0])
     AFO_bottom_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)
-    AFO_top_lateral=AFO_bottom_lateral=[]
-    for i in range (int(AFO_side_num)):
-        # The endpoints for the top side of the AFO
-        top_lateral_endpoint_angle=(AFO_side_top_iniPosAngle+i*AFO_side_top_rangeAngle/(AFO_side_num-1))/180*math.pi
-        x_top_lateral=AFO_top_center[0]+math.cos(top_lateral_endpoint_angle)*AFO_cylinder_radius
-        y_top_lateral=AFO_top_center[1]
-        z_top_lateral=AFO_top_center[2]+math.sin(top_lateral_endpoint_angle)*AFO_cylinder_radius
-        AFO_top_lateral=np.append(AFO_top_lateral, np.array([x_top_lateral, y_top_lateral, z_top_lateral]))
-        # The endpoints for the bottom of the AFO
-        bottom_lateral_endpoint_angle=top_lateral_endpoint_angle+AFO_length*math.tan(AFO_lateralside_orientations[i]/180*math.pi)/AFO_cylinder_radius
-        x_bottom_lateral=AFO_bottom_center[0]+math.cos(bottom_lateral_endpoint_angle)*AFO_cylinder_radius
-        y_bottom_lateral=AFO_bottom_center[1]
-        z_bottom_lateral=AFO_bottom_center[2]+math.sin(bottom_lateral_endpoint_angle)*AFO_cylinder_radius
-        AFO_bottom_lateral=np.append(AFO_bottom_lateral, np.array([x_bottom_lateral, y_bottom_lateral, z_bottom_lateral]))
-    AFO_top_lateral=AFO_top_lateral.reshape(-1,3)
-    AFO_bottom_lateral=AFO_bottom_lateral.reshape(-1,3)
-    print(AFO_top_lateral)
-    print(AFO_bottom_lateral)
-
-
-
-
-    #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # The ellipsoid wrap surface in the calcn, the AFO at the bottom (ground coordinate system)
-    # The AFO on the left and right sides of the foot_bottom
-    theta_wrapEllipsoid=wrapEllipsoid_Orinentation                                                     # The rotation of the ellipsoid wrap surface about calcn coordinate system
-    location_wrapEllipsoid=wrapEllipsoid_location                                                       # The location of the origin of the ellipsoid wrap surface on the ground coordinate system
-    dim_wrapEllipsoid=wrapEllipsoid_dim                                                                   # The dimensions of the ellipsoid wrap surface
-    AFO_bottomside_left=AFO_bottomside_right=[]
-    for i in range (int(num_side)):
-        # AFO strips in the left side of the foot_bottom
-        x_left=location_wrapEllipsoid[0]+dim_wrapEllipsoid[0]*math.cos(AFO_side_bottom_iniPosAngle+AFO_side_bottom_rangeAngle/num_side*i)
-        y_left=location_wrapEllipsoid[1]
-        z_left=location_wrapEllipsoid[2]+dim_wrapEllipsoid[2]*math.sin(AFO_side_bottom_iniPosAngle+AFO_side_bottom_rangeAngle/num_side*i)
-        AFO_bottomside_left=np.append(AFO_bottomside_left, np.array([x_left,y_left,z_left]))
-        #AFO strips in the right side of the foot_bottom
-        #x_right=location_wrapEllipsoid[0]+dim_wrapEllipsoid[0]*math.cos((2*math.pi-AFO_side_bottom_iniPosAngle)-AFO_side_bottom_rangeAngle/num_side*i)
-        x_right=location_wrapEllipsoid[0]+dim_wrapEllipsoid[0]*math.cos((-AFO_side_bottom_iniPosAngle)-AFO_side_bottom_rangeAngle/num_side*i)
-        y_right=location_wrapEllipsoid[1]
-        #z_right=location_wrapEllipsoid[2]+dim_wrapEllipsoid[2]*math.sin((2*math.pi-AFO_side_bottom_iniPosAngle)-AFO_side_bottom_rangeAngle/num_side*i)
-        z_right=location_wrapEllipsoid[2]+dim_wrapEllipsoid[2]*math.sin((-AFO_side_bottom_iniPosAngle)-AFO_side_bottom_rangeAngle/num_side*i)
-        AFO_bottomside_right=np.append(AFO_bottomside_right, np.array([x_right,y_right,z_right]))
-    AFO_bottomside_left=AFO_bottomside_left.reshape(-1,3)
-    AFO_bottomside_right=AFO_bottomside_right.reshape(-1,3)
-
-    # The AFO on the front sides of the foot_bottom
-    AFO_bottomfront_left=AFO_bottomfront_right=[]
-    for i in range (num_front):
-        # AFO strips in the left front of the foot_bottom
-        x_left=location_wrapEllipsoid[0]+dim_wrapEllipsoid[0]*math.cos(AFO_front_bottom_iniPosAngle+AFO_front_bottom_rangeAngle/num_front*i)
-        y_left=location_wrapEllipsoid[1]
-        z_left=location_wrapEllipsoid[2]+dim_wrapEllipsoid[2]*math.sin(AFO_front_bottom_iniPosAngle+AFO_front_bottom_rangeAngle/num_front*i)
-        AFO_bottomfront_left=np.append(AFO_bottomfront_left, np.array([x_left,y_left,z_left]))
-        #AFO strips in the right front of the foot_bottom
-        x_right=location_wrapEllipsoid[0]+dim_wrapEllipsoid[0]*math.cos((2*math.pi-AFO_front_bottom_iniPosAngle)-AFO_front_bottom_rangeAngle/num_front*i)
-        y_right=location_wrapEllipsoid[1]
-        z_right=location_wrapEllipsoid[2]+dim_wrapEllipsoid[2]*math.sin((2*math.pi-AFO_front_bottom_iniPosAngle)-AFO_front_bottom_rangeAngle/num_front*i)
-        AFO_bottomfront_right=np.append(AFO_bottomfront_right, np.array([x_right,y_right,z_right]))
-    AFO_bottomfront_left=AFO_bottomfront_left.reshape(-1,3)
-    AFO_bottomfront_right=AFO_bottomfront_right.reshape(-1,3)
-
-    #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # The cylinder wrap surface in the tibia, the AFO at the top (ground coordinate system)
-    #location_wrapCylinder=np.array([-0.0084,-0.4657,0.0067])                            # The center of the circle at the bottom of the wrap Cylinder (tibia coordinate system)
-    location_wrapCylinder=wrapCylinder_location                                                  # The center of teh circle at the bottome in ground coordinate system
-    radius=wrapCylinder_radius                                                                                # The radius of the circle for the wrap Cylinder
-    AFO_height=AFO_height                                                                                     # The length of the AFO length
-    # The AFO on the left and right sides of the foot_top
-    AFO_topside_left=AFO_topside_right=[]
-    for i in range (num_side):
-        # AFO strips in the left side of the foot_top
-        x_left=location_wrapCylinder[0]+radius*math.cos(AFO_side_top_iniPosAngle+AFO_side_top_rangeAngle/num_side*i)
-        y_left=location_wrapEllipsoid[1]+AFO_height                                             # The y coordinate of the AFO of top surface eaqual to bottom surface + AFO height
-        z_left=location_wrapCylinder[2]+radius*math.sin(AFO_side_top_iniPosAngle+AFO_side_top_rangeAngle/num_side*i)
-        AFO_topside_left=np.append(AFO_topside_left, np.array([x_left,y_left,z_left]))
-        # AFO strips in the right side of the foot_top
-        x_right=location_wrapCylinder[0]+radius*math.cos((2*math.pi-AFO_side_top_iniPosAngle)-AFO_side_top_rangeAngle/num_side*i)
-        y_right=location_wrapEllipsoid[1]+AFO_height                                             # The y coordinate of the AFO of top surface eaqual to bottom surface + AFO height
-        z_right=location_wrapCylinder[2]+radius*math.sin((2*math.pi-AFO_side_top_iniPosAngle)-AFO_side_top_rangeAngle/num_side*i)
-        AFO_topside_right=np.append(AFO_topside_right, np.array([x_right,y_right,z_right]))
-    AFO_topside_left=AFO_topside_left.reshape(-1,3)
-    AFO_topside_right=AFO_topside_right.reshape(-1,3)
-
-    # The AFO on the front sides of the foot_top
-    AFO_topfront_left=AFO_topfront_right=[]
-    for i in range (num_front):
-        # AFO strips in the left side of the foot_top
-        x_left=location_wrapCylinder[0]+radius*math.cos(AFO_front_top_iniPosAngle+AFO_front_top_rangeAngle/num_front*i)
-        y_right=location_wrapEllipsoid[1]+AFO_height                                             # The y coordinate of the AFO of top surface eaqual to bottom surface + AFO height
-        z_left=location_wrapCylinder[2]+radius*math.sin(AFO_front_top_iniPosAngle+AFO_front_top_rangeAngle/num_front*i)
-        AFO_topfront_left=np.append(AFO_topfront_left, np.array([x_left,y_left,z_left]))
-        # AFO strips in the right side of the foot_top
-        x_right=location_wrapCylinder[0]+radius*math.cos((2*math.pi-AFO_front_top_iniPosAngle)-AFO_front_top_rangeAngle/num_front*i)
-        y_left=location_wrapEllipsoid[1]+AFO_height                                             # The y coordinate of the AFO of top surface eaqual to bottom surface + AFO height
-        z_right=location_wrapCylinder[2]+radius*math.sin((2*math.pi-AFO_front_top_iniPosAngle)-AFO_front_top_rangeAngle/num_front*i)
-        AFO_topfront_right=np.append(AFO_topfront_right, np.array([x_right,y_right,z_right]))
-    AFO_topfront_left=AFO_topfront_left.reshape(-1,3)
-    AFO_topfront_right=AFO_topfront_right.reshape(-1,3)
-
-    #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # The length of the AFO strips in right, left and front sides
-    # Top surface: AFO_topside_left, AFO_topside_right, AFO_topfront_left, AFO_topfront_right
-    # Bottom surface: AFO_bottomside_left, AFO_bottomside_right, AFO_bottomfront_left, AFO_bottomfront_right
-    # The length of strips in AFO sides
-    AFO_side_left_length=AFO_side_right_length=[]
-    for i in range (num_side):
-        AFO_side_left_length_T=np.sqrt(np.sum(np.square(AFO_topside_left[i]-AFO_bottomside_left[i])))
-        AFO_side_left_length=np.append(AFO_side_left_length, AFO_side_left_length_T)
-        AFO_side_right_length_T=np.sqrt(np.sum(np.square(AFO_topside_right[i]-AFO_bottomside_right[i])))
-        AFO_side_right_length=np.append(AFO_side_right_length,AFO_side_right_length_T)
-    # The length of strips in AFO front
-    AFO_front_left_length=AFO_front_right_length=[]
-    for i in range (num_front):
-        AFO_front_left_length_T=np.sqrt(np.sum(np.square(AFO_topfront_left[i]-AFO_bottomfront_right[i])))                      # The length of AFO strip in front, top left to bottom right (top left-bottom right)
-        AFO_front_left_length=np.append(AFO_front_left_length, AFO_front_left_length_T)
-        AFO_front_right_length_T=np.sqrt(np.sum(np.square(AFO_topfront_right[i]-AFO_bottomfront_left[i])))                    # The length of AFO strip in front, top right to bottom left (top right-bottom left)
-        AFO_front_right_length=np.append(AFO_front_right_length, AFO_front_right_length_T)
-
-    AFO_top_global_side=np.vstack((AFO_topside_left, AFO_topside_right))
-    AFO_top_global_front=np.vstack((AFO_topfront_left, AFO_topfront_right))
-    AFO_bottom_global_side=np.vstack((AFO_bottomside_left, AFO_bottomside_right))
-    AFO_bottom_global_front=np.vstack((AFO_bottomfront_right, AFO_bottomfront_left))
-    AFO_strip_length_side=np.append(AFO_side_left_length, AFO_side_right_length)
-    AFO_strip_length_front= np.append(AFO_front_left_length, AFO_front_right_length)
-    AFO_strip_length_side=AFO_strip_length_side
-    AFO_strip_length_front=AFO_strip_length_front
-
+    def AFOendpoints (AFO_side_num, iniPosAngle, rangeAngle, AFO_stripe_orientations):
+        AFO_top=AFO_bottom=AFO_stripe_length=[]
+        for i in range (int(AFO_side_num)):
+            # The endpoints for the top of the AFO
+            top_endpoint_angle=(iniPosAngle+i*rangeAngle/(AFO_side_num-1))/180*math.pi
+            x_top=AFO_top_center[0]+math.cos(top_endpoint_angle)*AFO_cylinder_radius
+            y_top=AFO_top_center[1]
+            z_top=AFO_top_center[2]+math.sin(top_endpoint_angle)*AFO_cylinder_radius
+            AFO_top=np.append(AFO_top, np.array([x_top, y_top, z_top]))
+            # The endpoints for the bottom of the AFO
+            bottom_endpoint_angle=top_endpoint_angle+AFO_length*math.tan(AFO_stripe_orientations[i]/180*math.pi)/AFO_cylinder_radius
+            x_bottom=AFO_bottom_center[0]+math.cos(bottom_endpoint_angle)*AFO_cylinder_radius
+            y_bottom=AFO_bottom_center[1]
+            z_bottom=AFO_bottom_center[2]+math.sin(bottom_endpoint_angle)*AFO_cylinder_radius
+            AFO_bottom=np.append(AFO_bottom, np.array([x_bottom, y_bottom, z_bottom]))
+            # The lengths of the AFO AFO_strip
+            AFO_stripe_length_T=np.sqrt(np.sum(np.square(np.array([x_top, y_top, z_top])-np.array([x_bottom, y_bottom, z_bottom]))))
+            AFO_stripe_length=np.append(AFO_stripe_length, AFO_stripe_length_T)
+        AFO_top=AFO_top.reshape(-1,3)
+        AFO_bottom=AFO_bottom.reshape(-1,3)
+        return AFO_top, AFO_bottom, AFO_stripe_length
+    [AFO_top_lateralside, AFO_bottom_lateralside, AFO_lateralside_length]=AFOendpoints(AFO_side_num, AFO_lateralside_top_iniPosAngle, AFO_lateralside_top_rangeAngle, AFO_lateralside_orientations)
+    [AFO_top_medialside, AFO_bottom_medialside, AFO_medialside_length]=AFOendpoints(AFO_side_num, AFO_medialside_top_iniPosAngle, AFO_medialside_top_rangeAngle, AFO_medialside_orientations)
+    [AFO_top_lateralfront, AFO_bottom_lateralfront, AFO_lateralfront_length]=AFOendpoints(AFO_front_num, AFO_lateralfront_top_iniPosAngle, AFO_lateralfront_top_rangeAngle, AFO_lateralfront_orientations)
+    [AFO_top_medialfront, AFO_bottom_medialfront, AFO_medialfront_length]=AFOendpoints(AFO_front_num, AFO_medialfront_top_iniPosAngle,AFO_medialfront_top_rangeAngle, AFO_medialfront_orientations)
+    # Put the lateral side and medial side of AFO stripes together, using np.vstack function
+    AFO_top_global_side=np.vstack((AFO_top_lateralside, AFO_top_medialside))
+    AFO_top_global_front=np.vstack((AFO_top_lateralfront, AFO_top_medialfront))
+    AFO_bottom_global_side=np.vstack((AFO_bottom_lateralside, AFO_bottom_medialside))
+    AFO_bottom_global_front=np.vstack((AFO_bottom_lateralfront, AFO_bottom_medialfront))
+    AFO_side_length=np.append(AFO_lateralside_length, AFO_medialside_length)
+    AFO_front_length=np.append(AFO_lateralfront_length, AFO_medialfront_length)
+    AFO_side_length=AFO_side_length
+    AFO_front_length=AFO_front_length
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Transfer the endpoints of AFO strips from global coordinate system to local coordinate systems
     tibial_center = np.array([-0.0752, -0.4619, 0.0835])                                                                                              # tibial center coordinates in MBD model in global coordinate system
     calcn_center = np.array([-0.1240, -0.9339, 0.0914])                                                                                             # calcn center coordinates in MBD model in global coordinate system
     # The AFO strip in the AFO side
-    [AFO_top_local_side, AFO_bottom_local_side, AFO_length_side]=MBDGlobalToLocal(AFO_top_global_side, AFO_bottom_global_side, AFO_strip_length_side, tibial_center, calcn_center)
+    [AFO_top_local_side, AFO_bottom_local_side, AFO_length_side]=MBDGlobalToLocal(AFO_top_global_side, AFO_bottom_global_side, AFO_side_length, tibial_center, calcn_center)
     # The AFO strip in the AFO front
-    [AFO_top_local_front, AFO_bottom_local_front, AFO_length_front]=MBDGlobalToLocal(AFO_top_global_front, AFO_bottom_global_front, AFO_strip_length_front, tibial_center, calcn_center)
+    [AFO_top_local_front, AFO_bottom_local_front, AFO_length_front]=MBDGlobalToLocal(AFO_top_global_front, AFO_bottom_global_front, AFO_front_length, tibial_center, calcn_center)
     # Put the AFO strips in AFO side and front together
     AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
     AFO_bottom_local=[AFO_bottom_local_side, AFO_bottom_local_front]
