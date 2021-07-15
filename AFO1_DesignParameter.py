@@ -5,7 +5,7 @@ def AFODesignParameter(Input_directory, Input_file):
     # Input:        (1)  Input_directory: the folder that include the AFO input design parameter file - AFO input.txt
     #                  (2)  Input_file: the text file including the design parameters of AFO: AFO input.txt
     # Output:    (1)  AFO_representation: the local coordinates of the two endpoints for the AFO strips
-    #                 (2)  AFO_material: the force magnitude and force-length relationship for the AFO strips in side and front
+    #                 (2)   AFO_material: the force magnitude and force-length relationship for the AFO material
     #                 (3)  Platform_inclination: the inclination of the platform
     import os
     import math
@@ -16,21 +16,20 @@ def AFODesignParameter(Input_directory, Input_file):
     File_AFOinput=os.path.join(path_simulation, Input_directory, Input_file)                                       # The text file including the AFO design parameters: AFO input.txt
     # Collect the design parameters from the .txt file and assign to them to the matrix (DesignParameters), using the module (AFOParameterInput)
     DesignParameters=AFOParameterInput(File_AFOinput)                                                                  # The AFO design parameters collected from the parameters file: AFO input.txt
-    # DesignParameters = [wrapCylinder_location, wrapCylinder_radius, wrapEllipsoid_location, wrapEllipsoid_dim, wrapEllipsoid_Orinentation,
-    #                                     AFO_side_top_iniPosAngle, AFO_side_top_rangeAngle, AFO_side_bottom_iniPosAngle, AFO_side_bottom_rangeAngle,
-    #                                     AFO_front_top_iniPosAngle, AFO_front_top_rangeAngle, AFO_front_bottom_iniPosAngle, AFO_front_bottom_rangeAngle,
-    #                                     AFO_height, num_side, num_front, AFO_FLrelationship_side, AFO_FLrelationship_front, Platform_inclination, AFO_material_strength, AFO_strip_dia]
-    #AFO_Fmagnitude=DesignParameters[19]*(math.pi*((DesignParameters[20]/2)**2))                     # The force magnitude for the material properties in the MBD model, calculated by material strength and size
-    #AFO_Fmagnitude=DesignParameters[19]*DesignParameters[20]
-    AFO_Fmagnitude=DesignParameters[21]*DesignParameters[22]
+    # DesignParameters = [talus_GlobalCS_origin, AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_botom_location_angle, AFO_stripe_orientations,
+    #                                     Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship]
+    # AFO_Fmagnitude: The force magnitude for the material properties in the MBD model
+    AFO_Fmagnitude=DesignParameters[7]
+    # The force-length relationship for the AFO material
+    AFO_FLrelationship=DesignParameters[8]
+    # The material properties of the AFO materials
+    # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
+    AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     # Get the local coordinate values of endpoints and the lengths of the AFO strips, using the module (AFORepresentation)
     # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
     AFO_representation=AFORepresentation(DesignParameters)
-    # AFO_material=[AFO_Fmagnitude_side, DesignParameters_side, AFO_Fmagnitude_front, DesignParameters_front]
-    # AFO_material=[AFO_Fmagnitude, DesignParameters[16], AFO_Fmagnitude, DesignParameters[17]]
-    AFO_material=[AFO_Fmagnitude, DesignParameters[18], AFO_Fmagnitude, DesignParameters[19]]
-    #Platform_inclination=DesignParameters[18]
-    Platform_inclination=DesignParameters[20]
+    # Platform_inclination=DesignParameters[6]
+    Platform_inclination=DesignParameters[6]
     return AFO_representation, AFO_material, Platform_inclination
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -48,45 +47,35 @@ def AFOParameterInput(File_AFOinput):
         line=" ".join(line.strip().split('\t'))
         dataset.append(line)
 
-    tabus_GlobalCS_origin=re.compile('-?\d+\.*\d*').findall(dataset[0])
-    tabus_GlobalCS_origin=np.array(tabus_GlobalCS_origin, dtype=np.float)
+    # The origin of the talus coordinate system (CS) in the Global CS (joint anlges = 0 for all the joints)
+    talus_GlobalCS_origin=re.compile('-?\d+\.*\d*').findall(dataset[0])
+    talus_GlobalCS_origin=np.array(talus_GlobalCS_origin, dtype=np.float)
+    # The relative position of the AFO relative to the local talus CS (joint angles =0)
     AFO_bottom_location=re.compile('-?\d+\.*\d*').findall(dataset[1])
     AFO_bottom_location=np.array(AFO_bottom_location, dtype=np.float)
+    # The radius of the AFO cylinder
     AFO_cylinder_radius=float(re.findall(r"\d+\.?\d*",dataset[2])[0])
-    AFO_length=float(re.findall(r"\d+\.?\d*",dataset[3])[0])
-    AFO_side_num=int(re.findall(r"\d+\.?\d*",dataset[4])[0])
-    AFO_front_num=int(re.findall(r"\d+\.?\d*",dataset[5])[0])
-    AFO_lateralside_top_iniPosAngle=int(re.findall(r"\d+\.?\d*",dataset[6])[0])
-    AFO_lateralside_top_rangeAngle=int(re.findall(r"\d+\.?\d*",dataset[7])[0])
-    AFO_lateralside_orientations=re.compile('-?\d+\.*\d*').findall(dataset[8])
-    AFO_lateralside_orientations=np.array(AFO_lateralside_orientations, dtype=np.float)
-    AFO_medialside_top_iniPosAngle=int(re.findall(r"\d+\.?\d*",dataset[9])[0])
-    AFO_medialside_top_rangeAngle=int(re.findall(r"\d+\.?\d*",dataset[10])[0])
-    AFO_medialside_orientations=re.compile('-?\d+\.*\d*').findall(dataset[11])
-    AFO_medialside_orientations=np.array(AFO_medialside_orientations, dtype=np.float)
-    AFO_lateralfront_top_iniPosAngle=int(re.findall(r"\d+\.?\d*",dataset[12])[0])
-    AFO_lateralfront_top_rangeAngle=int(re.findall(r"\d+\.?\d*",dataset[13])[0])
-    AFO_lateralfront_orientations=re.compile('-?\d+\.*\d*').findall(dataset[14])
-    AFO_lateralfront_orientations=np.array(AFO_lateralfront_orientations, dtype=np.float)
-    AFO_medialfront_top_iniPosAngle=int(re.findall(r"\d+\.?\d*",dataset[15])[0])
-    AFO_medialfront_top_rangeAngle=int(re.findall(r"\d+\.?\d*",dataset[16])[0])
-    AFO_medialfront_orientations=re.compile('-?\d+\.*\d*').findall(dataset[17])
-    AFO_medialfront_orientations=np.array(AFO_medialfront_orientations, dtype=np.float)
-    # Line 16: the force-length relationship for the AFO material in AFO side
-    AFO_FLrelationship_side=re.compile('-?\d+\.*\d*').findall(dataset[18])
-    AFO_FLrelationship_side=np.array(AFO_FLrelationship_side,dtype=np.float).reshape(2,-1)
-    # Line 17: the force-length relationship for the AFO material in AFO front
-    AFO_FLrelationship_front=re.compile('-?\d+\.*\d*').findall(dataset[19])
-    AFO_FLrelationship_front=np.array(AFO_FLrelationship_front,dtype=np.float).reshape(2,-1)
-    # Line 18: the inclination of the platform
-    Platform_inclination=re.compile('-?\d+\.*\d*').findall(dataset[20])
+    # The height / length of the AFO
+    AFO_height=float(re.findall(r"\d+\.?\d*",dataset[3])[0])
+    # The postions of the AFO bottom endpoints in the cross section circle using angles
+    AFO_botom_location_angle=re.compile('-?\d+\.*\d*').findall(dataset[4])
+    AFO_botom_location_angle=np.array(AFO_botom_location_angle, dtype=np.float)
+    # The angular orientations for AFO stripes (degree)
+    AFO_stripe_orientations=re.compile('-?\d+\.*\d*').findall(dataset[5])
+    AFO_stripe_orientations=np.array(AFO_stripe_orientations, dtype=np.float)
+    # The inclination of the platform
+    Platform_inclination=re.compile('-?\d+\.*\d*').findall(dataset[6])
     Platform_inclination=np.array(Platform_inclination,dtype=np.float)
-    # Line 19: strength of the AFO material
-    AFO_material_strength=float(re.findall(r"\d+\.?\d*",dataset[21])[0])
-    # Line 20: the radius of AFO strips
-    AFO_strip_dia=float(re.findall(r"\d+\.?\d*",dataset[22])[0])
-
-    return tabus_GlobalCS_origin, AFO_bottom_location, AFO_cylinder_radius, AFO_length, AFO_side_num, AFO_front_num, AFO_lateralside_top_iniPosAngle, AFO_lateralside_top_rangeAngle, AFO_lateralside_orientations, AFO_medialside_top_iniPosAngle, AFO_medialside_top_rangeAngle, AFO_medialside_orientations, AFO_lateralfront_top_iniPosAngle, AFO_lateralfront_top_rangeAngle, AFO_lateralfront_orientations, AFO_medialfront_top_iniPosAngle, AFO_medialfront_top_rangeAngle, AFO_medialfront_orientations, AFO_FLrelationship_side, AFO_FLrelationship_front, Platform_inclination, AFO_material_strength, AFO_strip_dia
+    # The force magnitude generated by the AFO
+    AFO_Fmagnitude=float(re.findall(r"\d+\.?\d*",dataset[7])[0])
+    # The force-length relationship for the AFO materials
+    AFO_FLrelationship=[]
+    for i in range (8,8+len(AFO_botom_location_angle)):
+        AFO_FL_T=re.compile('-?\d+\.*\d*').findall(dataset[i])
+        AFO_FL_T=np.array(AFO_FL_T, dtype=np.float)
+        AFO_FLrelationship=np.append(AFO_FLrelationship, AFO_FL_T)
+    AFO_FLrelationship=AFO_FLrelationship.reshape(-1,int(len(AFO_FLrelationship)/len(AFO_botom_location_angle)))
+    return talus_GlobalCS_origin, AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_botom_location_angle, AFO_stripe_orientations, Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
@@ -101,75 +90,42 @@ def AFORepresentation(DesignParameter):
     import numpy as np
     #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # The design parameters for AFO in the MBD model, collected from the AFO input.txt file
-
-    tabus_GlobalCS_origin=DesignParameter[0]
+    talus_GlobalCS_origin=DesignParameter[0]
     AFO_bottom_location=DesignParameter[1]
     AFO_cylinder_radius=DesignParameter[2]
-    AFO_length=DesignParameter[3]
-    AFO_side_num=DesignParameter[4]
-    AFO_front_num=DesignParameter[5]
-    AFO_lateralside_top_iniPosAngle=DesignParameter[6]
-    AFO_lateralside_top_rangeAngle=DesignParameter[7]
-    AFO_lateralside_orientations=DesignParameter[8]
-    AFO_medialside_top_iniPosAngle=DesignParameter[9]
-    AFO_medialside_top_rangeAngle=DesignParameter[10]
-    AFO_medialside_orientations=DesignParameter[11]
-    AFO_lateralfront_top_iniPosAngle=DesignParameter[12]
-    AFO_lateralfront_top_rangeAngle=DesignParameter[13]
-    AFO_lateralfront_orientations=DesignParameter[14]
-    AFO_medialfront_top_iniPosAngle=DesignParameter[15]
-    AFO_medialfront_top_rangeAngle=DesignParameter[16]
-    AFO_medialfront_orientations=DesignParameter[17]
+    AFO_height=DesignParameter[3]
+    AFO_bottom_location_angle=DesignParameter[4]
+    AFO_stripe_orientations=DesignParameter[5]
 
-    AFO_top_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)+np.array([0, AFO_length, 0])
-    AFO_bottom_center=np.array(tabus_GlobalCS_origin)+np.array(AFO_bottom_location)
-    def AFOendpoints (AFO_side_num, iniPosAngle, rangeAngle, AFO_stripe_orientations):
-        AFO_top=AFO_bottom=AFO_stripe_length=[]
-        for i in range (int(AFO_side_num)):
-            # The endpoints for the top of the AFO
-            top_endpoint_angle=(iniPosAngle+i*rangeAngle/(AFO_side_num-1))/180*math.pi
-            x_top=AFO_top_center[0]+math.cos(top_endpoint_angle)*AFO_cylinder_radius
-            y_top=AFO_top_center[1]
-            z_top=AFO_top_center[2]+math.sin(top_endpoint_angle)*AFO_cylinder_radius
-            AFO_top=np.append(AFO_top, np.array([x_top, y_top, z_top]))
-            # The endpoints for the bottom of the AFO
-            bottom_endpoint_angle=top_endpoint_angle+AFO_length*math.tan(AFO_stripe_orientations[i]/180*math.pi)/AFO_cylinder_radius
-            x_bottom=AFO_bottom_center[0]+math.cos(bottom_endpoint_angle)*AFO_cylinder_radius
-            y_bottom=AFO_bottom_center[1]
-            z_bottom=AFO_bottom_center[2]+math.sin(bottom_endpoint_angle)*AFO_cylinder_radius
-            AFO_bottom=np.append(AFO_bottom, np.array([x_bottom, y_bottom, z_bottom]))
-            # The lengths of the AFO AFO_strip
-            AFO_stripe_length_T=np.sqrt(np.sum(np.square(np.array([x_top, y_top, z_top])-np.array([x_bottom, y_bottom, z_bottom]))))
-            AFO_stripe_length=np.append(AFO_stripe_length, AFO_stripe_length_T)
-        AFO_top=AFO_top.reshape(-1,3)
-        AFO_bottom=AFO_bottom.reshape(-1,3)
-        return AFO_top, AFO_bottom, AFO_stripe_length
-    [AFO_top_lateralside, AFO_bottom_lateralside, AFO_lateralside_length]=AFOendpoints(AFO_side_num, AFO_lateralside_top_iniPosAngle, AFO_lateralside_top_rangeAngle, AFO_lateralside_orientations)
-    [AFO_top_medialside, AFO_bottom_medialside, AFO_medialside_length]=AFOendpoints(AFO_side_num, AFO_medialside_top_iniPosAngle, AFO_medialside_top_rangeAngle, AFO_medialside_orientations)
-    [AFO_top_lateralfront, AFO_bottom_lateralfront, AFO_lateralfront_length]=AFOendpoints(AFO_front_num, AFO_lateralfront_top_iniPosAngle, AFO_lateralfront_top_rangeAngle, AFO_lateralfront_orientations)
-    [AFO_top_medialfront, AFO_bottom_medialfront, AFO_medialfront_length]=AFOendpoints(AFO_front_num, AFO_medialfront_top_iniPosAngle,AFO_medialfront_top_rangeAngle, AFO_medialfront_orientations)
-    # Put the lateral side and medial side of AFO stripes together, using np.vstack function
-    AFO_top_global_side=np.vstack((AFO_top_lateralside, AFO_top_medialside))
-    AFO_top_global_front=np.vstack((AFO_top_lateralfront, AFO_top_medialfront))
-    AFO_bottom_global_side=np.vstack((AFO_bottom_lateralside, AFO_bottom_medialside))
-    AFO_bottom_global_front=np.vstack((AFO_bottom_lateralfront, AFO_bottom_medialfront))
-    AFO_side_length=np.append(AFO_lateralside_length, AFO_medialside_length)
-    AFO_front_length=np.append(AFO_lateralfront_length, AFO_medialfront_length)
-    AFO_side_length=AFO_side_length
-    AFO_front_length=AFO_front_length
+    # The locations of the centers of the AFO cross sections at top and bottom
+    AFO_bottom_center=np.array(talus_GlobalCS_origin)+np.array(AFO_bottom_location)
+    AFO_top_center=np.array(talus_GlobalCS_origin)+np.array(AFO_bottom_location)+np.array([0, AFO_height, 0])
+    AFO_bottom=AFO_top=AFO_stripe_length=[]
+    for i in range (len(AFO_bottom_location_angle)):
+        # The coordinates of the endpoint at the AFO bottom in the global CS
+        bottom_endpoint_angle=AFO_bottom_location_angle[i]*math.pi/180
+        x_bottom=AFO_bottom_center[0]+math.cos(bottom_endpoint_angle)*AFO_cylinder_radius
+        y_bottom=AFO_bottom_center[1]
+        z_bottom=AFO_bottom_center[2]+math.sin(bottom_endpoint_angle)*AFO_cylinder_radius
+        AFO_bottom=np.append(AFO_bottom, np.array([x_bottom, y_bottom, z_bottom]))
+        # The coordinates of the endpoint at the AFO top in the Global CS
+        top_endpoint_angle=bottom_endpoint_angle+AFO_height*math.tan(AFO_stripe_orientations[i]/180*math.pi)/AFO_cylinder_radius
+        x_top=AFO_top_center[0]+math.cos(top_endpoint_angle)*AFO_cylinder_radius
+        y_top=AFO_top_center[1]
+        z_top=AFO_top_center[2]+math.sin(top_endpoint_angle)*AFO_cylinder_radius
+        AFO_top=np.append(AFO_top, np.array([x_top, y_top, z_top]))
+        # The length of the AFO stripes
+        AFO_stripe_length_T=AFO_height/(math.cos(AFO_stripe_orientations[i]*math.pi/180))
+        AFO_stripe_length=np.append(AFO_stripe_length, AFO_stripe_length_T)
+    # Transfer the endpoints of the AFO into 3D matrixes
+    AFO_top=AFO_top.reshape(-1,3)
+    AFO_bottom=AFO_bottom.reshape(-1,3)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Transfer the endpoints of AFO strips from global coordinate system to local coordinate systems
-    tibial_center = np.array([-0.0752, -0.4619, 0.0835])                                                                                              # tibial center coordinates in MBD model in global coordinate system
-    calcn_center = np.array([-0.1240, -0.9339, 0.0914])                                                                                             # calcn center coordinates in MBD model in global coordinate system
-    # The AFO strip in the AFO side
-    [AFO_top_local_side, AFO_bottom_local_side, AFO_length_side]=MBDGlobalToLocal(AFO_top_global_side, AFO_bottom_global_side, AFO_side_length, tibial_center, calcn_center)
-    # The AFO strip in the AFO front
-    [AFO_top_local_front, AFO_bottom_local_front, AFO_length_front]=MBDGlobalToLocal(AFO_top_global_front, AFO_bottom_global_front, AFO_front_length, tibial_center, calcn_center)
-    # Put the AFO strips in AFO side and front together
-    AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
-    AFO_bottom_local=[AFO_bottom_local_side, AFO_bottom_local_front]
-    AFO_length=[AFO_length_side, AFO_length_front]
-    return AFO_top_local, AFO_bottom_local, AFO_length
+    tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                                              # tibial center coordinates in MBD model in global coordinate system
+    calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                                             # calcn center coordinates in MBD model in global coordinate system
+    [AFO_top_local, AFO_bottom_local, AFO_stripe_length]=MBDGlobalToLocal(AFO_top, AFO_bottom, AFO_stripe_length, tibial_center, calcn_center)
+    return AFO_top_local, AFO_bottom_local, AFO_stripe_length
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Change the coordinate values of the endpoints from Global coordinate system to Locol coordinate system
@@ -261,16 +217,6 @@ def transformation(M_origin,Coord_local_origin,Coord_local_vector):
             M_new.append(T)
             T=[]
         return M_new
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -509,3 +455,4 @@ def AFORepresentation_20210714(DesignParameter):                                
     AFO_bottom_local=[AFO_bottom_local_side, AFO_bottom_local_front]
     AFO_length=[AFO_length_side, AFO_length_front]
     return AFO_top_local, AFO_bottom_local, AFO_length
+#
