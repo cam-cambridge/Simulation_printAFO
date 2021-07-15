@@ -668,7 +668,11 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
     # AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
     AFO_top_tibial=AFO_representation[0]
     AFO_bottom_calcn=AFO_representation[1]
-    AFO_length=AFO_representation[2]
+    AFO_stripe_length=AFO_representation[2]
+    """
+    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # The revision of code_20210715
     # AFO_representation in AFO side
     AFO_top_tibial_side=AFO_top_tibial[0]
     AFO_bottom_calcn_side=AFO_bottom_calcn[0]
@@ -677,12 +681,12 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
     AFO_top_tibial_front=AFO_top_tibial[1]
     AFO_bottom_calcn_front=AFO_bottom_calcn[1]
     AFO_length_front=AFO_length[1]
-
-    # AFO_material=[AFO_Fmagnitude_side, AFO_FLrelationship_side, AFO_Fmagnitude_front, AFO_FLrelationship_front]
-    AFO_Fmagnitude_side=AFO_material[0]
-    AFO_F_L_side=AFO_material[1]
-    AFO_Fmagnitude_front=AFO_material[2]
-    AFO_F_L_front=AFO_material[3]
+    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    """
+    # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
+    AFO_Fmagnitude=AFO_material[0]
+    AFO_F_L=AFO_material[1]
 
     # Read the MBD osim file and add the coordinate value of the AFO strip end points in the the model
     Platform_inclination1=[math.radians(Platform_inclination[0]), math.radians(Platform_inclination[1]), math.radians(Platform_inclination[2])]
@@ -709,8 +713,10 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
                     pass
                 elif index_t!=0 and line.strip()=='<groups>':
                     index_t=0
-                    for k1 in range (len(AFO_top_tibial_side)):
-                        f_w.writelines(['				<Ligament name="orthosis_side_',str(k1+1),'_r">',"\n"])
+                    for k1 in range (len(AFO_top_tibial)):
+                        AFO_F_L_T=AFO_F_L[k1]
+                        AFO_F_L_T=AFO_F_L_T.reshape(2,-1)
+                        f_w.writelines(['				<Ligament name="orthosis_',str(k1+1),'_r">',"\n"])
                         f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
                         <appliesForce>true</appliesForce>
                         <!--the set of points defining the path of the ligament-->
@@ -718,18 +724,18 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
                             <!--The set of points defining the path-->
                             <PathPointSet>
                                 <objects>\n'''])
-                        f_w.writelines(['								<PathPoint name="orthosis_side_',str(k1+1),'_r-P1">',"\n"])
+                        f_w.writelines(['								<PathPoint name="orthosis_',str(k1+1),'_r-P1">',"\n"])
                         f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
                                         <socket_parent_frame>/bodyset/tibia_r</socket_parent_frame>
                                         <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                        AFO_top_side_withoutbracket='%.8f %.8f %.8f' %(AFO_top_tibial_side[k1,0],AFO_top_tibial_side[k1,1],AFO_top_tibial_side[k1,2])
-                        f_w.writelines(["									<location>",AFO_top_side_withoutbracket,"</location>\n","								</PathPoint>\n"])
-                        f_w.writelines(['								<PathPoint name="orthosis_side_',str(k1+1),'_r-P2">',"\n"])
+                        AFO_top_withoutbracket='%.8f %.8f %.8f' %(AFO_top_tibial[k1,0],AFO_top_tibial[k1,1],AFO_top_tibial[k1,2])
+                        f_w.writelines(["									<location>",AFO_top_withoutbracket,"</location>\n","								</PathPoint>\n"])
+                        f_w.writelines(['								<PathPoint name="orthosis_',str(k1+1),'_r-P2">',"\n"])
                         f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
                                         <socket_parent_frame>/bodyset/calcn_r</socket_parent_frame>
                                         <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                        AFO_bottom_side_withoutbracket='%.8f %.8f %.8f' %(AFO_bottom_calcn_side[k1,0],AFO_bottom_calcn_side[k1,1],AFO_bottom_calcn_side[k1,2])
-                        f_w.writelines(["									<location>",AFO_bottom_side_withoutbracket,"</location>\n"])
+                        AFO_bottom_withoutbracket='%.8f %.8f %.8f' %(AFO_bottom_calcn[k1,0],AFO_bottom_calcn[k1,1],AFO_bottom_calcn[k1,2])
+                        f_w.writelines(["									<location>",AFO_bottom_withoutbracket,"</location>\n"])
                         f_w.writelines(['''								</PathPoint>
                                 </objects>
                                 <groups />
@@ -765,23 +771,26 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
                             </Appearance>
                         </GeometryPath>
                         <!--resting length of the ligament-->\n'''])
-                        AFO_length_side_withoutbracket='%.8f' %(AFO_length_side[k1])
-                        f_w.writelines(["					<resting_length>",AFO_length_side_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
-                        f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude_side),"</pcsa_force>\n"])
+                        AFO_stripe_length_withoutbracket='%.8f' %(AFO_stripe_length[k1])
+                        f_w.writelines(["					<resting_length>",AFO_stripe_length_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
+                        f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude),"</pcsa_force>\n"])
                         f_w.writelines(['''					<!--Function representing the force-length behavior of the ligament-->
                                         <SimmSpline name="force_length_curve">\n'''])
                         f_w.writelines(['''                    					<x>'''])
-                        for j in range (len(AFO_F_L_side[0])):
-                            f_w.write(str(AFO_F_L_side[0][j]))
+                        for j in range (len(AFO_F_L_T[0])):
+                            f_w.write(str(AFO_F_L_T[0][j]))
                             f_w.write(' ')
                         f_w.writelines(['''</x>
                                             <y>'''])
-                        for m in range (len(AFO_F_L_side[1])):
-                            f_w.write(str(AFO_F_L_side[1][m]))
+                        for m in range (len(AFO_F_L_T[1])):
+                            f_w.write(str(AFO_F_L_T[1][m]))
                             f_w.write(' ')
                         f_w.writelines(['''</y>
                         </SimmSpline>
                     </Ligament>\n'''])
+                    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    """
                     for k2 in range (len(AFO_top_tibial_front)):
                         f_w.writelines(['				<Ligament name="orthosis_front_',str(k2+1),'_r">',"\n"])
                         f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
@@ -855,6 +864,9 @@ def MBDmodel_Droplanding_AFO (file_MBD, Platform_inclination, AFO_representation
                         f_w.writelines(['''</y>
                         </SimmSpline>
                     </Ligament>\n'''])
+                    """
+                    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     f_w.writelines(['''			</objects>\n'''])
                     f_w.write(line)
                 else:
