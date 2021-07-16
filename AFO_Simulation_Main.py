@@ -25,7 +25,7 @@ FL_amplification_front_Vardeci=2**FL_amplification_front_Varbin-1
 FL_shift_side_Vardeci=2**FL_shift_side_Varbin-1
 FL_shift_front_Vardeci=2**FL_shift_front_Varbin-1
 """
-
+"""
 for asi in range (4,5):                                        # The number of the amplification variables for side FL relationship
     for afj in range (4,5):                                    # The number of the amplification variables for front FL relationship
         for ssm in range (0,1):                              # The number of the shift variables for side FL relationship
@@ -41,6 +41,8 @@ for asi in range (4,5):                                        # The number of t
                 # Restore the AFO material properties in input file to the baseline materials
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 # print(ResultDirectory)
+"""
+AFO0_Simulation.Simulation('AFODroplanding', 'model', 'Simulationoutput')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 """
