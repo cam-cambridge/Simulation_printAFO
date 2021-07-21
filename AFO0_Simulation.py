@@ -3,35 +3,52 @@
 # DroplandingSimulation_AFO
 def Simulation(SimulationType, ModelOperation, results_directory):
     import os
+    import numpy as np
     import SetupFileGeneration
     import AFO1_DesignParameter
     import AFO2_MBDModel
-    #---------------------------------------------------------------------------------------------------------------------------
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Drop landing simulation if the drop landing related string is input
     if SimulationType=='AFODroplanding' or SimulationType=='AFOdroplanding' or SimulationType=='AFODROPLANDING' or SimulationType=='AFODrop landing':
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The some input parameters for the model development, including the folders and models
+        foldername_droplanding='Drop landing'                                                                                           # The folders for drop landing model and simulation
+        msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
+        folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
+        txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
+        droplanding_forward_setup_file='default_Setup_ForwardTool.xml'                                               # The setup file for the drop landing forward dynamics
+        tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                    # tibial center coordinates in drop landing MBD model (position 0) in global coordinate system
+        calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                  # calcn center coordinates in drop landing MBD model (position 0) in global coordinate system
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The folder path of pthon script
         path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
         path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
         # The joining of the folders python simulation, drop landing and MBD model
-        Model_AFO_droplanding=os.path.join(path_simulation, 'Drop landing', 'Fullbodymodel_droplanding_AFO.osim')
+        Model_AFO_droplanding=os.path.join(path_simulation, foldername_droplanding, msmodel_droplanding)
         # The AFO representation, AFO force magnitude, and platform inclination calculated from the design parameter file: AFO input.txt, using modue (AFO1_DesignParameter.AFODesignParameter)
         # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
         # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
-        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt')
+        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(folder_designparameters, txtfile_designparameters, tibial_center, calcn_center)
        # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
         AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
         # Display the MBD drop landing model with AFO
-        os.chdir(os.path.join(path_simulation, 'Drop landing'))
+        os.chdir(os.path.join(path_simulation, foldername_droplanding))
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-            os.system('Fullbodymodel_droplanding_AFO.osim')
+            os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-            ForwardDynamics_Droplanding(os.path.join(path_simulation, 'Drop landing'), 'Fullbodymodel_droplanding_AFO.osim', 'default_Setup_ForwardTool.xml', results_directory, 0.45)
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.45)
     # Gait simulation if the gait related string is input
     else:
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The some input parameters for the model development, including the folders and models
+        foldername_gait='Gait simulation data'
+        gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
+        gait_model_output=os.path.join(foldername_gait, 'Model outputs')
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
         path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
-        path_setupfiles=os.path.join(path_simulation, 'Gait simulation data\Setup files')                                            # The path of the simulation setup files
-        SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation data', 'Model outputs'))
+        path_setupfiles=os.path.join(path_simulation, gait_setup_file_foldername)                                      # The path of the simulation setup files
+        SetupFileGeneration.dircreation(os.path.join(path_simulation, gait_model_output))
         os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Gait simulation data/Setup files
         if SimulationType=='Scaling' or SimulationType=='scaling' or SimulationType=='model scaling' or SimulationType=='Model scaling':
             Scaling(path_simulation)
@@ -54,10 +71,23 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             CMC(path_simulation, loop_num)
             FD(path_simulation)
         elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='GAIT_AFO':
-            Model_AFO_origin=os.path.join(path_simulation, 'Gait simulation data/Model outputs//3_RRA', 'Fullbodymodel_Walk_RRA_modification_final.osim')
-            Model_AFO_final=os.path.join(path_simulation, 'Gait simulation data/Model outputs//3_RRA', 'Fullbodymodel_Walk_RRA_modification_AFO.osim')
-            # AFO_representation, AFO_material, Platform_inclination=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input1.txt')
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            # The some input parameters for the model development, including the folders and models
+            foldername_gait='Gait simulation data'
+            gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
+            gait_model_output=os.path.join(foldername_gait, 'Model outputs')
+            model_AFO_origin_folder='3_RRA'
+            model_AFO_origin_file='Fullbodymodel_Walk_RRA_modification_final.osim'
+            model_AFO_final_file='Fullbodymodel_Walk_RRA_modification_AFO.osim'
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            Model_AFO_origin=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_origin_file)
+            Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
             [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt')
+
+
+
+
+
             # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
             AFO2_MBDModel.AFO_MBDfile(Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
              #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
