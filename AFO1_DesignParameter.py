@@ -1,7 +1,7 @@
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Collect 3 design parameters of the AFO  (AFO_representation, AFO_material, Platform_inclination)  for model development from the module - AFOParameterInput
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def AFODesignParameter(Input_directory, Input_file):
+def AFODesignParameter(Input_directory, Input_file, tibial_center, calcn_center):
     # Input:        (1)  Input_directory: the folder that include the AFO input design parameter file - AFO input.txt
     #                  (2)  Input_file: the text file including the design parameters of AFO: AFO input.txt
     # Output:    (1)  AFO_representation: the local coordinates of the two endpoints for the AFO strips
@@ -27,7 +27,7 @@ def AFODesignParameter(Input_directory, Input_file):
     AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     # Get the local coordinate values of endpoints and the lengths of the AFO strips, using the module (AFORepresentation)
     # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
-    AFO_representation=AFORepresentation(DesignParameters)
+    AFO_representation=AFORepresentation(DesignParameters, tibial_center, calcn_center)
     # Platform_inclination=DesignParameters[6]
     Platform_inclination=DesignParameters[6]
     return AFO_representation, AFO_material, Platform_inclination
@@ -80,7 +80,7 @@ def AFOParameterInput(File_AFOinput):
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-def AFORepresentation(DesignParameter):
+def AFORepresentation(DesignParameter, tibial_center, calcn_center):
     # Input:       (1)   All the design parameters collected from the AFO input file - AFO design.txt
     # Output:    (2)   The coordinates values of endpoints of AFO strips in global and local coordinate systems:
     #                         (2.1)    AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
@@ -122,8 +122,12 @@ def AFORepresentation(DesignParameter):
     AFO_bottom=AFO_bottom.reshape(-1,3)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Transfer the endpoints of AFO strips from global coordinate system to local coordinate systems
-    tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                                              # tibial center coordinates in MBD model in global coordinate system
-    calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                                             # calcn center coordinates in MBD model in global coordinate system
+    # The Global coordinates of the tibial center and calcn center for the drop landing MBD model in position 0:
+             # tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                                      # tibial center coordinates in MBD model in global coordinate system
+             # calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                                    # calcn center coordinates in MBD model in global coordinate system
+    #  The Global coordinates of the tibial center and calcn center for the gait MBD model in RRA model:
+             # tibial_center = np.aray([])
+             # calcn_center = np.array([])
     [AFO_top_local, AFO_bottom_local, AFO_stripe_length]=MBDGlobalToLocal(AFO_top, AFO_bottom, AFO_stripe_length, tibial_center, calcn_center)
     return AFO_top_local, AFO_bottom_local, AFO_stripe_length
 
