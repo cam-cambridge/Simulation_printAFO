@@ -126,8 +126,8 @@ def AFORepresentation(DesignParameter, tibial_center, calcn_center):
              # tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                                      # tibial center coordinates in MBD model in global coordinate system
              # calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                                    # calcn center coordinates in MBD model in global coordinate system
     #  The Global coordinates of the tibial center and calcn center for the gait MBD model in RRA model:
-             # tibial_center = np.aray([])
-             # calcn_center = np.array([])
+             # tibial_center = np.aray([-0.06850, 0.474615, 0.09158])                                                                        # The Global coordinates for the right tibial center
+             # calcn_center = np.array([-0.13574, -0.05465, 0.10344])                                                                      # The Global coordinates for the right calcn center
     [AFO_top_local, AFO_bottom_local, AFO_stripe_length]=MBDGlobalToLocal(AFO_top, AFO_bottom, AFO_stripe_length, tibial_center, calcn_center)
     return AFO_top_local, AFO_bottom_local, AFO_stripe_length
 
