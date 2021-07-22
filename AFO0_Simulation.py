@@ -17,8 +17,10 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
         txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
         droplanding_forward_setup_file='default_Setup_ForwardTool.xml'                                               # The setup file for the drop landing forward dynamics
+        # The Global coordinates for right tibial and calcn for drop landing model
         tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                    # tibial center coordinates in drop landing MBD model (position 0) in global coordinate system
         calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                  # calcn center coordinates in drop landing MBD model (position 0) in global coordinate system
+        talus_center=[-0.0752, -0.8919, 0.0835]
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The folder path of pthon script
         path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
@@ -28,7 +30,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         # The AFO representation, AFO force magnitude, and platform inclination calculated from the design parameter file: AFO input.txt, using modue (AFO1_DesignParameter.AFODesignParameter)
         # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
         # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
-        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(folder_designparameters, txtfile_designparameters, tibial_center, calcn_center)
+        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(folder_designparameters, txtfile_designparameters, tibial_center, calcn_center, talus_center)
        # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
         AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
         # Display the MBD drop landing model with AFO
@@ -79,22 +81,23 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             model_AFO_origin_folder='3_RRA'
             model_AFO_origin_file='Fullbodymodel_Walk_RRA_modification_final.osim'
             model_AFO_final_file='Fullbodymodel_Walk_RRA_modification_AFO.osim'
+            # The Global coordinates for the right tibial, calcn and talus centers
+            tibial_r_center=[-0.06850, 0.474615, 0.09158]
+            calcn_r_center=[-0.13574, -0.05465, 0.10344]
+            talus_r_center=[-0.07999, 0.015015, 0.091579]
+            # The Global coordinates for the left tibial, calcn and talus centers
+            tibial_l_center=[-0.06850, 0.474615, -0.09158]
+            calcn_l_center=[-0.13574, -0.054654, -0.10344]
+            talus_l_center=[-0.07999, 0.015015, -0.091579]
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             Model_AFO_origin=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_origin_file)
             Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
-            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt')
-
-
-
-
-
-            # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
-            AFO2_MBDModel.AFO_MBDfile(Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
+            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt', tibial_r_center, calcn_r_center, talus_r_center)
+            # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
+            AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
              #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
-
-            os.chdir(os.path.join(path_simulation, 'Gait simulation data/Model outputs/3_RRA'))
-            os.system('Fullbodymodel_Walk_RRA_modification_AFO.osim')
-
+            os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
+            os.system(model_AFO_final_file)
             #FD_AFO(path_simulation)
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
