@@ -222,82 +222,6 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                     f_w.writelines(['''</y>
                     </SimmSpline>
                 </Ligament>\n'''])
-
-                """
-                for k2 in range (len(AFO_top_tibial_front)):
-                    f_w.writelines(['				<Ligament name="orthosis_front_',str(k2+1),'_r">',"\n"])
-                    f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
-                    <appliesForce>true</appliesForce>
-                    <!--the set of points defining the path of the ligament-->
-                    <GeometryPath name="geometrypath">
-                        <!--The set of points defining the path-->
-                        <PathPointSet>
-                            <objects>\n'''])
-                    f_w.writelines(['								<PathPoint name="orthosis_front_',str(k2+1),'_r-P1">',"\n"])
-                    f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-                                    <socket_parent_frame>/bodyset/tibia_r</socket_parent_frame>
-                                    <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                    AFO_top_front_withoutbracket='%.8f %.8f %.8f' %(AFO_top_tibial_front[k2,0],AFO_top_tibial_front[k2,1],AFO_top_tibial_front[k2,2])
-                    f_w.writelines(["									<location>",AFO_top_front_withoutbracket,"</location>\n","								</PathPoint>\n"])
-                    f_w.writelines(['								<PathPoint name="orthosis_front_',str(k2+1),'_r-P2">',"\n"])
-                    f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
-                                    <socket_parent_frame>/bodyset/calcn_r</socket_parent_frame>
-                                    <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                    AFO_bottom_front_withoutbracket='%.8f %.8f %.8f' %(AFO_bottom_calcn_front[k2,0],AFO_bottom_calcn_front[k2,1],AFO_bottom_calcn_front[k2,2])
-                    f_w.writelines(["									<location>",AFO_bottom_front_withoutbracket,"</location>\n"])
-                    f_w.writelines(['''								</PathPoint>
-                            </objects>
-                            <groups />
-                        </PathPointSet>
-                        <!--The wrap objects that are associated with this path-->
-                        <PathWrapSet>
-                            <objects>
-                                <PathWrap name="pathwrap">
-                                    <!--A WrapObject that this PathWrap interacts with.-->
-                                    <wrap_object>foot_r_tibia</wrap_object>
-                                    <!--The wrapping method used to solve the path around the wrap object.-->
-                                    <method>hybrid</method>
-                                    <!--The range of indices to use to compute the path over the wrap object.-->
-                                    <range>-1 -1</range>
-                                </PathWrap>
-                                <PathWrap name="pathwrap_0">
-                                    <!--A WrapObject that this PathWrap interacts with.-->
-                                    <wrap_object>foot_r_calcn</wrap_object>
-                                    <!--The wrapping method used to solve the path around the wrap object.-->
-                                    <method>hybrid</method>
-                                    <!--The range of indices to use to compute the path over the wrap object.-->
-                                    <range>-1 -1</range>
-                                </PathWrap>
-                            </objects>
-                            <groups />
-                        </PathWrapSet>
-                        <!--Default appearance attributes for this GeometryPath-->
-                        <Appearance>
-                            <!--Flag indicating whether the associated Geometry is visible or hidden.-->
-                            <visible>true</visible>
-                            <!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
-                            <color>0 1 0</color>
-                        </Appearance>
-                    </GeometryPath>
-                    <!--resting length of the ligament-->\n'''])
-                    AFO_length_front_withoutbracket='%.8f' %(AFO_length_front[k2])
-                    f_w.writelines(["					<resting_length>",AFO_length_front_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
-                    f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude_front),"</pcsa_force>\n"])
-                    f_w.writelines(['''					<!--Function representing the force-length behavior of the ligament-->
-                                    <SimmSpline name="force_length_curve">\n'''])
-                    f_w.writelines(['''                    					<x>'''])
-                    for j in range (len(AFO_F_L_front[0])):
-                        f_w.write(str(AFO_F_L_front[0][j]))
-                        f_w.write(' ')
-                    f_w.writelines(['''</x>
-                                        <y>'''])
-                    for m in range (len(AFO_F_L_front[1])):
-                        f_w.write(str(AFO_F_L_front[1][m]))
-                        f_w.write(' ')
-                    f_w.writelines(['''</y>
-                    </SimmSpline>
-                </Ligament>\n'''])
-                """
                 f_w.writelines(['''			</objects>\n'''])
                 f_w.write(line)
             else:
@@ -768,7 +692,6 @@ def MBDfile_Droplanding_orgin(MBD_model, MBD_model_droplanding, Platform_inclina
                 lines[index+1]='							<default_value>%f</default_value>' % (poses_coord_value[23]) + '\n'
             else:
                 f_w.write(line)
-
 
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
