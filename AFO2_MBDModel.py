@@ -157,8 +157,8 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                 pass
             elif index_t!=0 and line.strip()=='<groups>':
                 index_t=0
-                for k1 in range (len(AFO_top_tibial_side)):
-                    f_w.writelines(['				<Ligament name="orthosis_side_',str(k1+1),'_r">',"\n"])
+                for k1 in range (len(AFO_top_tibial)):
+                    f_w.writelines(['				<Ligament name="orthosis_',str(k1+1),'">',"\n"])
                     f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
                     <appliesForce>true</appliesForce>
                     <!--the set of points defining the path of the ligament-->
@@ -166,18 +166,18 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                         <!--The set of points defining the path-->
                         <PathPointSet>
                             <objects>\n'''])
-                    f_w.writelines(['								<PathPoint name="orthosis_side_',str(k1+1),'_r-P1">',"\n"])
+                    f_w.writelines(['								<PathPoint name="orthosis_',str(k1+1),'-P1">',"\n"])
                     f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
                                     <socket_parent_frame>/bodyset/tibia_r</socket_parent_frame>
                                     <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                    AFO_top_side_withoutbracket='%.8f %.8f %.8f' %(AFO_top_tibial_side[k1,0],AFO_top_tibial_side[k1,1],AFO_top_tibial_side[k1,2])
-                    f_w.writelines(["									<location>",AFO_top_side_withoutbracket,"</location>\n","								</PathPoint>\n"])
-                    f_w.writelines(['								<PathPoint name="orthosis_side_',str(k1+1),'_r-P2">',"\n"])
+                    AFO_top_withoutbracket='%.8f %.8f %.8f' %(AFO_top_tibial[k1,0],AFO_top_tibial[k1,1],AFO_top_tibial[k1,2])
+                    f_w.writelines(["									<location>",AFO_top_withoutbracket,"</location>\n","								</PathPoint>\n"])
+                    f_w.writelines(['								<PathPoint name="orthosis_',str(k1+1),'-P2">',"\n"])
                     f_w.writelines(['''									<!--Path to a Component that satisfies the Socket 'parent_frame' of type PhysicalFrame (description: The frame in which this path point is defined.).-->
                                     <socket_parent_frame>/bodyset/calcn_r</socket_parent_frame>
                                     <!--The fixed location of the path point expressed in its parent frame.-->\n'''])
-                    AFO_bottom_side_withoutbracket='%.8f %.8f %.8f' %(AFO_bottom_calcn_side[k1,0],AFO_bottom_calcn_side[k1,1],AFO_bottom_calcn_side[k1,2])
-                    f_w.writelines(["									<location>",AFO_bottom_side_withoutbracket,"</location>\n"])
+                    AFO_bottom_withoutbracket='%.8f %.8f %.8f' %(AFO_bottom_calcn[k1,0],AFO_bottom_calcn[k1,1],AFO_bottom_calcn[k1,2])
+                    f_w.writelines(["									<location>",AFO_bottom_withoutbracket,"</location>\n"])
                     f_w.writelines(['''								</PathPoint>
                             </objects>
                             <groups />
@@ -188,14 +188,6 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                                 <PathWrap name="pathwrap">
                                     <!--A WrapObject that this PathWrap interacts with.-->
                                     <wrap_object>foot_r_tibia</wrap_object>
-                                    <!--The wrapping method used to solve the path around the wrap object.-->
-                                    <method>hybrid</method>
-                                    <!--The range of indices to use to compute the path over the wrap object.-->
-                                    <range>-1 -1</range>
-                                </PathWrap>
-                                <PathWrap name="pathwrap_0">
-                                    <!--A WrapObject that this PathWrap interacts with.-->
-                                    <wrap_object>foot_r_calcn</wrap_object>
                                     <!--The wrapping method used to solve the path around the wrap object.-->
                                     <method>hybrid</method>
                                     <!--The range of indices to use to compute the path over the wrap object.-->
@@ -213,23 +205,25 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                         </Appearance>
                     </GeometryPath>
                     <!--resting length of the ligament-->\n'''])
-                    AFO_length_side_withoutbracket='%.8f' %(AFO_length_side[k1])
-                    f_w.writelines(["					<resting_length>",AFO_length_side_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
-                    f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude_side),"</pcsa_force>\n"])
+                    AFO_length_withoutbracket='%.8f' %(AFO_stripe_length[k1])
+                    f_w.writelines(["					<resting_length>",AFO_length_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
+                    f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude),"</pcsa_force>\n"])
                     f_w.writelines(['''					<!--Function representing the force-length behavior of the ligament-->
                                     <SimmSpline name="force_length_curve">\n'''])
                     f_w.writelines(['''                    					<x>'''])
-                    for j in range (len(AFO_F_L_side[0])):
-                        f_w.write(str(AFO_F_L_side[0][j]))
+                    for j in range (len(AFO_F_L[0])):
+                        f_w.write(str(AFO_F_L[0][j]))
                         f_w.write(' ')
                     f_w.writelines(['''</x>
                                         <y>'''])
-                    for m in range (len(AFO_F_L_side[1])):
-                        f_w.write(str(AFO_F_L_side[1][m]))
+                    for m in range (len(AFO_F_L[1])):
+                        f_w.write(str(AFO_F_L[1][m]))
                         f_w.write(' ')
                     f_w.writelines(['''</y>
                     </SimmSpline>
                 </Ligament>\n'''])
+
+                """
                 for k2 in range (len(AFO_top_tibial_front)):
                     f_w.writelines(['				<Ligament name="orthosis_front_',str(k2+1),'_r">',"\n"])
                     f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
@@ -303,6 +297,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                     f_w.writelines(['''</y>
                     </SimmSpline>
                 </Ligament>\n'''])
+                """
                 f_w.writelines(['''			</objects>\n'''])
                 f_w.write(line)
             else:
