@@ -7,17 +7,27 @@ def dircreation(path):
     else:
         print("-- The required folder already exists --")
 
-def rra_setup (loop_num):
+def rra_setup (loop_num, SimulationType):
     import os
-    with open ("3_Walk_rra_setup_rra1.xml", "rt") as fin:
-        with open("Walk_rra_setup_rra%d.xml" %(loop_num), "wt") as fout:
-            for line in fin:
-                fout.write(line.replace('rra_walk_1', 'rra_walk_%d' %(loop_num))
-                .replace('../Model outputs/3_RRA/Fullbodymodel_Walk_RRA1.osim', '../Model outputs/3_RRA/Fullbodymodel_Walk_RRA%d.osim' %(loop_num))
-                .replace('../Model outputs/1_Scale/Fullbodymodel_Walk_Scale.osim', '../Model outputs/3_RRA/Fullbodymodel_Walk_RRA%d_modification.osim' %(loop_num-1))
-                .replace('../Model outputs/3_RRA/Results_rra_1', '../Model outputs/3_RRA/Results_rra_%d' %(loop_num))
-                .replace('300_rra_tasks_walk_1', '300_rra_tasks_walk_2'))
-
+    if SimulationType=='walk':
+        with open ("3_Walk_rra_setup_rra1.xml", "rt") as fin:
+            with open("Walk_rra_setup_rra%d.xml" %(loop_num), "wt") as fout:
+                for line in fin:
+                    fout.write(line.replace('rra_walk_1', 'rra_walk_%d' %(loop_num))
+                    .replace('../Model outputs/3_RRA/Fullbodymodel_Walk_RRA1.osim', '../Model outputs/3_RRA/Fullbodymodel_Walk_RRA%d.osim' %(loop_num))
+                    .replace('../Model outputs/1_Scale/Fullbodymodel_Walk_Scale.osim', '../Model outputs/3_RRA/Fullbodymodel_Walk_RRA%d_modification.osim' %(loop_num-1))
+                    .replace('../Model outputs/3_RRA/Results_rra_1', '../Model outputs/3_RRA/Results_rra_%d' %(loop_num))
+                    .replace('300_rra_tasks_walk_1', '300_rra_tasks_walk_2'))
+    elif SimulationType=='run':
+        with open ("3_Run_rra_setup_rra1.xml", "rt") as fin:
+            with open("Run_rra_setup_rra%d.xml" %(loop_num), "wt") as fout:
+                for line in fin:
+                    fout.write(line.replace('rra_run_1', 'rra_run_%d' %(loop_num))
+                    .replace('../Model outputs/3_RRA/Fullbodymodel_Run_RRA1.osim', '../Model outputs/3_RRA/Fullbodymodel_Run_RRA%d.osim' %(loop_num))
+                    .replace('../Model outputs/1_Scale/Fullbodymodel_Run_Scale.osim', '../Model outputs/3_RRA/Fullbodymodel_Run_RRA%d_modification.osim' %(loop_num-1))
+                    .replace('../Model outputs/3_RRA/Results_rra_1', '../Model outputs/3_RRA/Results_rra_%d' %(loop_num))
+                    .replace('300_rra_tasks_run_1', '300_rra_tasks_run_2'))
+    #
 def cmc_setup(loop_num):
     with open("4_Walk_cmc_setup_template.xml","rt") as fin:
         with open("Walk_cmc_setup.xml","wt") as fout:
