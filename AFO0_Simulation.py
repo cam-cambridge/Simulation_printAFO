@@ -9,6 +9,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
     import AFO2_MBDModel
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Drop landing simulation if the drop landing related string is input
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     if SimulationType=='AFODroplanding' or SimulationType=='AFOdroplanding' or SimulationType=='AFODROPLANDING' or SimulationType=='AFODrop landing':
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The some input parameters for the model development, including the folders and models
@@ -39,11 +40,15 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
             ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.45)
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Gait simulation if the gait related string is input
-    else:
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    elif: SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' or SimulationType=='IK_walk' or SimulationType=='RRA_walk' or SimulationType=='rra_walk' or \
+           SimulationType=='CMC_walk' or SimulationType=='cmc_walk' or SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk'\
+           SimulationType=='walk' or SimulationType=='Walk' or SimulationType=='Gait' or SimulationType=='gait' \
+           SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The some input parameters for the model development, including the folders and models
-        # foldername_gait='Gait simulation'
         foldername_gait='Gait simulation'
         gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
         gait_model_output=os.path.join(foldername_gait, 'Model outputs')
@@ -53,27 +58,27 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         path_setupfiles=os.path.join(path_simulation, gait_setup_file_foldername)                                      # The path of the simulation setup files
         SetupFileGeneration.dircreation(os.path.join(path_simulation, gait_model_output))
         os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Gait simulation/Setup files
-        if SimulationType=='Scaling' or SimulationType=='scaling' or SimulationType=='model scaling' or SimulationType=='Model scaling':
-            Scaling(path_simulation)
-        elif SimulationType=='IK' or SimulationType=='inverse kinematics' or SimulationType=='Invese Kinematics' or SimulationType=='Inverse kinematics':
-            Scaling(path_simulation)
-            IK(path_simulation)
-        elif SimulationType=='RRA' or SimulationType=='rra' or SimulationType=='Residual reduced algorithm':
-            Scaling(path_simulation)
-            IK(path_simulation)
-            RRA(path_simulation)
-        elif SimulationType=='CMC' or SimulationType=='cmc' or SimulationType=='Computed Muscle Control' or SimulationType=='computed muscle control':
-            Scaling(path_simulation)
-            IK(path_simulation)
-            loop_num=RRA(path_simulation)
-            CMC(path_simulation, loop_num)
-        elif SimulationType=='FD' or SimulationType=='Forward dynamics' or SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='WALK' or SimulationType=='Gait' or SimulationType=='gati':
-            Scaling(path_simulation)
-            IK(path_simulation)
-            loop_num=RRA(path_simulation)
-            CMC(path_simulation, loop_num)
-            FD(path_simulation)
-        elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='GAIT_AFO':
+        if SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' :
+            Scaling(path_simulation, 'walk')
+        elif SimulationType=='IK_walk':
+            Scaling(path_simulation, 'walk')
+            IK(path_simulation, 'walk')
+        elif SimulationType=='RRA_walk' or SimulationType=='rra_walk':
+            Scaling(path_simulation, 'walk')
+            IK(path_simulation, 'walk')
+            RRA(path_simulation, 'walk')
+        elif SimulationType=='CMC_walk' or SimulationType=='cmc_walk':
+            Scaling(path_simulation, 'walk')
+            IK(path_simulation, 'walk')
+            loop_num=RRA(path_simulation, 'walk')
+            CMC(path_simulation, loop_num, 'walk')
+        elif SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk' or SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='Gait' or SimulationType=='gait':
+            Scaling(path_simulation, 'walk')
+            IK(path_simulation, 'walk')
+            loop_num=RRA(path_simulation, 'walk')
+            CMC(path_simulation, loop_num, 'walk')
+            FD(path_simulation, 'walk')
+        elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             # The some input parameters for the model development, including the folders and models
             foldername_gait='Gait simulation'
@@ -100,30 +105,51 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
             os.system(model_AFO_final_file)
             #FD_AFO(path_simulation)
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Running simulation if the gait related string is input
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    else:
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The some input parameters for the model development, including the folders and models
+        foldername_gait='Gait simulation'
+        gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
+        gait_model_output=os.path.join(foldername_gait, 'Model outputs')
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
+        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
+        path_setupfiles=os.path.join(path_simulation, gait_setup_file_foldername)                                      # The path of the simulation setup files
+        SetupFileGeneration.dircreation(os.path.join(path_simulation, gait_model_output))
+        os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Gait simulation/Setup files
+
+
+
+
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
 
-def Scaling(path_simulation):
+def Scaling(path_simulation, SimulationType):
     import os
     import SetupFileGeneration
     #---------------------------------------------------------------------------------
     # Model scalling
-    scale_setup='1_Walk_Scale_Setup.xml'                                                                                                                     # Setup file for the model scaling
-    SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '1_Scale'))                # Create new folder for the results of model scaling
-    cmd="opensim-cmd run-tool %s" %(scale_setup)                                                                                                     # Command line execution
-    os.system(cmd)                                                                                                                                                           # Run model scalling using command line
+    if SimulationType=='walk':
+        scale_setup='1_Walk_Scale_Setup.xml'                                                                                                                     # Setup file for the model scaling
+        SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '1_Scale'))                # Create new folder for the results of model scaling
+        cmd="opensim-cmd run-tool %s" %(scale_setup)                                                                                                     # Command line execution
+        os.system(cmd)                                                                                                                                                           # Run model scalling using command line
 
-def IK(path_simulation):
+def IK(path_simulation, SimulationType):
     import os
     import SetupFileGeneration
     #---------------------------------------------------------------------------------
     # IK (inverse kinematics)
-    IK_setup='2_Walk_IK_Setup.xml'                                                                                                                            # Setup file for the IK (Inverse Kinematics)
-    SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '2_IK'))                   # Create new folder for the results of IK
-    cmd="opensim-cmd run-tool %s" %(IK_setup)
-    os.system(cmd)                                                                                                                                                          # Run IK using command line
+    if SimulationType=='walk':
+        IK_setup='2_Walk_IK_Setup.xml'                                                                                                                            # Setup file for the IK (Inverse Kinematics)
+        SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '2_IK'))                   # Create new folder for the results of IK
+        cmd="opensim-cmd run-tool %s" %(IK_setup)
+        os.system(cmd)                                                                                                                                                          # Run IK using command line
 
-def RRA(path_simulation):
+def RRA(path_simulation, SimulationType):
     import os
     import RRA_evaluation
     import opensim as open
@@ -131,65 +157,69 @@ def RRA(path_simulation):
     import SetupFileGeneration
     #---------------------------------------------------------------------------------
     #RRA (Residual Reduction Algorithm)
-    loop_num=1                                                                                                                                                                    # The number of the times of the RRA analysis
-    Residual=pErr=[100, 100, 100, 100]                                                                                                                              # The initial values set for the residual results, including Max and RMS residual force, residual moment, transportational and angular position error
-    while Residual[0]>10 or Residual[1]>5 or Residual[2]>20 or Residual[3]>20 or pErr[0]>2 or pErr[1]>2 or pErr[2]>2 or pErr[3]>2:             # The criterion for the RRA analysis loop
-        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))                                                                                                                                            # Set the current working directory: Gait simulation/Setup files, this is required in the second RRA loop because it will change during the loop
-        if loop_num==1:
-            RRA_setup='3_Walk_rra_setup_rra1.xml'
-        else:
-            SetupFileGeneration.rra_setup(loop_num)                                                                                                              # From the second loop of RRA, a new setup file will be generated based on the RRA results
-            RRA_setup='Walk_rra_setup_rra%d.xml' %(loop_num)
-        SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '3_RRA'))                   # Create new folder for the results of RRA
-        cmd="opensim-cmd run-tool %s" %(RRA_setup)
-        os.system(cmd)                                                                                                                                                            # Simulation of RRA using command line
-        RRA_massoutput='out.log'                                                                                                                                          # Read the RRA output log and get the recommended total mass change from RRA
-        Totalmasschange=RRAModelMassModification.getRRAmassoutput(RRA_massoutput)                                        # Read the total mass change according to RRA from the out log
-        path_RRAOutput=os.path.join(path_simulation,'Gait simulation', 'Model outputs','3_RRA')
-        os.chdir(path_RRAOutput)                                                                                                                                          # Set the current working directory: Model outputs/3_RRA
-        osimModel=open.Model("Fullbodymodel_Walk_RRA%d.osim" %(loop_num))                                                      # Assign model to osimModel
-        osimModel_rrachanges=RRAModelMassModification.setBodyMassUsingRRAMassChange(osimModel,Totalmasschange)            # Adjust the mass of the body segment according to the RRA recommendation
-        osimModel_rrachanges.printToXML("Fullbodymodel_Walk_RRA%d_modification.osim" %(loop_num))                                        # Save the adjusted model to osimModel_rrachanges
-        [Residual, pErr]=RRA_evaluation.rra_evaluation(path=os.path.join(path_simulation, 'Gait simulation\Model outputs\\3_RRA'), RRA_directory='Results_rra_%d' %(loop_num),               # RRA evaluation
-                                                                                        RRA_Residuals='rra_walk_%d_avgResiduals.txt' %(loop_num),
-                                                                                        RRA_pErr_file='rra_walk_%d_pErr.sto' %(loop_num))
-        loop_num=loop_num+1
-        if loop_num>10:
-            print('The RRA evaluation criterion is not achieved')
-            break
-    osimModel_rrachanges.printToXML('Fullbodymodel_Walk_RRA_modification_final.osim')
-    return loop_num
+    if SimulationType=='walk':
+        loop_num=1                                                                                                                                                                    # The number of the times of the RRA analysis
+        Residual=pErr=[100, 100, 100, 100]                                                                                                                              # The initial values set for the residual results, including Max and RMS residual force, residual moment, transportational and angular position error
+        while Residual[0]>10 or Residual[1]>5 or Residual[2]>20 or Residual[3]>20 or pErr[0]>2 or pErr[1]>2 or pErr[2]>2 or pErr[3]>2:              # The criterion for the RRA analysis loop
+            os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))                                                                                                               # Set the current working directory: Gait simulation/Setup files, this is required in the second RRA loop because it will change during the loop
+            if loop_num==1:
+                RRA_setup='3_Walk_rra_setup_rra1.xml'
+            else:
+                SetupFileGeneration.rra_setup(loop_num)                                                                                                              # From the second loop of RRA, a new setup file will be generated based on the RRA results
+                RRA_setup='Walk_rra_setup_rra%d.xml' %(loop_num)
+            SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '3_RRA'))                   # Create new folder for the results of RRA
+            cmd="opensim-cmd run-tool %s" %(RRA_setup)
+            os.system(cmd)                                                                                                                                                            # Simulation of RRA using command line
+            RRA_massoutput='out.log'                                                                                                                                          # Read the RRA output log and get the recommended total mass change from RRA
+            Totalmasschange=RRAModelMassModification.getRRAmassoutput(RRA_massoutput)                                        # Read the total mass change according to RRA from the out log
+            path_RRAOutput=os.path.join(path_simulation,'Gait simulation', 'Model outputs','3_RRA')
+            os.chdir(path_RRAOutput)                                                                                                                                          # Set the current working directory: Model outputs/3_RRA
+            osimModel=open.Model("Fullbodymodel_Walk_RRA%d.osim" %(loop_num))                                                      # Assign model to osimModel
+            osimModel_rrachanges=RRAModelMassModification.setBodyMassUsingRRAMassChange(osimModel,Totalmasschange)            # Adjust the mass of the body segment according to the RRA recommendation
+            osimModel_rrachanges.printToXML("Fullbodymodel_Walk_RRA%d_modification.osim" %(loop_num))                                        # Save the adjusted model to osimModel_rrachanges
+            [Residual, pErr]=RRA_evaluation.rra_evaluation(path=os.path.join(path_simulation, 'Gait simulation\Model outputs\\3_RRA'), RRA_directory='Results_rra_%d' %(loop_num),               # RRA evaluation
+                                                                                            RRA_Residuals='rra_walk_%d_avgResiduals.txt' %(loop_num),
+                                                                                            RRA_pErr_file='rra_walk_%d_pErr.sto' %(loop_num))
+            loop_num=loop_num+1
+            if loop_num>10:
+                print('The RRA evaluation criterion is not achieved')
+                break
+        osimModel_rrachanges.printToXML('Fullbodymodel_Walk_RRA_modification_final.osim')
+        return loop_num
 
-def CMC(path_simulation, loop_num):
+def CMC(path_simulation, loop_num, SimulationType):
     import os
     import SetupFileGeneration
     #--------------------------------------------------------------------------------
     #CMC (Computed Muscle Control)
-    os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
-    SetupFileGeneration.cmc_setup(loop_num-1)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
-    CMC_setup='Walk_cmc_setup.xml'
-    cmd="opensim-cmd run-tool %s" %(CMC_setup)
-    os.system(cmd)
+    if SimulationType=='walk':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        SetupFileGeneration.cmc_setup(loop_num-1)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
+        CMC_setup='Walk_cmc_setup.xml'
+        cmd="opensim-cmd run-tool %s" %(CMC_setup)
+        os.system(cmd)
 
-def FD(path_simulation):
+def FD(path_simulation, SimulationType):
     import os
     #--------------------------------------------------------------------------------
     #Forward Dynamics (FD)
-    os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
-    # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-    FD_setup='5_Walk_Forward_setup.xml'
-    cmd="opensim-cmd run-tool %s" %(FD_setup)
-    os.system(cmd)
+    if SimulationType=='walk':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        FD_setup='5_Walk_Forward_setup.xml'
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
 
-def FD_AFO(path_simulation):
+def FD_AFO(path_simulation, SimulationType):
     import os
     #--------------------------------------------------------------------------------
     #Forward Dynamics (FD)
-    os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
-    # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-    FD_setup='5_Walk_Forward_setup_AFO.xml'
-    cmd="opensim-cmd run-tool %s" %(FD_setup)
-    os.system(cmd)
+    if SimulationType=='walk':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        FD_setup='5_Walk_Forward_setup_AFO.xml'
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Generate the set up file for the drop landing forward dynamics simulations, and run the FD simulation using the set up file
