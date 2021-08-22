@@ -11,7 +11,17 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# Batch simulation for the drop landing
+# New AFO design in the musculoskeletal model with stripe orientations
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# For drop landing activities
+# AFO0_Simulation.Simulation('AFODroplanding', 'model', 'Simulationoutput')
+
+AFO0_Simulation.Simulation('Walk', 'simulation', 'Gait results collection')
+
+
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Batch simulation for the drop landing - 20210721
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 """
 # The variables of AFO materials in binary system
@@ -42,7 +52,6 @@ for asi in range (4,5):                                        # The number of t
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_side_Vardeci, -FL_shift_side_Vardeci, 1/FL_amplification_front_Vardeci, -FL_shift_front_Vardeci)
                 # print(ResultDirectory)
 """
-AFO0_Simulation.Simulation('AFODroplanding', 'model', 'Simulationoutput')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 """
