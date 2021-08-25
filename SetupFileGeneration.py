@@ -28,11 +28,21 @@ def rra_setup (loop_num, SimulationType):
                     .replace('../Model outputs/3_RRA/Results_rra_1', '../Model outputs/3_RRA/Results_rra_%d' %(loop_num))
                     .replace('300_rra_tasks_run_1', '300_rra_tasks_run_2'))
     #
-def cmc_setup(loop_num):
-    with open("4_Walk_cmc_setup_template.xml","rt") as fin:
-        with open("Walk_cmc_setup.xml","wt") as fout:
-            for line in fin:
-                fout.write(line.replace('<model_file>..</model_file>', '<model_file>../Model outputs/3_RRA/Fullbodymodel_Walk_RRA_modification_final.osim</model_file>')
-                                        .replace('<results_directory>Results</results_directory>', '<results_directory>../Model outputs/4_CMC</results_directory>')
-                                        .replace('<desired_kinematics_file>..</desired_kinematics_file>', '<desired_kinematics_file>../Model outputs/3_RRA/Results_rra_%d/rra_walk_%d_Kinematics_q.sto</desired_kinematics_file>'
-                                                        %(loop_num, loop_num)))
+def cmc_setup(loop_num, SimulationType):
+    if SimulationType=='walk':
+        with open("4_Walk_cmc_setup_template.xml","rt") as fin:
+            with open("Walk_cmc_setup.xml","wt") as fout:
+                for line in fin:
+                    fout.write(line.replace('<model_file>..</model_file>', '<model_file>../Model outputs/3_RRA/Fullbodymodel_Walk_RRA_modification_final.osim</model_file>')
+                                            .replace('<results_directory>Results</results_directory>', '<results_directory>../Model outputs/4_CMC</results_directory>')
+                                            .replace('<desired_kinematics_file>..</desired_kinematics_file>', '<desired_kinematics_file>../Model outputs/3_RRA/Results_rra_%d/rra_walk_%d_Kinematics_q.sto</desired_kinematics_file>'
+                                                            %(loop_num, loop_num)))
+    elif SimulationType=='run':
+        with open("4_Run_cmc_setup_template.xml","rt") as fin:
+            with open("Run_cmc_setup.xml","wt") as fout:
+                for line in fin:
+                    fout.write(line.replace('<model_file>..</model_file>', '<model_file>../Model outputs/3_RRA/Fullbodymodel_Run_RRA_modification_final.osim</model_file>')
+                                            .replace('<results_directory>Results</results_directory>', '<results_directory>../Model outputs/4_CMC</results_directory>')
+                                            .replace('<desired_kinematics_file>..</desired_kinematics_file>', '<desired_kinematics_file>../Model outputs/3_RRA/Results_rra_%d/rra_run_%d_Kinematics_q.sto</desired_kinematics_file>'
+                                                            %(loop_num, loop_num)))
+    #
