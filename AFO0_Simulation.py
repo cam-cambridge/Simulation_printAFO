@@ -118,20 +118,20 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
         path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
         path_setupfiles=os.path.join(path_simulation, run_setup_file_foldername)                                      # The path of the simulation setup files
-        SetupFileGeneration.dircreation(os.path.join(path_simulation, run_model_output))
+        SetupFileGeneration.dircreation(os.path.join(path_simulation, run_model_output))                        # Create the Model outputs folder, if the folder doesn't exit, then create it
         os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Running simulation/Setup files
         if SimulationType=='Scaling_run' or SimulationType=='scaling_run' :
             Scaling(path_simulation, 'run')
         elif SimulationType=='IK_run':
-            Scaling(path_simulation, 'run')
+            # Scaling(path_simulation, 'run')
             IK(path_simulation, 'run')
         elif SimulationType=='RRA_run' or SimulationType=='rra_run':
-            Scaling(path_simulation, 'run')
-            IK(path_simulation, 'run')
+            # Scaling(path_simulation, 'run')
+            # IK(path_simulation, 'run')
             RRA(path_simulation, 'run')
         elif SimulationType=='CMC_run' or SimulationType=='cmc_run':
-            Scaling(path_simulation, 'run')
-            IK(path_simulation, 'run')
+            #Scaling(path_simulation, 'run')
+            #IK(path_simulation, 'run')
             loop_num=RRA(path_simulation, 'run')
             CMC(path_simulation, loop_num, 'run')
         elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' :
@@ -236,7 +236,7 @@ def RRA(path_simulation, SimulationType):
     if SimulationType=='run':
         loop_num=1                                                                                                                                                                    # The number of the times of the RRA analysis
         Residual=pErr=[100, 100, 100, 100]                                                                                                                              # The initial values set for the residual results, including Max and RMS residual force, residual moment, transportational and angular position error
-        while Residual[0]>10 or Residual[1]>15 or Residual[2]>20 or Residual[3]>20 or pErr[0]>3 or pErr[1]>3 or pErr[2]>3 or pErr[3]>3:              # The criterion for the RRA analysis loop
+        while Residual[0]>10 or Residual[1]>5 or Residual[2]>20 or Residual[3]>20 or pErr[0]>2 or pErr[1]>2 or pErr[2]>2 or pErr[3]>2:              # The criterion for the RRA analysis loop
             os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))                                                                                                               # Set the current working directory: Gait simulation/Setup files, this is required in the second RRA loop because it will change during the loop
             if loop_num==1:
                 RRA_setup='3_Run_rra_setup_rra1.xml'
@@ -257,7 +257,7 @@ def RRA(path_simulation, SimulationType):
                                                                                             RRA_Residuals='rra_run_%d_avgResiduals.txt' %(loop_num),
                                                                                             RRA_pErr_file='rra_run_%d_pErr.sto' %(loop_num))
             loop_num=loop_num+1
-            if loop_num>5:
+            if loop_num>3:
                 print('The RRA evaluation criterion is not achieved')
                 break
         osimModel_rrachanges.printToXML('Fullbodymodel_Run_RRA_modification_final.osim')
@@ -270,18 +270,17 @@ def CMC(path_simulation, loop_num, SimulationType):
     #CMC (Computed Muscle Control)
     if SimulationType=='walk':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
-        SetupFileGeneration.cmc_setup(loop_num-1)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
+        SetupFileGeneration.cmc_setup(loop_num-1, SimulationType)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
         CMC_setup='Walk_cmc_setup.xml'
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
     if SimulationType=='run':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
-        SetupFileGeneration.cmc_setup(loop_num-1)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
-        CMC_setup='Walk_cmc_setup.xml'
+        SetupFileGeneration.cmc_setup(loop_num-1, SimulationType)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
+        CMC_setup='Run_cmc_setup.xml'
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
-
-
+    #
 def FD(path_simulation, SimulationType):
     import os
     #--------------------------------------------------------------------------------
@@ -292,7 +291,7 @@ def FD(path_simulation, SimulationType):
         FD_setup='5_Walk_Forward_setup.xml'
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
-
+    #
 def FD_AFO(path_simulation, SimulationType):
     import os
     #--------------------------------------------------------------------------------
