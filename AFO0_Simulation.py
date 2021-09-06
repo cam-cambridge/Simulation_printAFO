@@ -103,8 +103,11 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
                 #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
                 os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
-                os.system(model_AFO_final_file)
-                # FD_AFO(path_simulation)
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system(model_AFO_final_file)
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    FD(path_simulation, 'walk_1stpart')
+                    FD(path_simulation, 'walk_2ndpart')
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -159,8 +162,10 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
             #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
             os.chdir(os.path.join(path_simulation, run_model_output, model_AFO_origin_folder))
-            os.system(model_AFO_final_file)
-            # FD_AFO(path_simulation)
+            if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                os.system(model_AFO_final_file)
+            elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                FD(path_simulation, 'run')
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
 
@@ -288,7 +293,25 @@ def FD(path_simulation, SimulationType):
     if SimulationType=='walk':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        FD_setup='5_Walk_Forward_setup.xml'
+        FD_setup='5_Walk_Forward_setup_fullgait.xml'
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
+    if SimulationType=='walk_1stpart':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        FD_setup='5_Walk_Forward_setup_1st.xml'
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
+    if SimulationType=='walk_2ndpart':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        FD_setup='5_Walk_Forward_setup_2nd.xml'
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
+    if SimulationType=='run':
+        os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        FD_setup='5_Run_Forward_setup.xml'
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     #
