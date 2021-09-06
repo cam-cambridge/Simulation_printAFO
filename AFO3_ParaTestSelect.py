@@ -5,11 +5,13 @@
 #            FL_front_var_amplification: the variables of amplification for the front AFO materials, baseline value times the variables
 #            FL_front_var_shift: the variables of shift for the front AFO materials, baseline value add negative variables means shift to left
 # Output: the new input file that has changed based on the variables
-def AFOmaterialVariables(FL_side_var_amplification, FL_side_var_shift, FL_front_var_amplification, FL_front_var_shift):
+def AFOmaterialVariables(FL_var_amplification, FL_var_shift, FL_var_str):
     # Extract AFO_FLrelationship from the input file
-    AFO_FLrelationship_side=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_side')       # FL relationship for side AFO
-    AFO_FLrelationship_front=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_front')    # FL relationship for front AFO
+    #AFO_FLrelationship_side=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_side')       # FL relationship for side AFO
+    #AFO_FLrelationship_front=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_front')    # FL relationship for front AFO
 
+    AFO_FLrelationship=ParaTestValue('AFO Design', 'AFO input.txt', FL_var_str)       # FL relationship for side AFO
+    """
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for side AFO
     AFO_FLrelationship_side[1]=AFO_FLrelationship_side[1]*FL_side_var_amplification
@@ -17,11 +19,16 @@ def AFOmaterialVariables(FL_side_var_amplification, FL_side_var_shift, FL_front_
     # New FL relationship for front AFO
     AFO_FLrelationship_front[1]=AFO_FLrelationship_front[1]*FL_front_var_amplification
     AFO_FLrelationship_front[0]=AFO_FLrelationship_front[0]+FL_front_var_shift
-
+    """
+    # Get new AFO FL relationship after the modification based on variables
+    # New FL relationship for the new AFO
+    AFO_FLrelationship[1]=AFO_FLrelationship[1]*FL_var_amplification
+    AFO_FLrelationship[0]=AFO_FLrelationship[0]+FL_var_shift
     # Put the new AFO FL relationship to the new input file
-    ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', 'AFO_FLrelationship_side', AFO_FLrelationship_side)
-    ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', 'AFO_FLrelationship_front', AFO_FLrelationship_front)
-
+    #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', 'AFO_FLrelationship_side', AFO_FLrelationship_side)
+    #ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', 'AFO_FLrelationship_front', AFO_FLrelationship_front)
+    ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', FL_var_str, AFO_FLrelationship)
+    #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Choose a design parameter as parameter test from the design parameter .txt file
 # Input:    Input_directory: the folder that include the AFO input design DesignParameters: 'AFO Design'
@@ -54,7 +61,7 @@ def ParaTestValue(Input_directory, Input_file, DesignParameter_str):
     else:                                                                                                                        # If the selected parameter is a value, then
         ParaTest_value=float(re.findall(r"\d+\.?\d*",dataset[DesignParameter_str_Pos])[0])
     return ParaTest_value
-
+    #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Change the chosen design parameter in the .txt file
 # Input:    Input_directory: the folder that include the AFO input design DesignParameters: AFO Design
@@ -71,7 +78,6 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
     if not os.path.exists(txtFile_output_fullpath):                                                                                     # Chech wheterh the txt file exists or not, if not, create one
         f=open(txtFile_output_fullpath, 'a')
         f.close
-
     if type(ParaTestValue) is np.ndarray and len(ParaTestValue)==2:
         ParaTestValue=np.around(ParaTestValue, decimals=3)                                                                  # Make the decimals of the matrix element to 3 digits
         ParaTestValue_new1=ParaTestValue_new2=[]
@@ -95,3 +101,4 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
             lines +=line
     with open(txtFile_output_fullpath, 'r+') as f:
         f.writelines(lines)
+    #
