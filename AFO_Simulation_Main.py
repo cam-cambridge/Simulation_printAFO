@@ -14,11 +14,64 @@ import matplotlib.pyplot as plt
 # New AFO design in the musculoskeletal model with stripe orientations
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-# For drop landing activities
-# AFO0_Simulation.Simulation('AFODroplanding', 'model', 'Simulationoutput')
+#AFO0_Simulation.Simulation('AFODroplanding', 'model', 'Simulationoutput')
+#FO0_Simulation.Simulation('Walk_AFO', 'model', 'Gait results collection')
+#AFO0_Simulation.Simulation('RRA_run', 'model', 'Gait results collection')
+#AFO0_Simulation.Simulation('Run_AFO', 'model', 'Model outputs')
 
-AFO0_Simulation.Simulation('Walk', 'simulation', 'Gait results collection')
-
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Batch simulation for the DL, walk and run
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+for a1i in range (4,5):
+    for a1j in range (0,1):
+        for a2i in range (4,5):
+            for a2j in range (0,1):
+                for a3i in range (4,5):
+                    for a3j in range (0,1):
+                        for a4i in range (4,5):
+                            for a4j in range (0,1):
+                                FL_amplification_1=a1i*10
+                                FL_shift_1=a1j*10
+                                FL_amplification_2=a2i*10
+                                FL_shift_2=a2j*10
+                                FL_amplification_3=a3i*10
+                                FL_shift_3=a3j*10
+                                FL_amplification_4=a4i*10
+                                FL_shift_4=a4j*10
+                                # Change the AFO material properties in input file
+                                AFO3_ParaTestSelect.AFOmaterialVariables(FL_amplification_1, FL_shift_1, 'AFO_FLrelationship_one')
+                                # The drop landing simulation DL
+                                ResultDirectory_DL='SimulationOutput_DL_'+str(a1i)+str(a1j)+str(a2i)+str(a2j)
+                                AFO0_Simulation.Simulation('AFODroplanding', 'model', ResultDirectory_DL)
+                                # The walking simulation Walk
+                                ResultDirectory_Walk='SimulationOutput_Walk_'+str(a1i)+str(a1j)+str(a2i)+str(a2j)
+                                AFO0_Simulation.Simulation('Walk_AFO', 'model', ResultDirectory_Walk)
+                                # The running simulation Run
+                                ResultDirectory_Run='SimulationOutput_Run_'+str(a1i)+str(a1j)+str(a2i)+str(a2j)
+                                AFO0_Simulation.Simulation('Run_AFO', 'model', ResultDirectory_Run)
+                                #AFO0_Simulation.Simulation('Run_AFO', 'simulation', ResultDirectory_Run)
+#
+"""
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#  Put the simulation results from the results folders to an excel documents
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
+Subtalar_matrix=[]
+for asi in range (4,13):                                        # The number of the amplification variables for side FL relationship
+    for afj in range (4,13):                                    # The number of the amplification variables for front FL relationship
+        for ssm in range (0,10):                              # The number of the shift variables for side FL relationship
+            for sfn in range (0,10):                           # The number of the shift variables for front FL relationship
+                output_folder=ResultDirectory='Drop landing_platform30\SimulationOutput_DL_'+str(asi)+str(afj)+str(ssm)+str(sfn)                # The folder of the FD results
+                data= AFO4_ResultsCollection.Simulationresultscollection(output_folder, Results_parameter, 'default_states_degrees.mot')                        # put the specified results into a matrix
+                if data.size==0:                                # If the folder does not exit, skip the current loop to the next one.
+                    continue
+                else:
+                    Subtalar_matrix.append([asi*10, afj*10, ssm*0.04-0.2, sfn*0.04-0.2, max(data[:,1]), max(data[:,2])])           # Put the four variables and the subtalar angles into a list
+Subtalar_matrix=np.array(Subtalar_matrix)                                                        # Transform the list to the matrix
+Excel_title=['Side_amplification','Front_amplification','Side_shift','Front_shift','Max subtalar angle', 'Max ankle angle']              # Define the title of the excel
+AFO4_ResultsCollection.DLResultstoExcel('Drop landing_platform30', 'DL Results.xls', 'Platform 30', Excel_title, Subtalar_matrix)          # Put the four variables and subtalar angles to an excel
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+"""
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Batch simulation for the drop landing - 20210721
@@ -111,15 +164,6 @@ fig.colorbar(img)
 plt.show()
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 """
-
-
-
-
-
-
-
-
-
 
 #AFO0_Simulation.Simulation('walk', 'simulation', 'directory')
 #AFO0_Simulation.Simulation('AFODroplanding', 'model', 'directory')
