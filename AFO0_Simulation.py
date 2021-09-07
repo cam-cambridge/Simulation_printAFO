@@ -108,6 +108,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
                     FD(path_simulation, 'walk_1stpart')
                     FD(path_simulation, 'walk_2ndpart')
+                    #
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
