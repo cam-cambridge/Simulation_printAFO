@@ -5,12 +5,29 @@
 #            FL_front_var_amplification: the variables of amplification for the front AFO materials, baseline value times the variables
 #            FL_front_var_shift: the variables of shift for the front AFO materials, baseline value add negative variables means shift to left
 # Output: the new input file that has changed based on the variables
-def AFOmaterialVariables(FL_var_amplification, FL_var_shift, FL_var_str):
+def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_str):
+    if 'AFO_FLrelationship' in Designparameters_str:
+        # Extract AFO_FLrelationship from the input file
+        AFO_FLrelationship=ParaTestValue('AFO Design', 'AFO input.txt', Designparameters_str)       # FL relationship for side AFO
+        # Get new AFO FL relationship after the modification based on variables
+        # New FL relationship for AFO
+        AFO_FLrelationship[0]=AFO_FLrelationship[0]+FL_var_shift
+        AFO_FLrelationship[1]=AFO_FLrelationship[1]*FL_var_amplification
+        # Put the new AFO FL relationship to the new input file
+        #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
+        ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
+        return AFO_FLrelationship
+    if 'AFO_stripe_orientations' in Designparameters_str:
+        AFO_stripe_orientations=ParaTestValue('AFO Design', 'AFO input.txt', Designparameters_str)       # Stripe orientations for side AFO
+        AFO_stripe_orientations=AFO_stripe_orientations+FL_var_amplification
+        # Put the new AFO FL relationship to the new input file
+        #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, AFO_stripe_orientations)
+        ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', Designparameters_str, AFO_stripe_orientations)
+
     # Extract AFO_FLrelationship from the input file
     #AFO_FLrelationship_side=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_side')       # FL relationship for side AFO
     #AFO_FLrelationship_front=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_front')    # FL relationship for front AFO
 
-    AFO_FLrelationship=ParaTestValue('AFO Design', 'AFO input.txt', FL_var_str)       # FL relationship for side AFO
     """
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for side AFO
@@ -22,12 +39,11 @@ def AFOmaterialVariables(FL_var_amplification, FL_var_shift, FL_var_str):
     """
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for the new AFO
-    AFO_FLrelationship[1]=AFO_FLrelationship[1]*FL_var_amplification
-    AFO_FLrelationship[0]=AFO_FLrelationship[0]+FL_var_shift
+
     # Put the new AFO FL relationship to the new input file
     #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', 'AFO_FLrelationship_side', AFO_FLrelationship_side)
     #ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', 'AFO_FLrelationship_front', AFO_FLrelationship_front)
-    ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', FL_var_str, AFO_FLrelationship)
+    # ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', FL_var_str, AFO_FLrelationship)
     #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Choose a design parameter as parameter test from the design parameter .txt file
@@ -79,7 +95,7 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
         f=open(txtFile_output_fullpath, 'a')
         f.close
     if type(ParaTestValue) is np.ndarray and len(ParaTestValue)==2:
-        ParaTestValue=np.around(ParaTestValue, decimals=3)                                                                  # Make the decimals of the matrix element to 3 digits
+        ParaTestValue=np.around(ParaTestValue, decimals=4)                                                                  # Make the decimals of the matrix element to 3 digits
         ParaTestValue_new1=ParaTestValue_new2=[]
         for i in range (len(ParaTestValue[0])):
             ParaTestValue_new1=np.append(ParaTestValue_new1, ParaTestValue[0][i])
@@ -87,9 +103,12 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
         list1=ParaTestValue_new1.tolist()
         list2=ParaTestValue_new2.tolist()
         ParaTestValue_new='['+str(str(list1)+','+str(list2))+']'
-    elif type(ParaTestValue) is np.ndarray:
-        ParaTestValue=np.around(ParaTestValue, decimals=3)                                                                   # Make the decimals of the matrix element to 3 digits
+    elif type(ParaTestValue) is np.ndarray and len(ParaTestValue)==3:
+        ParaTestValue=np.around(ParaTestValue, decimals=4)                                                                   # Make the decimals of the matrix element to 3 digits
         ParaTestValue_new=str([ParaTestValue[0], ParaTestValue[1], ParaTestValue[2]])
+    elif type(ParaTestValue) is np.ndarray and len(ParaTestValue)==4:
+        ParaTestValue=np.around(ParaTestValue, decimals=4)                                                                   # Make the decimals of the matrix element to 3 digits
+        ParaTestValue_new=str([ParaTestValue[0], ParaTestValue[1], ParaTestValue[2], ParaTestValue[3]])
     elif type(ParaTestValue) is float or type(ParaTestValue) is int:
         ParaTestValue_new=str(ParaTestValue)
     str_line=DesignParameter_str+'='+ParaTestValue_new
@@ -98,7 +117,8 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
         for line in f.readlines():
             if (line.find(DesignParameter_str)==0):
                 line=str_line+'\n'
-            lines +=line
+            lines+=line
     with open(txtFile_output_fullpath, 'r+') as f:
+        f.truncate(0)
         f.writelines(lines)
     #
