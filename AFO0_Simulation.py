@@ -287,7 +287,7 @@ def CMC(path_simulation, loop_num, SimulationType):
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
     #
-def FD(path_simulation, SimulationType):
+def FD(path_simulation, SimulationType, results_directory):
     import os
     #--------------------------------------------------------------------------------
     #Forward Dynamics (FD)
@@ -295,24 +295,32 @@ def FD(path_simulation, SimulationType):
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Walk_Forward_setup_fullgait.xml'
+        results_directory_='Model outputs/5_ForwardDynamics/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='walk_1stpart':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Walk_Forward_setup_1st.xml'
+        results_directory_='Model outputs/5_ForwardDynamics_1st/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='walk_2ndpart':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        Setupfile_resultsdir(FD_setup, results_directory)
         FD_setup='5_Walk_Forward_setup_2nd.xml'
+        results_directory_='Model outputs/5_ForwardDynamics_2nd/'+results_directory
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='run':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Run_Forward_setup.xml'
+        Setupfile_resultsdir(FD_setup, results_directory)
+        results_directory_='Model outputs/5_ForwardDynamics/'+results_directory
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     #
@@ -326,7 +334,7 @@ def FD_AFO(path_simulation, SimulationType):
         FD_setup='5_Walk_Forward_setup_AFO.xml'
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
-
+    #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Generate the set up file for the drop landing forward dynamics simulations, and run the FD simulation using the set up file
 def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directory, run_finaltime):
@@ -360,8 +368,24 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directo
     # To run the simulation
     cmd="opensim-cmd -L \"C:\OpenSim 4.1\\bin\osimExampleComponents.dll\"  run-tool %s" %(SetFile_forward)
     os.system(cmd)
-
-
+    #
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Change the results directory in the setup file based on the defined parameters
+def Setupfile_resultsdir (SetupFile, results_directory):
+    import os
+    # To check whether the results directory exists or not, if no, create one
+    if not os.path.isdir(results_directory):
+        os.makedirs(results_directory)
+    # To put the results directory in the Setup file
+    with open (SetupFile,"r",encoding="utf-8") as f:
+        lines=f.readlines()
+    with open (SetupFile,"w",encoding="utf-8") as f_w:
+        for line in lines:
+            if line.strip().startswith('<results_directory>'):
+                f_w.writelines(['		<results_directory>../',results_directory,'</results_directory>',"\n"])
+            else:
+                f_w.write(line)
+    #
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Old previouse scripts
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
