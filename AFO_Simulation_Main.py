@@ -23,14 +23,14 @@ import itertools
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Batch simulation for the DL, walk and run
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(4,5), range(4,5), range(4,5), range(4,5)):     # Design parameters of force-length amplification
-    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(5,7), range(5,6), range(5,6), range(5,6)):   # Design parameters of force-length shift
+for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(11,12), range(17,18), range(6,7), range(6,7)):     # Design parameters of force-length amplification
+    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(5,6), range(5,6), range(5,6), range(5,6)):   # Design parameters of force-length shift
         for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):       # Deisgn parameters of stripe orientation
             # The scaling of force-length relationship
-            FL_amplification_1=af_am_1*10
-            FL_amplification_2=af_am_2*10
-            FL_amplification_3=af_am_3*10
-            FL_amplification_4=af_am_4*10
+            FL_amplification_1=af_am_1*5
+            FL_amplification_2=af_am_2*5
+            FL_amplification_3=af_am_3*5
+            FL_amplification_4=af_am_4*5
             # The shift of force-length relationship
             FL_shift_1=af_shift_1*0.04-0.2
             FL_shift_2=af_shift_2*0.04-0.2
@@ -48,14 +48,14 @@ for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(4,5), range(4,
             #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
             # The batch of simulation
             # The drop landing simulation DL
-            ResultDirectory_DL='SimulationOutput_DL_'+str(af_am_1)+str(af_am_2)+str(af_am_3)+str(af_am_4)+str(af_shift_1)+str(af_shift_2)+str(af_shift_3)+str(af_shift_4)
-            AFO0_Simulation.Simulation('AFODroplanding', 'Simulation', ResultDirectory_DL)
+            #ResultDirectory_DL='SimulationOutput_DL_'+str(af_am_1)+str(af_am_2)+str(af_am_3)+str(af_am_4)+str(af_shift_1)+str(af_shift_2)+str(af_shift_3)+str(af_shift_4)
+            #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
             # The walking simulation Walk
             ResultDirectory_Walk='SimulationOutput_Walk_'+str(af_am_1)+str(af_am_2)+str(af_am_3)+str(af_am_4)+str(af_shift_1)+str(af_shift_2)+str(af_shift_3)+str(af_shift_4)
-            AFO0_Simulation.Simulation('Walk_AFO', 'Simulation', ResultDirectory_Walk)
+            AFO0_Simulation.Simulation('Walk_AFO', 'model', ResultDirectory_Walk)
             # The running simulation Run
-            ResultDirectory_Run='SimulationOutput_Run_'+str(af_am_1)+str(af_am_2)+str(af_am_3)+str(af_am_4)+str(af_shift_1)+str(af_shift_2)+str(af_shift_3)+str(af_shift_4)
-            AFO0_Simulation.Simulation('Run_AFO', 'Simulation', ResultDirectory_Run)
+            #ResultDirectory_Run='SimulationOutput_Run_'+str(af_am_1)+str(af_am_2)+str(af_am_3)+str(af_am_4)+str(af_shift_1)+str(af_shift_2)+str(af_shift_3)+str(af_shift_4)
+            #AFO0_Simulation.Simulation('Run_AFO', 'simulation', ResultDirectory_Run)
             #-------------------------------------------------------------------------------------------------------------------------------------------------------------------
             # Resume the design parameters to origin value in the AFO design parameter files
             AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_1, -FL_shift_1, 'AFO_FLrelationship_one')
