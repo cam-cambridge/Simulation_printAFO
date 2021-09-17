@@ -106,8 +106,8 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                     os.system(model_AFO_final_file)
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    FD(path_simulation, 'walk_1stpart')
-                    FD(path_simulation, 'walk_2ndpart')
+                    FD(path_simulation, 'walk_1stpart', results_directory)
+                    FD(path_simulation, 'walk_2ndpart', results_directory)
                     #
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
@@ -166,7 +166,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                 os.system(model_AFO_final_file)
             elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                FD(path_simulation, 'run')
+                FD(path_simulation, 'run', results_directory)
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
 
@@ -295,7 +295,12 @@ def FD(path_simulation, SimulationType, results_directory):
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Walk_Forward_setup_fullgait.xml'
-        results_directory_='Model outputs/5_ForwardDynamics/'+results_directory
+        results_directory='Model outputs/5_ForwardDynamics/'+results_directory
+
+        # To check whether the results directory exists or not, if no, create one
+        if not os.path.isdir(results_directory):
+            os.makedirs(results_directory)
+
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
@@ -303,26 +308,27 @@ def FD(path_simulation, SimulationType, results_directory):
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Walk_Forward_setup_1st.xml'
-        results_directory_='Model outputs/5_ForwardDynamics_1st/'+results_directory
+        results_directory='Model outputs/5_ForwardDynamics_1st/'+results_directory
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='walk_2ndpart':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        Setupfile_resultsdir(FD_setup, results_directory)
         FD_setup='5_Walk_Forward_setup_2nd.xml'
-        results_directory_='Model outputs/5_ForwardDynamics_2nd/'+results_directory
+        results_directory='Model outputs/5_ForwardDynamics_2nd/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='run':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Run_Forward_setup.xml'
+        results_directory='Model outputs/5_ForwardDynamics/'+results_directory
         Setupfile_resultsdir(FD_setup, results_directory)
-        results_directory_='Model outputs/5_ForwardDynamics/'+results_directory
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
+        print(FD_setup)
     #
 def FD_AFO(path_simulation, SimulationType):
     import os
@@ -345,6 +351,7 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directo
     OsModel_full=os.path.join(path, file_MBD)
 
     # To generate forward setup file (.xml), first check, if no, to create one
+    results_directory='DL simulation resutls/'+results_directory
     if not os.path.isdir(results_directory):
         os.makedirs(results_directory)
     if not os.path.exists(SetFile_forward):
@@ -373,9 +380,6 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directo
 # Change the results directory in the setup file based on the defined parameters
 def Setupfile_resultsdir (SetupFile, results_directory):
     import os
-    # To check whether the results directory exists or not, if no, create one
-    if not os.path.isdir(results_directory):
-        os.makedirs(results_directory)
     # To put the results directory in the Setup file
     with open (SetupFile,"r",encoding="utf-8") as f:
         lines=f.readlines()
