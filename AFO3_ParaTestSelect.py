@@ -6,6 +6,7 @@
 #            FL_front_var_shift: the variables of shift for the front AFO materials, baseline value add negative variables means shift to left
 # Output: the new input file that has changed based on the variables
 def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_str):
+    import numpy as np
     if 'AFO_FLrelationship' in Designparameters_str:
         # Extract AFO_FLrelationship from the input file
         AFO_FLrelationship=ParaTestValue('AFO Design', 'AFO input.txt', Designparameters_str)       # FL relationship for side AFO
@@ -13,6 +14,14 @@ def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_st
         # New FL relationship for AFO
         AFO_FLrelationship[0]=AFO_FLrelationship[0]+FL_var_shift
         AFO_FLrelationship[1]=AFO_FLrelationship[1]*FL_var_amplification
+        # If x value of force-length curve is less than 1, the corresponding y value is set to 0
+        for k in range (len(AFO_FLrelationship[0])):
+            if AFO_FLrelationship[0][k]<=1:
+                AFO_FLrelationship[1][k]=0
+        # If x component first value is not 1, then add values in y component
+        if AFO_FLrelationship[0][0]>1:
+            AFO_FLrelationship=np.array([np.insert(AFO_FLrelationship[0], 0, [1, 1.05]),
+                                                             np.insert(AFO_FLrelationship[1], 1, [AFO_FLrelationship[1][1], AFO_FLrelationship[1][1]])])
         # Put the new AFO FL relationship to the new input file
         #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
         ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
@@ -23,12 +32,17 @@ def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_st
         # Put the new AFO FL relationship to the new input file
         #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, AFO_stripe_orientations)
         ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', Designparameters_str, AFO_stripe_orientations)
-
+    if 'Resume design file' in Designparameters_str:
+        ParaTestValue_invalid=[]                                                # Invalid parameters fo resuming the design parameter txt file, AFO input.txt
+        # Resume the design parameter txt file: AFO input.txt
+        # Copy the txt in AFO input_default.txt to AFO input.txt
+        ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, ParaTestValue_invalid)
+    """
+   #------------------------------------------------------------------------------------------------------------------------------------------
+   # Previous code
     # Extract AFO_FLrelationship from the input file
     #AFO_FLrelationship_side=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_side')       # FL relationship for side AFO
     #AFO_FLrelationship_front=ParaTestValue('AFO Design', 'AFO input.txt', 'AFO_FLrelationship_front')    # FL relationship for front AFO
-
-    """
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for side AFO
     AFO_FLrelationship_side[1]=AFO_FLrelationship_side[1]*FL_side_var_amplification
@@ -36,15 +50,15 @@ def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_st
     # New FL relationship for front AFO
     AFO_FLrelationship_front[1]=AFO_FLrelationship_front[1]*FL_front_var_amplification
     AFO_FLrelationship_front[0]=AFO_FLrelationship_front[0]+FL_front_var_shift
-    """
     # Get new AFO FL relationship after the modification based on variables
     # New FL relationship for the new AFO
-
     # Put the new AFO FL relationship to the new input file
     #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', 'AFO_FLrelationship_side', AFO_FLrelationship_side)
     #ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', 'AFO_FLrelationship_front', AFO_FLrelationship_front)
     # ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', FL_var_str, AFO_FLrelationship)
-    #
+    #------------------------------------------------------------------------------------------------------------------------------------------
+    """
+#
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Choose a design parameter as parameter test from the design parameter .txt file
 # Input:    Input_directory: the folder that include the AFO input design DesignParameters: 'AFO Design'
@@ -111,6 +125,9 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
         ParaTestValue_new=str([ParaTestValue[0], ParaTestValue[1], ParaTestValue[2], ParaTestValue[3]])
     elif type(ParaTestValue) is float or type(ParaTestValue) is int:
         ParaTestValue_new=str(ParaTestValue)
+    else:
+        # For resume the design parameter txt file
+        ParaTestValue_new=''
     str_line=DesignParameter_str+'='+ParaTestValue_new
     lines=''
     with open(txtFile_Input_fullpath, 'r+') as f:
@@ -121,4 +138,4 @@ def ParaValeModification(Input_directory, Input_file, Output_file, DesignParamet
     with open(txtFile_output_fullpath, 'r+') as f:
         f.truncate(0)
         f.writelines(lines)
-    #
+#
