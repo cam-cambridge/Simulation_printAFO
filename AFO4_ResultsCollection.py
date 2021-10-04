@@ -14,12 +14,14 @@ def Simulationresultscollection(output_folder, Results_parameter, DL_results):
 
     #directory=os.path.join(path, results_directory)
     if not os.path.isdir(DL_results_directory):
-        # print("No specified directory found, please create one!")
-        # os.makedirs(directory)
+        print("No specified directory found, please create one!")
+        os.makedirs(DL_results_directory)
+        print(DL_results_directory)
         AFO_POI=np.array([])
     results_file_initial=os.path.join(DL_results_directory, DL_results)
+    print(results_file_initial)
     if not os.path.exists(results_file_initial):
-        # print("No specified file found, please check! ")
+        print("No specified file found, please check! ")
         AFO_POI=np.array([])
     else:
         npos=[]
