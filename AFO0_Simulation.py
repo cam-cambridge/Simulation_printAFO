@@ -39,7 +39,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
             os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.45)
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.5)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Gait simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -106,9 +106,14 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                     os.system(model_AFO_final_file)
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    FD(path_simulation, 'walk_1stpart', results_directory)
-                    FD(path_simulation, 'walk_2ndpart', results_directory)
-                    #
+                    FD(path_simulation, 'walk_1stpart_AFO', results_directory)
+                    FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
+           elif SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system('Fullbodymodel_Walk_RRA_modification_final.osim')
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    FD(path_simulation, 'walk_1stpart_withoutAFO', results_directory)
+                    FD(path_simulation, 'walk_2ndpart_withoutAFO', results_directory)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -166,7 +171,12 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                 os.system(model_AFO_final_file)
             elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                FD(path_simulation, 'run', results_directory)
+                FD(path_simulation, 'run_AFO', results_directory)
+        elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO' or SimulationType=='Run' or SimulationType=='run':
+            if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                os.system('Fullbodymodel_Run_RRA_modification_final.osim')
+            elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                FD(path_simulation, 'run_withoutAFO', results_directory)
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
 
@@ -304,26 +314,35 @@ def FD(path_simulation, SimulationType, results_directory):
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
-    if SimulationType=='walk_1stpart':
+    if SimulationType=='walk_1stpart_withoutAFO' or SimulationType=='walk_1stpart_AFO' :
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        FD_setup='5_Walk_Forward_setup_1st.xml'
+        if SimulationType=='walk_1stpart_withoutAFO':
+            FD_setup='5_Walk_Forward_setup_withoutAFO_1st.xml'
+        elif SimulationType=='walk_1stpart_AFO':
+            FD_setup='5_Walk_Forward_setup_AFO_1st.xml'
         results_directory='Model outputs/5_ForwardDynamics_1st/'+results_directory
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
-    if SimulationType=='walk_2ndpart':
+    if SimulationType=='walk_2ndpart_withoutAFO' or SimulationType=='walk_2ndpart_AFO':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        FD_setup='5_Walk_Forward_setup_2nd.xml'
+        if SimulationType=='walk_2ndpart_withoutAFO':
+            FD_setup='5_Walk_Forward_setup_withoutAFO_2nd.xml'
+        elif SimulationType=='walk_2ndpart_AFO':
+            FD_setup='5_Walk_Forward_setup_AFO_2nd.xml'
         results_directory='Model outputs/5_ForwardDynamics_2nd/'+results_directory
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
-    if SimulationType=='run':
+    if SimulationType=='run_withoutAFO' or SimulationType=='run_AFO':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        FD_setup='5_Run_Forward_setup.xml'
+        if SimulationType=='run_withoutAFO':
+            FD_setup='5_Run_Forward_setup_withoutAFO.xml'
+        elif SimulationType=='run_AFO':
+            FD_setup='5_Run_Forward_setup_AFO.xml'
         results_directory='Model outputs/5_ForwardDynamics/'+results_directory
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
@@ -351,7 +370,7 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directo
     OsModel_full=os.path.join(path, file_MBD)
 
     # To generate forward setup file (.xml), first check, if no, to create one
-    results_directory='DL simulation resutls/'+results_directory
+    results_directory='DL simulation results/'+results_directory
     if not os.path.isdir(results_directory):
         os.makedirs(results_directory)
     if not os.path.exists(SetFile_forward):
