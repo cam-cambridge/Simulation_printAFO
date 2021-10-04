@@ -20,8 +20,12 @@ def AFOmaterialVariables(FL_var_amplification, FL_var_shift, Designparameters_st
                 AFO_FLrelationship[1][k]=0
         # If x component first value is not 1, then add values in y component
         if AFO_FLrelationship[0][0]>1:
+            # If first x value is larger than 1, then to add 2 elements into the matrix with x value of [1, 1.05]
             AFO_FLrelationship=np.array([np.insert(AFO_FLrelationship[0], 0, [1, 1.05]),
                                                              np.insert(AFO_FLrelationship[1], 1, [AFO_FLrelationship[1][1], AFO_FLrelationship[1][1]])])
+            # To ensure the same size of the matrix for the force_length_curve matrix, delete the last 2 elements in the matrix
+            AFO_FLrelationship=np.append([np.resize(AFO_FLrelationship[0], AFO_FLrelationship[0].size-2)],
+                                                                  [np.resize(AFO_FLrelationship[1], AFO_FLrelationship[1].size-2)], axis=0)            
         # Put the new AFO FL relationship to the new input file
         #ParaValeModification('AFO Design', 'AFO input_default.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
         ParaValeModification('AFO Design', 'AFO input.txt', 'AFO input.txt', Designparameters_str, AFO_FLrelationship)
