@@ -158,6 +158,8 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
             elif index_t!=0 and line.strip()=='<groups>':
                 index_t=0
                 for k1 in range (len(AFO_top_tibial)):
+                    AFO_F_L_T=AFO_F_L[k1]
+                    AFO_F_L_T=AFO_F_L_T.reshape(2,-1)
                     f_w.writelines(['				<Ligament name="orthosis_',str(k1+1),'">',"\n"])
                     f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
                     <appliesForce>true</appliesForce>
@@ -211,13 +213,13 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                     f_w.writelines(['''					<!--Function representing the force-length behavior of the ligament-->
                                     <SimmSpline name="force_length_curve">\n'''])
                     f_w.writelines(['''                    					<x>'''])
-                    for j in range (len(AFO_F_L[0])):
-                        f_w.write(str(AFO_F_L[0][j]))
+                    for j in range (len(AFO_F_L_T[0])):
+                        f_w.write(str(AFO_F_L_T[0][j]))
                         f_w.write(' ')
                     f_w.writelines(['''</x>
                                         <y>'''])
-                    for m in range (len(AFO_F_L[1])):
-                        f_w.write(str(AFO_F_L[1][m]))
+                    for m in range (len(AFO_F_L_T[1])):
+                        f_w.write(str(AFO_F_L_T[1][m]))
                         f_w.write(' ')
                     f_w.writelines(['''</y>
                     </SimmSpline>
