@@ -58,10 +58,7 @@ After the design parameters in the AFO design'txt file were changed, the main co
 ```
 AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
 ```
-This code will call the module "AFO0_Simulation" module to demonstrate the musculoskeletal model with AFO representation and run the simulation of activities:<br/>
-
-
-    
-
-
+This code will call the module "AFO0_Simulation" module to demonstrate the musculoskeletal model with AFO representation and run the simulation of activities. There are three parameters in the module: <br/>
+*First parameter*: to determine the simulated activities <br/>
+                   'AFODroplanding': to show 
 
