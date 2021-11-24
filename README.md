@@ -61,8 +61,7 @@ AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
 This code will call the module "AFO0_Simulation" module to demonstrate the musculoskeletal model with AFO representation and run the simulation of activities:<br/>
 
 
-            
-
+    
 
 
 
