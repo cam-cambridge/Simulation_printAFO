@@ -31,18 +31,26 @@ FL_amplification_2=af_am_2*20
 FL_amplification_3=af_am_3*20
 FL_amplification_4=af_am_4*20
 ```
-where the number 20 can change to any number, depending on the sizes of the step seleted, i.e. in this case, the amplification of the four stripes is 40, 160, 20 and 60, respectively. The ranges for the four stripes can be changed during the batch simulation.
+where the number 20 can change to any number, depending on the sizes of the step seleted, i.e. in this case, the amplification parameters of the four stripes are 40, 160, 20 and 60, respectively. The ranges for the four stripes can be changed during the batch simulation.
 
 ```
   for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):  # Design parameters of force-length shift
 ```
-This code will determine the shift parameters of the AFO materials for the four stripes. The shift is defined as the translation of the force-length curve of the AFO material for the four stripes. The shift parameters can be determined using the following equation:
+This code will determine the shift parameters of the AFO materials for the four stripes. The shift parameters can be determined using the following equation:
 ```
 FL_shift_1=af_shift_1*0.2-0.2
 FL_shift_2=af_shift_2*0.2-0.2
 FL_shift_3=af_shift_3*0.2-0.2
 FL_shift_4=af_shift_4*0.2-0.2
 ```
+where the equation can be changed, depending the range of the shift parameters and the sizes of the step. I.e. in this case, the shift parameters for the four stripes are 0 (1x0.2-0.2), -0.2 (0x0.2-0.2), 0.2 (2x0.2-0.2) and 0.2 (2x0.2-0.2), respectively. The shift parameters are defined as the translation of the force-length curve of the AFO materials, i.e, FL_shift_2=-0.2 means the force-length curve will move 0.2 unit to the left.
+
+```
+for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):# Deisgn parameters of stripe orientation
+```
+This code will determine the orientation of the stripes of the AFO directly, i.e. strip_ori_1=5 means the orientation of the first stripe is 5 degree.
+
+The definations of the design parameters in the AFO can be found in the 
 
             
 
