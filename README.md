@@ -21,6 +21,7 @@ The batch simulation code will change the design parameters, develop the AFO rep
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
 This part of code was used to change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) a representation model of AFO will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
 
+***(i) The change of design parameters in the AFO design.txt file in the AFO Design folder:***<br/>
 ```
 for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):  # Design parameters of force-length amplification
 ```
@@ -51,6 +52,14 @@ for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(rang
 This code will determine the orientation of the stripes of the AFO directly, i.e. strip_ori_1=5 means the orientation of the first stripe is 5 degree.<br/>
 
 The definations of the design parameters in the AFO can be found in the Guidelines in the repo.<br/>
+
+***(ii) The development of AFO in the musculoskeletal model and run the simulation:***<br/>
+After the design parameters in the AFO design'txt file were changed, the main code will call the module "AFO0_Simulation" module to create AFO representation in the musculoskeletal model and run the simulation: <br/>
+```
+AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
+```
+This code will call the module "AFO0_Simulation" module to demonstrate the musculoskeletal model with AFO representation and run the simulation of activities:<br/>
+
 
             
 
