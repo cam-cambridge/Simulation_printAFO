@@ -19,7 +19,7 @@ The batch simulation pipeline is stricted to the architecture of the files and f
 ## **3. Batch simulation code** <br/>
 The batch simulation code will change the design parameters, develop the AFO representation in the model and run the simulations automatically. It includes simulations of drop landing, walk and running, collection of drop landing simulation results (maximum subtalar angle and ankle angle), and collection of simulation results of gait and running (differences of subtalar angle and ankle angle for models with and without AFO):<br/>
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
-This part of code was used to change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) a representation model of AFO will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
+This part of codes will change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) a representation model of AFO will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
 
 ***(i) The change of design parameters in the AFO design.txt file in the AFO Design folder:***<br/>
 ```
