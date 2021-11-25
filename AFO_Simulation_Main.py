@@ -141,7 +141,6 @@ for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,4), range(8,
             # transform the variables to numbers
             Var_to_num=af_am_1*pow(10,7)+af_am_2*pow(10,6)+af_am_3*pow(10,5)+af_am_4*pow(10,4)+af_shift_1*pow(10,3)+af_shift_2*pow(10,2)+af_shift_3*pow(10,1)+af_shift_4
             Subtalar_matrix_activity.append([Var_to_num, af_am_1, af_am_2, af_am_3, af_am_4, af_shift_1*0.2-0.2, af_shift_2*0.2-0.2, af_shift_3*0.2-0.2, af_shift_4*0.2-0.2, diff_average_subtalar, diff_average_ankle])       # Put the four variables and the subtalar angles into a list
-
 Subtalar_matrix_activity=np.array(Subtalar_matrix_activity)                                                        # Transform the list to the matrix
 Excel_title=['Variables in number', 'am_front_lateral','am_side_lateral','am_side_medial','am_front_lateral', 'shift_front_lateral', 'shift_side_lateral', 'shift_side_medial', 'shift_front_lateral', 'Subtalar angle differences', 'Ankle angle differences']              # Define the title of the excel
 AFO4_ResultsCollection.DLResultstoExcel(SelectionPath, 'Results.xls', Activity, Excel_title, Subtalar_matrix_activity)          # Put the four variables and subtalar angles to an excel
@@ -188,7 +187,6 @@ for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,4), range(8,
                 # transform the variables to numbers
                 Var_to_num=af_am_1*pow(10,7)+af_am_2*pow(10,6)+af_am_3*pow(10,5)+af_am_4*pow(10,4)+af_shift_1*pow(10,3)+af_shift_2*pow(10,2)+af_shift_3*pow(10,1)+af_shift_4
                 Subtalar_matrix_activity.append([Var_to_num, af_am_1, af_am_2, af_am_3, af_am_4, af_shift_1*0.2-0.2, af_shift_2*0.2-0.2, af_shift_3*0.2-0.2, af_shift_4*0.2-0.2, diff_average_subtalar, diff_average_ankle])       # Put the four variables and the subtalar angles into a list
-
 Subtalar_matrix_activity=np.array(Subtalar_matrix_activity)                                                        # Transform the list to the matrix
 Excel_title=['Variables in number', 'am_front_lateral','am_side_lateral','am_side_medial','am_front_lateral', 'shift_front_lateral', 'shift_side_lateral', 'shift_side_medial', 'shift_front_lateral', 'Subtalar angle differences', 'Ankle angle differences']              # Define the title of the excel
 AFO4_ResultsCollection.DLResultstoExcel(SelectionPath, 'Results.xls', Activity, Excel_title, Subtalar_matrix_activity)          # Put the four variables and subtalar angles to an excel
