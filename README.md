@@ -83,21 +83,23 @@ or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9
     for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
         for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
 ```
+After running, the excel file will be stored in *./Drop landing/DL simulation results* <br/>
 
-***(3) Collection of the walk and running simulation results and put them into an excel file:*** <br/>
-This part of codes will collect the interested simulation results from the walk and running, and put them into an excel file. <br/>
-For walk and running, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the gait:
+***(3) Collection of the walk simulation results and put them into an excel file:*** <br/>
+This part of codes will collect the interested simulation results from the walk simulation, and put them into an excel file. <br/>
+For walk, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the gait:
 ```
 Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
 ```
 This code provide the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
 
-Similarly, the codes use a loop to collect the results from the simulation result of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
+Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
 ```
 for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
     for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
         for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
 ```
+When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Gait simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Gait simulation/Modeloutputs**).
 
 
 
