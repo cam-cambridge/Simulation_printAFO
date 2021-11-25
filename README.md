@@ -126,4 +126,4 @@ for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,
 ```
 When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Running simulation/Modeloutputs**).
 
-**Tips:** The four parts of codes are disabled, which can be enabled by remove the """ symbols before and after the code. The four parts of codes can also be run one by one by removing the """ symbols before and after each code. 
+**Tips:** The four parts of codes are disabled, which can be enabled by remove the """ symbols before and after the codes. The four parts of codes can also be run one by one by removing the """ symbols before and after each part of the codes. 
