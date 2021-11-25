@@ -59,6 +59,48 @@ After the design parameters in the AFO design'txt file were changed, the main co
 AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
 ```
 This code will call the module "AFO0_Simulation" module to demonstrate the musculoskeletal model with AFO representation and run the simulation of activities. There are three parameters in the module: <br/>
-*First parameter*: to determine the simulated activities <br/>
-                   'AFODroplanding': to show 
+*First parameter:* to determine the simulated activities <br/>
+>>>>>>'AFODroplanding': to demonstrate and run drop landing model with AFO <br/>
+>>>>>>'Walk_AFO' or 'Run_AFO': to demonstrate and run walk or running model with AFO <br/>
+*Second parameter:* use 'model' to demonstrate the musculoskeletal model with AFO <br/>
+>>>>>> use 'simulation' to run drop landing, walk and running simulations <br/>
+*Third parameter:* the folder for storing the drop landing simulation results <br/>
+
+After the batch of simulation, the simulation results will store in:<br/>
+*Drop landing:* ./Drop landing/DL simulation results <br/>
+*Gait simulation:* ./Gait simulation/Model outputs/5_ForwardDynamics_1st *and* ./Gait simulation/Model outputs/5_ForwardDynamics_1st
+*Running simulation:* ./Running simulation/Model outputs/5_ForwardDynamics
+
+***(2) Collection of the drop landing simulation results and put them into an excel file:*** <br/>
+This part of codes will collect the interested simulation results from the drop landing and put them into an excel file. <br/>
+For drop landing, the interested simulation result parameters are: maximum subtalar angle, maximum ankle angle:
+```
+Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']     # The specified parameter to extract
+```
+Similarly, the codes use a loop to collect the results from the simulation result of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section (i))
+```
+or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
+    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+```
+
+***(3) Collection of the walk and running simulation results and put them into an excel file:*** <br/>
+This part of codes will collect the interested simulation results from the walk and running, and put them into an excel file. <br/>
+For walk and running, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the gait:
+```
+Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
+```
+This code provide the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and ankle angle.
+
+
+
+
+Similarly, the codes use a loop to collect the results from the simulation result of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section (i))
+```
+or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
+    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+```
+
+
 
