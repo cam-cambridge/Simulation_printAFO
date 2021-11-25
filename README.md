@@ -2,10 +2,12 @@
 This repository mainly includes the python codes, OpenSim musculoskeletal models and associated files for the musculoskeletal simulation of the 3D printed AFO.
 
 ## **1. Python installation** <br/>
+
 (1) It should be noted that starting with 4.0, OpenSim is distributed as 64-bit only, so you must use 64-bit Python. If you are using 4.0, you need Python 2.7.x. If you are using 4.1 or 4.2, you need Python 3.7.x. <br/>
 (2) After installing the python 3.7.x, install modules "numpy","pandas", "mpl_toolkits", "xlwt", "xlrd", xlutils", "openpyxl".
 
 ## **2. Architecture of the files and folders** <br/>
+
 ![image](https://user-images.githubusercontent.com/14294455/143143898-af1cb7da-dccf-4e96-b800-2dfbe2634f57.png)
 
 The batch simulation pipeline is stricted to the architecture of the files and foler, as shown in the figure above: <br/>
@@ -17,8 +19,11 @@ The batch simulation pipeline is stricted to the architecture of the files and f
 ***Batch simulation code:*** the code for the batch simulation. Apart from the above folders, all the codes should be downloaded and put in the "Batch simulation code" folder.
 
 ## **3. Batch simulation code** <br/>
+
 The batch simulation code will change the design parameters, develop the AFO representation in the model and run the simulations automatically. It includes simulations of drop landing, walk and running, collection of drop landing simulation results (maximum subtalar angle and ankle angle), and collection of simulation results of gait and running (differences of subtalar angle and ankle angle for models with and without AFO):<br/>
+
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
+
 This part of codes will change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) a representation model of AFO will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
 
 ***(i) The change of design parameters in the AFO design.txt file in the AFO Design folder:***<br/>
@@ -54,6 +59,7 @@ This code will determine the orientation of the stripes of the AFO directly, i.e
 The definations of the design parameters in the AFO can be found in the Guidelines in the repo.<br/>
 
 ***(ii) The development of AFO in the musculoskeletal model and run the simulation:***<br/>
+
 After the design parameters in the AFO design'txt file were changed, the main code will call the module "AFO0_Simulation" module to create AFO representation in the musculoskeletal model and run the simulation: <br/>
 ```
 AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ResultDirectory_DL)
@@ -72,6 +78,7 @@ After the batch of simulation, the simulation results will store in:<br/>
 *Running simulation:* ./Running simulation/Model outputs/5_ForwardDynamics
 
 ***(2) Collection of the drop landing simulation results and put them into an excel file:*** <br/>
+
 This part of codes will collect the interested simulation results from the drop landing and put them into an excel file. <br/>
 For drop landing, the interested simulation result parameters are: maximum subtalar angle, maximum ankle angle:
 ```
@@ -86,12 +93,13 @@ or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9
 After running, the excel file will be stored in *./Drop landing/DL simulation results* <br/>
 
 ***(3) Collection of the walk simulation results and put them into an excel file:*** <br/>
+
 This part of codes will collect the interested simulation results from the walk simulation, and put them into an excel file. <br/>
 For walk, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the gait:
 ```
 Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
 ```
-This code provide the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
+This code provides the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
 
 Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
 ```
@@ -101,6 +109,21 @@ for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,
 ```
 When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Gait simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Gait simulation/Modeloutputs**).
 
+***(4) Collection of the running simulation results and put them into an excel file:*** <br/>
 
+This part of codes will collect the interested simulation results from the running simulation, and put them into an excel file. <br/>
+For running, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the whole cycle:
+```
+Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
+```
+This code provides the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
 
+Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
+```
+for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
+    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+```
+When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Running simulation/Modeloutputs**).
 
+**Tips:** The four parts of codes are disabled, which can be enabled by remove the """ symbols before and after the code. The four parts of codes can also be run one by one by removing the """ symbols before and after each code. 
