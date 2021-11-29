@@ -27,6 +27,7 @@ The batch simulation code will change the design parameters, develop the AFO rep
 This part of codes will change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) an AFO representation model will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
 
 ***(i) The change of design parameters in the AFO design.txt file in the AFO Design folder:***<br/>
+
 ```
 for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product(range(2,4), range(8,9), range(1,2), range(3,4)):        # Design parameter: force-length amplification (fl_am)
 ```
@@ -38,32 +39,63 @@ FL_amplification_2=fl_am_2*FL_amplification_stepsize
 FL_amplification_3=fl_am_3*FL_amplification_stepsize
 FL_amplification_4=fl_am_4*FL_amplification_stepsize
 ```
-where the FL_amplification_stepsize can be defined using
+where the FL_amplification_stepsize can be defined using the first line of the following (can be changed during the optimization).
 ```
 FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
 FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
 strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
 bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
 ```
-depending on the sizes of the step seleted, i.e. in this case, the amplification parameters of the four stripes are 40, 160, 20 and 60, respectively. The ranges of the amplification parameters for the four stripes can be changed during the batch simulation.
+The amplification of the force-length relationship for the AFO materials can be then determined using the desigan varialbes (fl_am_) and the step size selected (FL_amplification_stepsize). e.g., in the current case, the amplification parameters of the four stripes are 40, 160, 20 and 60, respectively.
 
 ```
-  for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):  # Design parameters of force-length shift
+for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)): # Design parameter: force-length shift (fl_shift)
 ```
 This code will determine the shift parameters of the AFO materials for the four stripes. The shift parameters can be determined using the following equation:
 ```
-FL_shift_1=af_shift_1*0.2-0.2
-FL_shift_2=af_shift_2*0.2-0.2
-FL_shift_3=af_shift_3*0.2-0.2
-FL_shift_4=af_shift_4*0.2-0.2
+FL_shift_1=fl_shift_1*FL_shift_stepsize-0.2
+FL_shift_2=fl_shift_2*FL_shift_stepsize-0.2
+FL_shift_3=fl_shift_3*FL_shift_stepsize-0.2
+FL_shift_4=fl_shift_4*FL_shift_stepsize-0.2
 ```
-where the equation can be changed, depending the range of the shift parameters and the sizes of the step. I.e. in this case, the shift parameters for the four stripes are 0 (1x0.2-0.2), -0.2 (0x0.2-0.2), 0.2 (2x0.2-0.2) and 0.2 (2x0.2-0.2), respectively. The shift parameters are defined as the translation of the force-length curve of the AFO materials, i.e, FL_shift_2=-0.2 means the force-length curve will move 0.2 unit to the left.
+where the FL_shift_stepsize will be defined using the second line of the following equations (can be changed during optimization, depending on the step size selected):
+```
+FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
+FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
+strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
+bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
+```
+E.g., in the current case, the shift parameters for the four stripes are 0 (1x0.2-0.2), -0.2 (0x0.2-0.2), 0.2 (2x0.2-0.2) and 0.2 (2x0.2-0.2), respectively. The shift parameters are defined as the translation of the force-length curve of the AFO materials, i.e, FL_shift_2=-0.2 means the force-length curve will move 0.2 unit to the left.
 
 ```
-for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):# Deisgn parameters of stripe orientation
+for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):     # Deisgn parameters of stripe orientation
 ```
-This code will determine the orientation of the stripes of the AFO directly, i.e. strip_ori_1=5 means the orientation of the first stripe is 5 degree.<br/>
+This code will determine the orientations of the stripes of the AFO for the four stripes, which can be determined using the following equation:
+```
+Strip_orientation=np.array([strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4])*strip_orientation_stepsize
+```
+where the strip_orientation_stepsize can be defined using the third line of the following equations (can be changed during the optimization, dependening on the step size selected):
+```
+FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
+FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
+strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
+bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
+```
 
+```
+for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product(range(0,1), range(0,1), range (0,1), range(0,1)): # Design parameter: bottom endpoint location (bottom_location)
+```
+This code will determine the locations of the endpoints of the AFO representations at the bottom size (e.g. the location of the AFO representation relative to the leg segment). The locations can be determined using the following equation:
+```
+bottom_location_angle=np.array([bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4])*bottom_location_stepsize
+```
+where the bottom_location_stepsize can be defined using the fourth line of the following equations (can be changed based on the step sizes selected):
+```
+FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
+FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
+strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
+bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
+```
 The definations of the design parameters in the AFO can be found in the Guidelines in the repo.<br/>
 
 ***(ii) The development of AFO in the musculoskeletal model and run the simulation:***<br/>
