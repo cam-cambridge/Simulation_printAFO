@@ -336,6 +336,17 @@ def FD(path_simulation, SimulationType, results_directory):
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
+    if SimulationType=='walk_withoutAFO' or SimulationType=='walk_AFO':
+        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
+        if SimulationType=='walk_withoutAFO':
+            FD_setup='5_Walk_Forward_setup_withoutAFO.xml'
+        elif SimulationType=='walk_AFO':
+            FD_setup='5_Walk_Forward_setup_AFO.xml'
+        results_directory='Model outputs/5_ForwardDynamics/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
+        cmd="opensim-cmd run-tool %s" %(FD_setup)
+        os.system(cmd)
     if SimulationType=='run_withoutAFO' or SimulationType=='run_AFO':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
