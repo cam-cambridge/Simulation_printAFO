@@ -17,7 +17,7 @@ def AFODesignParameter(Input_directory, Input_file, tibial_center, calcn_center,
     File_AFOinput=os.path.join(path_simulation, Input_directory, Input_file)                                       # The text file including the AFO design parameters: AFO input.txt
     # Collect the design parameters from the .txt file and assign to them to the matrix (DesignParameters), using the module (AFOParameterInput)
     DesignParameters=AFOParameterInput(File_AFOinput)                                                                  # The AFO design parameters collected from the parameters file: AFO input.txt
-    # DesignParameters = [AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_botom_location_angle, AFO_stripe_orientations,
+    # DesignParameters = [AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_bottom_location_angle, AFO_stripe_orientations,
     #                                     Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship]
     # AFO_Fmagnitude: The force magnitude for the material properties in the MBD model
     AFO_Fmagnitude=DesignParameters[6]
@@ -56,8 +56,8 @@ def AFOParameterInput(File_AFOinput):
     # The height / length of the AFO
     AFO_height=float(re.findall(r"\d+\.?\d*",dataset[2])[0])
     # The postions of the AFO bottom endpoints in the cross section circle using angles
-    AFO_botom_location_angle=re.compile('-?\d+\.*\d*').findall(dataset[3])
-    AFO_botom_location_angle=np.array(AFO_botom_location_angle, dtype=np.float)
+    AFO_bottom_location_angle=re.compile('-?\d+\.*\d*').findall(dataset[3])
+    AFO_bottom_location_angle=np.array(AFO_bottom_location_angle, dtype=np.float)
     # The angular orientations for AFO stripes (degree)
     AFO_stripe_orientations=re.compile('-?\d+\.*\d*').findall(dataset[4])
     AFO_stripe_orientations=np.array(AFO_stripe_orientations, dtype=np.float)
@@ -68,12 +68,12 @@ def AFOParameterInput(File_AFOinput):
     AFO_Fmagnitude=float(re.findall(r"\d+\.?\d*",dataset[6])[0])
     # The force-length relationship for the AFO materials
     AFO_FLrelationship=[]
-    for i in range (7,7+len(AFO_botom_location_angle)):
+    for i in range (7,7+len(AFO_bottom_location_angle)):
         AFO_FL_T=re.compile('-?\d+\.*\d*').findall(dataset[i])
         AFO_FL_T=np.array(AFO_FL_T, dtype=np.float)
         AFO_FLrelationship=np.append(AFO_FLrelationship, AFO_FL_T)
-    AFO_FLrelationship=AFO_FLrelationship.reshape(-1,int(len(AFO_FLrelationship)/len(AFO_botom_location_angle)))
-    return AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_botom_location_angle, AFO_stripe_orientations, Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship
+    AFO_FLrelationship=AFO_FLrelationship.reshape(-1,int(len(AFO_FLrelationship)/len(AFO_bottom_location_angle)))
+    return AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_bottom_location_angle, AFO_stripe_orientations, Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
