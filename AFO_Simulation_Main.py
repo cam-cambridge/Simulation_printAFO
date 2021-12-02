@@ -13,7 +13,7 @@ import itertools
 import tkinter
 from tkinter import filedialog
 
-
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (1) Batch simulation for the DL, walk and run
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -60,17 +60,17 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product(range(3,4), range(8,
                                                                     +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)
                                                                     +str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 # The drop landing simulation DL
-                AFO0_Simulation.Simulation('AFODroplanding', 'model', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
+                AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
                 # The walking simulation Walk
-                #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', ('SimulationOutput_Walk_'+ResultDirectory_parameter_str))
+                AFO0_Simulation.Simulation('Walk_AFO', 'simulation', ('SimulationOutput_Walk_'+ResultDirectory_parameter_str))
                 # The running simulation Run
-                #AFO0_Simulation.Simulation('Run_AFO', 'simulation', ('SimulationOutput_Run_'+ResultDirectory_parameter_str))
+                AFO0_Simulation.Simulation('Run_AFO', 'simulation', ('SimulationOutput_Run_'+ResultDirectory_parameter_str))
                 #-----------------------------------------------------------------------------
                 # Resume the design parameters to origin value in the AFO design parameter files: copy a default text into the design text file
                 # 1/FL_amplification_1, -FL_shift_1: invalid parameters, 'Resume design file': command for resuming the design parameter txt file
                 AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_1, -FL_shift_1, 'Resume design file')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+"""
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
