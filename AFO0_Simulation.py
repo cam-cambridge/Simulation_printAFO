@@ -61,23 +61,29 @@ def Simulation(SimulationType, ModelOperation, results_directory):
            if SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' :
                Scaling(path_simulation, 'walk')
            elif SimulationType=='IK_walk' :
-                Scaling(path_simulation, 'walk')
+                #Scaling(path_simulation, 'walk')
                 IK(path_simulation, 'walk')
            elif SimulationType=='RRA_walk' or SimulationType=='rra_walk' :
-                Scaling(path_simulation, 'walk')
-                IK(path_simulation, 'walk')
+                #Scaling(path_simulation, 'walk')
+                #IK(path_simulation, 'walk')
                 RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
            elif SimulationType=='CMC_walk' or SimulationType=='cmc_walk':
                 Scaling(path_simulation, 'walk')
                 IK(path_simulation, 'walk')
-                loop_num=RRA(path_simulation, 'walk')
-                CMC(path_simulation, loop_num, 'walk')
+                RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
+                CMC(path_simulation, 'walk')
            elif SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk' or SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='Gait' or SimulationType=='gait':
                 Scaling(path_simulation, 'walk')
                 IK(path_simulation, 'walk')
-                loop_num=RRA(path_simulation, 'walk')
-                CMC(path_simulation, loop_num, 'walk')
-                FD(path_simulation, 'walk')
+                RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
+                CMC(path_simulation, 'walk')
+                FD(path_simulation, 'walk', '')
            elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
                 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 # The some input parameters for the model development, including the folders and models
@@ -85,8 +91,8 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
                 gait_model_output=os.path.join(foldername_gait, 'Model outputs')
                 model_AFO_origin_folder='3_RRA'
-                model_AFO_origin_file='Fullbodymodel_Walk_RRA_modification_final.osim'
-                model_AFO_final_file='Fullbodymodel_Walk_RRA_modification_AFO.osim'
+                model_AFO_origin_file='Fullbodymodel_Walk_RRA_adjusted.osim'
+                model_AFO_final_file='Fullbodymodel_Walk_RRA_final_AFO.osim'
                 # The Global coordinates for the right tibial, calcn and talus centers
                 tibial_r_center=[-0.06850, 0.474615, 0.09158]
                 calcn_r_center=[-0.13574, -0.05465, 0.10344]
@@ -108,9 +114,9 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
                     FD(path_simulation, 'walk_1stpart_AFO', results_directory)
                     FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
-           elif SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
+           elif SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                    os.system('Fullbodymodel_Walk_RRA_modification_final.osim')
+                    os.system('Fullbodymodel_Walk_RRA_adjusted.osim')
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
                     FD(path_simulation, 'walk_1stpart_withoutAFO', results_directory)
                     FD(path_simulation, 'walk_2ndpart_withoutAFO', results_directory)
@@ -138,11 +144,20 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             # Scaling(path_simulation, 'run')
             # IK(path_simulation, 'run')
             RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
         elif SimulationType=='CMC_run' or SimulationType=='cmc_run':
-            #Scaling(path_simulation, 'run')
-            #IK(path_simulation, 'run')
-            loop_num=RRA(path_simulation, 'run')
-            CMC(path_simulation, loop_num, 'run')
+            Scaling(path_simulation, 'run')
+            IK(path_simulation, 'run')
+            RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
+            CMC(path_simulation, 'run')
+        elif SimulationType=='FD_run' or SimulationType=='FD_RUN' or SimulationType=='Run' or SimulationType=='run':
+            Scaling(path_simulation, 'run')
+            IK(path_simulation, 'run')
+            RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
+            CMC(path_simulation, 'run')
+            FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
         elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' :
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             # The some input parameters for the model development, including the folders and models
@@ -150,8 +165,8 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             run_setup_file_foldername=os.path.join(foldername_run, 'Setup files')
             run_model_output=os.path.join(foldername_run, 'Model outputs')
             model_AFO_origin_folder='3_RRA'
-            model_AFO_origin_file='Fullbodymodel_Run_RRA_modification_final.osim'
-            model_AFO_final_file='Fullbodymodel_Run_RRA_modification_AFO.osim'
+            model_AFO_origin_file='Fullbodymodel_Run_RRA_adjusted.osim'
+            model_AFO_final_file='Fullbodymodel_Run_RRA_final_AFO.osim'
             # The Global coordinates for the right tibial, calcn and talus centers
             tibial_r_center=[-0.05590, 0.41140, 0.08558]
             calcn_r_center=[-0.12120, -0.06647, 0.09444]
@@ -172,14 +187,14 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 os.system(model_AFO_final_file)
             elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
                 FD(path_simulation, 'run_AFO', results_directory)
-        elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO' or SimulationType=='Run' or SimulationType=='run':
+        elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
             if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                os.system('Fullbodymodel_Run_RRA_modification_final.osim')
+                os.system('Fullbodymodel_Run_RRA_adjusted.osim')
             elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
                 FD(path_simulation, 'run_withoutAFO', results_directory)
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
-
+        #
 def Scaling(path_simulation, SimulationType):
     import os
     import SetupFileGeneration
@@ -279,23 +294,32 @@ def RRA(path_simulation, SimulationType):
         osimModel_rrachanges.printToXML('Fullbodymodel_Run_RRA_modification_final.osim')
         return loop_num
     #
-def CMC(path_simulation, loop_num, SimulationType):
+def CMC(path_simulation, SimulationType):
     import os
-    import SetupFileGeneration
     #--------------------------------------------------------------------------------
     #CMC (Computed Muscle Control)
     if SimulationType=='walk':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
-        SetupFileGeneration.cmc_setup(loop_num-1, SimulationType)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
-        CMC_setup='Walk_cmc_setup.xml'
+        CMC_setup='4_Walk_cmc_setup.xml'
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
     if SimulationType=='run':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
-        SetupFileGeneration.cmc_setup(loop_num-1, SimulationType)                                                                                                      # Generate new setup file for the CMC, which will include the model and results from the last RRA simulation
-        CMC_setup='Run_cmc_setup.xml'
+        CMC_setup='4_Run_cmc_setup.xml'
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
+    #
+def MuscleScaling (path_simulation, SimulationType, osimModel_origin, osimModel_scaled, height_origin, height_scaled, maxContractionVelocity):
+    import RRAModelMassModification
+    import opensim
+    osimModel_origin=opensim.Model(osimModel_origin)
+    osimModel_scaled=opensim.Model(osimModel_scaled)
+    osimModel_adjusted=RRAModelMassModification.ScaleOptimalForceSubjectSpecific(osimModel_origin, osimModel_scaled, height_origin, height_scaled)
+    osimModel_adjusted=RRAModelMassModification.setMaxContractionVelocityAllMuscles(osimModel_adjusted, maxContractionVelocity)
+    if SimulationType=='walk':
+        osimModel_adjusted.printToXML("Fullbodymodel_Walk_RRA_adjusted.osim")
+    elif SimulationType=='run':
+        osimModel_adjusted.printToXML("Fullbodymodel_Run_RRA_adjusted.osim")
     #
 def FD(path_simulation, SimulationType, results_directory):
     import os
@@ -304,14 +328,14 @@ def FD(path_simulation, SimulationType, results_directory):
     if SimulationType=='walk':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
-        FD_setup='5_Walk_Forward_setup_fullgait.xml'
-        results_directory='Model outputs/5_ForwardDynamics/'+results_directory
-
+        FD_setup='5_Walk_Forward_setup_withoutAFO.xml'
+        #results_directory='Model outputs/5_ForwardDynamics/'+results_directory
         # To check whether the results directory exists or not, if no, create one
+        """
         if not os.path.isdir(results_directory):
             os.makedirs(results_directory)
-
         Setupfile_resultsdir(FD_setup, results_directory)
+        """
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='walk_1stpart_withoutAFO' or SimulationType=='walk_1stpart_AFO' :
@@ -336,6 +360,7 @@ def FD(path_simulation, SimulationType, results_directory):
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
+    """
     if SimulationType=='walk_withoutAFO' or SimulationType=='walk_AFO':
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
@@ -347,6 +372,7 @@ def FD(path_simulation, SimulationType, results_directory):
         Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
+    """
     if SimulationType=='run_withoutAFO' or SimulationType=='run_AFO':
         os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
