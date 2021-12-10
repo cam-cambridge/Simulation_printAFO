@@ -121,27 +121,6 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
     AFO_Fmagnitude=AFO_material[0]
     AFO_F_L=AFO_material[1]
 
-    """
-    # AFO_material=[AFO_Fmagnitude_side, AFO_FLrelationship_side, AFO_Fmagnitude_front, AFO_FLrelationship_front]
-    # AFO_top_local=[AFO_top_local_side, AFO_top_local_front]
-    AFO_top_tibial=AFO_representation[0]
-    AFO_bottom_calcn=AFO_representation[1]
-    AFO_length=AFO_representation[2]
-    # AFO_representation in AFO side
-    AFO_top_tibial_side=AFO_top_tibial[0]
-    AFO_bottom_calcn_side=AFO_bottom_calcn[0]
-    AFO_length_side=AFO_length[0]
-    # AFO_representation in AFO front
-    AFO_top_tibial_front=AFO_top_tibial[1]
-    AFO_bottom_calcn_front=AFO_bottom_calcn[1]
-    AFO_length_front=AFO_length[1]
-    # AFO_material=[AFO_Fmagnitude_side, AFO_FLrelationship_side, AFO_Fmagnitude_front, AFO_FLrelationship_front]
-    AFO_Fmagnitude_side=AFO_material[0]
-    AFO_F_L_side=AFO_material[1]
-    AFO_Fmagnitude_front=AFO_material[2]
-    AFO_F_L_front=AFO_material[3]
-    """
-
     # Read the MBD osim file and add the coordinate value of the AFO strip end points in the the model
     with open (MBD_model,"r",encoding="utf-8") as f:
         lines=f.readlines()
@@ -150,6 +129,35 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
         index_t=0
         for line in lines:
             index +=1
+            if lines[index-7].strip().startswith('<mesh_file>r_fibula.vtp</mesh_file>') and line.strip()!='<WrapCylinder name="foot_r_tibia">':
+                f_w.writelines(['''							<WrapCylinder name="foot_r_tibia">
+								<!--Whether or not the WrapObject is considered active in computing paths-->
+								<active>true</active>
+								<!--Body-fixed Euler angle sequence for the orientation of the WrapObject-->
+								<xyz_body_rotation>1.5707963 0 0</xyz_body_rotation>
+								<!--Translation of the WrapObject.-->
+								<translation>-0.01149 -0.3846 0</translation>
+								<!--The name of quadrant over which the wrap object is active. For example, '+x' or '-y' to set the sidedness of the wrapping.-->
+								<quadrant>all</quadrant>
+								<!--Default appearance for this Geometry-->
+								<Appearance>
+									<!--Flag indicating whether the associated Geometry is visible or hidden.-->
+									<visible>true</visible>
+									<!--The opacity used to display the geometry between 0:transparent, 1:opaque.-->
+									<opacity>1</opacity>
+									<!--The color, (red, green, blue), [0, 1], used to display the geometry. -->
+									<color>0 1 1</color>
+									<!--Visuals applied to surfaces associated with this Appearance.-->
+									<SurfaceProperties>
+										<!--The representation (1:Points, 2:Wire, 3:Shaded) used to display the object.-->
+										<representation>3</representation>
+									</SurfaceProperties>
+								</Appearance>
+								<!--The radius of the cylinder.-->
+								<radius>0.047</radius>
+								<!--The length of the cylinder.-->
+								<length>0.14999999999999999</length>
+							</WrapCylinder>\n'''])
             if line.strip()=='</CoordinateActuator>' and not lines[index].strip().startswith('<CoordinateActuator') and not lines[index].strip().startswith('<PointActuator'):
                 index_t=index
                 f_w.write(line)
