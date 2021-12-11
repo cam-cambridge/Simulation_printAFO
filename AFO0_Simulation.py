@@ -45,7 +45,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     elif SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' or SimulationType=='IK_walk' or SimulationType=='RRA_walk' or SimulationType=='rra_walk' or \
            SimulationType=='CMC_walk' or SimulationType=='cmc_walk' or SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk' or\
-           SimulationType=='walk' or SimulationType=='Walk' or SimulationType=='Gait' or SimulationType=='gait' or \
+           SimulationType=='walk' or SimulationType=='Walk' or SimulationType=='Gait' or SimulationType=='gait' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO' or\
            SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
            # The some input parameters for the model development, including the folders and models
@@ -118,8 +118,8 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                     os.system('Fullbodymodel_Walk_RRA_adjusted.osim')
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    FD(path_simulation, 'walk_1stpart_withoutAFO', results_directory)
-                    FD(path_simulation, 'walk_2ndpart_withoutAFO', results_directory)
+                    FD(path_simulation, 'walk_1stpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
+                    FD(path_simulation, 'walk_2ndpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -191,7 +191,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                 os.system('Fullbodymodel_Run_RRA_adjusted.osim')
             elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                FD(path_simulation, 'run_withoutAFO', results_directory)
+                FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
         #
@@ -446,63 +446,3 @@ def Setupfile_resultsdir (SetupFile, results_directory):
             else:
                 f_w.write(line)
     #
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# Old previouse scripts
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#---------------------------------------------------------------------------------------------------------------------------------------------------
-def DroplandingSimulation(str):
-    import os
-    import AFO2_MBDModel
-    if str=='Droplanding' or str=='droplanding' or str=='DROPLANDING' or str=='Drop landing':
-        path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
-        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
-        Model_AFO_droplanding_origin=os.path.join(path_simulation, 'Gait simulation/Model outputs//3_RRA', 'Fullbodymodel_Walk_RRA_modification_AFO.osim')
-        Model_AFO_droplanding_final=os.path.join(path_simulation, 'Drop landing', 'Fullbodymodel_Droplanding_AFO.osim')
-        AFO2_MBDModel.MBDfile_Droplanding(Model_AFO_droplanding_origin, Model_AFO_droplanding_final, Platform_inclination=[30,0,0])
-        os.chdir(os.path.join(path_simulation, 'Drop landing'))
-        os.system('Fullbodymodel_Droplanding_AFO.osim')
-    else:
-        print('Input error: invalid input, please try again! Try "Droplanding".')
-
-def GaitSimulation (str):
-    import os
-    import SetupFileGeneration
-    import AFO1_DesignParameter
-    import AFO2_MBDModel
-    #---------------------------------------------------------------------------------
-    # Get the document path of the simulation
-    path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
-    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
-    path_setupfiles=os.path.join(path_simulation, 'Gait simulation\Setup files')                                            # The path of the simulation setup files
-    SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs'))
-    os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Gait simulation/Setup files
-    if str=='Scaling' or str=='scaling' or str=='model scaling' or str=='Model scaling':
-        Scaling(path_simulation)
-    elif str=='IK' or str=='inverse kinematics' or str=='Invese Kinematics' or str=='Inverse kinematics':
-        Scaling(path_simulation)
-        IK(path_simulation)
-    elif str=='RRA' or str=='rra' or str=='Residual reduced algorithm':
-        Scaling(path_simulation)
-        IK(path_simulation)
-        RRA(path_simulation)
-    elif str=='CMC' or str=='cmc' or str=='Computed Muscle Control' or str=='computed muscle control':
-        Scaling(path_simulation)
-        IK(path_simulation)
-        loop_num=RRA(path_simulation)
-        CMC(path_simulation, loop_num)
-    elif str=='FD' or str=='Forward dynamics' or str=='Walk' or str=='walk' or str=='WALK':
-        Scaling(path_simulation)
-        IK(path_simulation)
-        loop_num=RRA(path_simulation)
-        CMC(path_simulation, loop_num)
-        FD(path_simulation)
-    elif str=='Gait_AFO' or str=='gait_AFO' or str=='GAIT_AFO':
-        Model_AFO_origin=os.path.join(path_simulation, 'Gait simulation/Model outputs//3_RRA', 'Fullbodymodel_Walk_RRA_modification_final.osim')
-        Model_AFO_final=os.path.join(path_simulation, 'Gait simulation/Model outputs//3_RRA', 'Fullbodymodel_Walk_RRA_modification_AFO.osim')
-        AFO_representation, AFO_material, Platform_inclination=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input1.txt')
-        AFO2_MBDModel.AFO_MBDfile(Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
-        os.chdir(os.path.join(path_simulation, 'Gait simulation/Model outputs/3_RRA'))
-        os.system('Fullbodymodel_Walk_RRA_modification_AFO.osim')
-        #FD_AFO(path_simulation)
-    else:
-        print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
