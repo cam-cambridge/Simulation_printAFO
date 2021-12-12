@@ -84,7 +84,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
                 CMC(path_simulation, 'walk')
                 FD(path_simulation, 'walk', '')
-           elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
+           elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
                 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 # The some input parameters for the model development, including the folders and models
                 foldername_gait='Gait simulation'
@@ -109,17 +109,18 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
                 #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
                 os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
-                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                    os.system(model_AFO_final_file)
-                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    FD(path_simulation, 'walk_1stpart_AFO', results_directory)
-                    FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
-           elif SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
-                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                    os.system('Fullbodymodel_Walk_RRA_adjusted.osim')
-                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    FD(path_simulation, 'walk_1stpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
-                    FD(path_simulation, 'walk_2ndpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
+                if SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
+                    if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                        os.system(model_AFO_final_file)
+                    elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                        FD(path_simulation, 'walk_1stpart_AFO', results_directory)
+                        FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
+                elif SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
+                    if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                        os.system(model_AFO_origin_file)
+                    elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                        FD(path_simulation, 'walk_1stpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
+                        FD(path_simulation, 'walk_2ndpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Running simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -158,7 +159,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
             CMC(path_simulation, 'run')
             FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
-        elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' :
+        elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' or SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             # The some input parameters for the model development, including the folders and models
             foldername_run='Running simulation'
@@ -183,15 +184,16 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
             #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
             os.chdir(os.path.join(path_simulation, run_model_output, model_AFO_origin_folder))
-            if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                os.system(model_AFO_final_file)
-            elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                FD(path_simulation, 'run_AFO', results_directory)
-        elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
-            if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
-                os.system('Fullbodymodel_Run_RRA_adjusted.osim')
-            elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
+            if SimulationType=='Run_AFO' or SimulationType=='run_AFO':
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system(model_AFO_final_file)
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    FD(path_simulation, 'run_AFO', results_directory)
+            elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system('Fullbodymodel_Run_RRA_adjusted.osim')
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
         #
