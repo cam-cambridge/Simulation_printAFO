@@ -20,17 +20,18 @@ The batch simulation pipeline is stricted to the architecture of the files and f
 
 ## **3. Batch simulation code** <br/>
 
-The batch simulation code will change the design parameters, develop the AFO representation in the model and run the simulations automatically. It includes:
-*(code 0):* The normal whole process of walk and running simulation (no AFO), including model scaling, inverse kinematics (IK), residual reduction algorithm (RRA), and forward >>>>>>>>>>>>>dynamics (FD);<br/>
-*(code 1):* The determination of ranges of the design variables and the step sizes for each variable during optimization. This was also the nessary inputs for the following >>>>>>>>>>>>>codes (3-6);<br/>
-*(code 2):* The running of walk and run simulation for models without AFO; <br/>
-*(code 3):* The batch simulation for the drop landing, walk and running, using a loop to run the simulations autormatically; <br/>
-*(code 4):* Put the drop landing simulation results from the simulation results folders to an excel documents; <br/>
-*(code 5):* Put the walk simulation results from the simulation results folders to an excel documents; <br/>
-*(cide 6):* Put the running simulation results from the simulation results folders to an excel documents. <br/>
+The batch simulation code will change the design parameters, develop the AFO representation in the model and run the simulations automatically. It includes:<br/>
 
+*---  (Code 0):* The normal whole process of walk and running simulation (no AFO), including model scaling, inverse kinematics (IK), residual reduction algorithm (RRA), and forward dynamics (FD);<br/>
+*---  (Code 1):* The determination of ranges of the design variables and the step sizes for each variable during optimization. This was also the nessary inputs for the following codes (3-6);<br/>
+*---  (Code 2):* The running of walk and run simulation for models without AFO; <br/>
+*---  (Code 3):* The batch simulation for the drop landing, walk and running, using a loop to run the simulations autormatically; <br/>
+*---  (Code 4):* Put the drop landing simulation results from the simulation results folders to an excel documents; <br/>
+*---  (Code 5):* Put the walk simulation results from the simulation results folders to an excel documents; <br/>
+*---  (Code 6):* Put the running simulation results from the simulation results folders to an excel documents. <br/>
 
-simulations of drop landing, walk and running, collection of drop landing simulation results (maximum subtalar angle and ankle angle), and collection of simulation results of gait and running (differences of subtalar angle and ankle angle for models with and without AFO):<br/>
+***(Code 0) The normal whole process of walk and running simulation:*** <br/>
+This part of codes is a normal simulation process for the walk and running activities, which will perform model scaling, inverse kinematics, residual reduction algorithm, computed muscle control and forward dynamics.
 
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
 
