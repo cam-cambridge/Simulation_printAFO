@@ -42,7 +42,7 @@ Var_rang_FL_shift=itertools.product(range(0,1), range(0,1), range(0,1), range(0,
 Var_range_stripe_orientation=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))   # Range of design variables: stripe orientation (strip_ori)
 Var_range_bottom_location=itertools.product(range(0,1), range(0,1), range (0,1), range(0,1))     # Range of design variables: bottom endpoint location (bottom_location)
 ```
-This part of code is also to provide the step sizes for the design variables for batch simulation and optimization:
+This part of code is also to provide the step sizes for the design variables for batch simulation and optimization:<br/>
 ```
 # The step size for each design variable during optimization
 FL_amplification_stepsize=60                      # The step size for the design parameter: force-length amplification, can be changed to any number
@@ -50,8 +50,7 @@ FL_shift_stepsize=0.2                             # The step size for the design
 strip_orientation_stepsize=5                      # The step size for the design parameter: strap orientation, can be changed to any number
 bottom_location_stepsize=5                        # The step size for the design parameter: bottom endpoint location, can be changed to any number
 ```
-
-
+The application of these codes in the following steps (Codes 3-6) is explained below. <br/>
 
 
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
