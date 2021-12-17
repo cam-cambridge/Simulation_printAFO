@@ -31,7 +31,28 @@ The batch simulation code will change the design parameters, develop the AFO rep
 *---  (Code 6):* Put the running simulation results from the simulation results folders to an excel documents. <br/>
 
 ***(Code 0) The normal whole process of walk and running simulation:*** <br/>
-This part of codes is a normal simulation process for the walk and running activities, which will perform model scaling, inverse kinematics, residual reduction algorithm, computed muscle control and forward dynamics.
+This part of codes is a normal simulation process for the walk and running activities, which will perform model scaling, inverse kinematics (IK), residual reduction algorithm (RRA), computed muscle control (CMC) and forward dynamics. The results of the model scaling, IK and RRA will be used in the following codes. The simulation results will be stored in the Simulation_printAFO\Gait simulation\Model outputs folder.<br/>
+
+***(Code 1) The determination of ranges of the design variables and step size for each variable for optimization:*** <br/>
+This part of codes is to provide the values or the ranges of the design variables for the AFO representation in the model and simulation, using the following equations:
+```
+# The ranges for design variables
+Var_range_FL_amplification=itertools.product(range(1,2), range(1,2), range(1,2), range(1,2))           # Range of design variables: force-length amplification (fl_am)
+Var_rang_FL_shift=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))                    # Range of design variables: force-length shift (fl_shift)
+Var_range_stripe_orientation=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))         # Range of design variables: stripe orientation (strip_ori)
+Var_range_bottom_location=itertools.product(range(0,1), range(0,1), range (0,1), range(0,1))           # Range of design variables: bottom endpoint location (bottom_location)
+```
+This part of code is also to provide the step sizes for the design variables for batch simulation and optimization:
+```
+# The step size for each design variable during optimization
+FL_amplification_stepsize=60                                            # The step size for the design parameter: force-length amplification, can be changed to any number
+FL_shift_stepsize=0.2                                                   # The step size for the design parameter: force-length shift, can be changed to any number
+strip_orientation_stepsize=5                                            # The step size for the design parameter: strap orientation, can be changed to any number
+bottom_location_stepsize=5                                              # The step size for the design parameter: bottom endpoint location, can be changed to any number
+```
+
+
+
 
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
 
