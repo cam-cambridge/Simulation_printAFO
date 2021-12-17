@@ -50,7 +50,7 @@ FL_shift_stepsize=0.2                             # The step size for the design
 strip_orientation_stepsize=5                      # The step size for the design parameter: strap orientation, can be changed to any number
 bottom_location_stepsize=5                        # The step size for the design parameter: bottom endpoint location, can be changed to any number
 ```
-The application of these codes in the following steps (Codes 3-6) is explained below. <br/>
+These codes will be used in the following steps (Codes 3-6), the explaination of which will be elaborated below. <br/>
 
 
 ***(1) Batch simulation for the DL, walk and run:*** <br/>
