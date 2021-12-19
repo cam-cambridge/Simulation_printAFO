@@ -13,22 +13,25 @@ import itertools
 import tkinter
 from tkinter import filedialog
 
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# (0) The whole process of wal and running simulation, including scaling, IK, RRA, CMC
+# (Code 0): The normal whole process of wal and running simulation, including scaling, IK, RRA, CMC, FD
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#AFO0_Simulation.Simulation('walk', 'simulation', results_directory='')
-#AFO0_Simulation.Simulation('run', 'simulation', results_directory='')
+AFO0_Simulation.Simulation('walk', 'simulation', results_directory='')
+AFO0_Simulation.Simulation('run', 'simulation', results_directory='')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+"""
+
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# (0) The determination of ranges of the design variables and step size for each variable for optimization
+# (Code 1): The determination of ranges of the design variables and step size for each variable for optimization
+#      The necessary inputs for batch simulation, results collection in codes (3), (4), (5), (6)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # The ranges for design variables
-Var_range_FL_amplification=itertools.product(range(1,2), range(1,2), range(1,2), range(1,2))           # Range of design variables: force-length amplification (fl_am)
-Var_rang_FL_shift=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))                           # Range of design variables: force-length shift (fl_shift)
-Var_range_stripe_orientation=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))           # Range of design variables: stripe orientation (strip_ori)
-Var_range_bottom_location=itertools.product(range(0,1), range(0,1), range (0,1), range(0,1))            # Range of design variables: bottom endpoint location (bottom_location)
-
+Var_range_FL_amplification=[range(1,2), range(1,2), range(1,2), range(1,2)]                                     # Range of design variables: force-length amplification (fl_am)
+Var_rang_FL_shift=[range(0,1), range(0,1), range(0,1), range(0,1)]                                                     # Range of design variables: force-length shift (fl_shift)
+Var_range_stripe_orientation=[range(0,1), range(0,1), range(0,1), range(0,1)]                                     # Range of design variables: stripe orientation (strip_ori)
+Var_range_bottom_location=[range(0,1), range(0,1), range (0,1), range(0,1)]                                      # Range of design variables: bottom endpoint location (bottom_location)
 # The step size for each design variable during optimization
 FL_amplification_stepsize=60                                                                                                                # The step size for the design parameter: force-length amplification, can be changed to any number
 FL_shift_stepsize=0.2                                                                                                                             # The step size for the design parameter: force-length shift, can be changed to any number
@@ -37,21 +40,24 @@ bottom_location_stepsize=5                                                      
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# (1) The walk and running simulation for models without AFO, just include CMC. Before perform the simulation, make sure the scaling, IK and RRA have already been performed
+# (Code 2): The walk and running simulation for models without AFO. Before perform the simulation, make sure the scaling, IK and RRA have already been performed,
+#       To perform scaling, IK, and RRA, use the whole process of walk and running simulation in code (0)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#AFO0_Simulation.Simulation('walk_withoutAFO', 'simulation', results_directory='')
-#AFO0_Simulation.Simulation('run_withoutAFO', 'simulation', results_directory='')
+AFO0_Simulation.Simulation('walk_withoutAFO', 'simulation', results_directory='')
+AFO0_Simulation.Simulation('run_withoutAFO', 'simulation', results_directory='')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+"""
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# (2) Batch simulation for the drop landing, walk and run
+# (Code 3): Batch simulation for the drop landing, walk and run
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in  Var_range_FL_amplification:                                                                                         # Design variable: force-length amplification (fl_am)
-    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in Var_rang_FL_shift:                                                                                             # Design variable: force-length shift (fl_shift)
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in Var_range_stripe_orientation:                                                                # Deisgn variable: stripe orientation (strip_ori)
-            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in Var_range_bottom_location:          # Design variable: bottom endpoint location (bottom_location)
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                                                                                               # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                                                                                                   # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):                                                                      # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):                # Design variable: bottom endpoint location (bottom_location)
                 #------------------------------------------------------------------------------
                 # The amplification (scaling) of the force-length relationship
                 FL_amplification_1=fl_am_1*FL_amplification_stepsize
@@ -84,7 +90,7 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in  Var_range_FL_amplification:          
                                                                     +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)
                                                                     +str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 # The drop landing simulation DL
-                #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
+                AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
                 # The walking simulation Walk
                 AFO0_Simulation.Simulation('Walk_AFO', 'simulation', ('SimulationOutput_Walk_'+ResultDirectory_parameter_str))
                 # The running simulation Run
@@ -98,8 +104,8 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in  Var_range_FL_amplification:          
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#  (3) Put the simulation results from the results folders to an excel documents_Drop landing
-#        For drop landing activity, collect the maximum subtalar angle and ankle angle
+#  (Code 4): Put the simulation results from the results folders to an excel documents_Drop landing
+#                  For drop landing activity, collect the maximum subtalar angle and ankle angle
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
 Subtalar_matrix_DL=[]
@@ -107,10 +113,10 @@ Subtalar_matrix_DL=[]
 root =tkinter.Tk()                                                      # Open the dialog of the file
 root.withdraw()
 SelectionPath=filedialog.askdirectory()                       # the path of the selected directory
-for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in Var_range_FL_amplification:                                                                                      # Design variable: force-length amplification (fl_am)
-    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in Var_rang_FL_shift:                                                                                         # Design variable: force-length shift (fl_shift)
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in Var_range_stripe_orientation:                                                             # Deisgn variable: stripe orientation (strip_ori)
-            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in Var_range_bottom_location:        # Design variable: bottom endpoint location (bottom_location)
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                                                                                               # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                                                                                                   # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):                                                                      # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):                # Design variable: bottom endpoint location (bottom_location)
                 simulationresults_parameter_str=(str(fl_am_1)+str(fl_am_2)+str(fl_am_3)+str(fl_am_4)+str(fl_shift_1)+str(fl_shift_2)+str(fl_shift_3)+str(fl_shift_4)      # The name of the result folder
                                                                         +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)+str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 output_folder=os.path.join(SelectionPath, ('SimulationOutput_DL_'+simulationresults_parameter_str))
@@ -132,9 +138,9 @@ AFO4_ResultsCollection.DLResultstoExcel(SelectionPath, 'Results.xls', 'DL_Platfo
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#  (4) Put the simulation results from the results folders to an excel documents_Walk
-#       For walk and running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
-#       inteplote the curve across the whole cycle into thousands of points anc calculate the differences of muscle forces for these points)
+#  (Code 5): Put the simulation results from the results folders to an excel documents_Walk
+#                  For walk and running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+#                  inteplote the curve across the whole cycle into thousands of points anc calculate the differences of muscle forces for these points)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Results_parameter=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
                                   'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r',
@@ -154,10 +160,10 @@ output_folder_data_withoutAFO=Activity_folder+'0000000000000000'
 data_withoutAFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_data_withoutAFO, Results_parameter, Activity_results_file)
 
 # For walk and run, sum the differences of muscle forces over the whole cycle
-for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in Var_range_FL_amplification:                                                                                   # Design variable: force-length amplification (fl_am)
-    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in Var_rang_FL_shift:                                                                                       # Design variable: force-length shift (fl_shift)
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in Var_range_stripe_orientation:                                                           # Deisgn variable: stripe orientation (strip_ori)
-            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in Var_range_bottom_location:      # Design variable: bottom endpoint location (bottom_location)
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                                                                                               # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                                                                                                   # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):                                                                      # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):                # Design variable: bottom endpoint location (bottom_location)
                 output_folder_data_AFO=(Activity_folder+str(fl_am_1)+str(fl_am_2)+str(fl_am_3)+str(fl_am_4)+str(fl_shift_1)+str(fl_shift_2)+str(fl_shift_3)+str(fl_shift_4)
                                                             +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)+str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 data_AFO= AFO4_ResultsCollection.Simulationresultscollection(output_folder_data_AFO, Results_parameter, Activity_results_file)
@@ -184,9 +190,9 @@ AFO4_ResultsCollection.DLResultstoExcel(SelectionPath, 'Results.xls', Activity, 
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#  (5) Put the simulation results from the results folders to an excel documents_Running
-#       For walk and running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
-#       inteplote the curve across the whole cycle into thousands of points anc calculate the differences of muscle forces for these points)
+#  (Code 6): Put the simulation results from the results folders to an excel documents_Running
+#                  For walk and running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+#                 inteplote the curve across the whole cycle into thousands of points anc calculate the differences of muscle forces for these points)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 Results_parameter=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
                                   'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r',
@@ -206,10 +212,10 @@ output_folder_data_withoutAFO=Activity_folder+'0000000000000000'
 data_withoutAFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_data_withoutAFO, Results_parameter, Activity_results_file)
 
 # For walk and run, sum the differences of muscle forces over the whole cycle
-for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in Var_range_FL_amplification:                                                                                         # Design variable: force-length amplification (fl_am)
-    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in Var_rang_FL_shift:                                                                                            # Design variable: force-length shift (fl_shift)
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in Var_range_stripe_orientation:                                                               # Deisgn variable: stripe orientation (strip_ori)
-            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in Var_range_bottom_location:         # Design variable: bottom endpoint location (bottom_location)
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                                                                                         # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                                                                                             # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):                                                                # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):          # Design variable: bottom endpoint location (bottom_location)
                 output_folder_data_AFO=(Activity_folder+str(fl_am_1)+str(fl_am_2)+str(fl_am_3)+str(fl_am_4)+str(fl_shift_1)+str(fl_shift_2)+str(fl_shift_3)+str(fl_shift_4)
                                                             +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)+str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 data_AFO= AFO4_ResultsCollection.Simulationresultscollection(output_folder_data_AFO, Results_parameter, Activity_results_file)
