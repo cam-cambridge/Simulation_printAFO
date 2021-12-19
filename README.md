@@ -72,60 +72,40 @@ FL_amplification_2=fl_am_2*FL_amplification_stepsize
 FL_amplification_3=fl_am_3*FL_amplification_stepsize
 FL_amplification_4=fl_am_4*FL_amplification_stepsize
 ```
-where the FL_amplification_stepsize is the step size of the design variable (FL_amplification) during the optimization, which will be defined in ***Code (1)***. It can be changed and defined as needed during the optimization.<br/>
+where the FL_amplification_stepsize is the step size of the design variable (FL_amplification) during the optimization, which was defined in ***Code (1)***. It can be changed and defined as needed during the optimization.<br/>
 The design varibale FL_amplifcation represents the number of the fibres in each strip of the AFO. e.g., in the current case, the amplification variables of the four stripes of the AFO are 60, 60, 60 and 60, respectively, representing the fibres for the four stripes are 60, 60, 60 and 60.<br/>
 
-
-
-
 ```
-for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)): # Design parameter: force-length shift (fl_shift)
+for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):    # Design variable: force-length shift (fl_shift)
 ```
-This code will determine the shift parameters of the AFO materials for the four stripes. The shift parameters can be determined using the following equation:
+This code will determine the shift parameters of the AFO materials for the four stripes based on the range of design variables of the force-length shift defined in ***Code 1*** (Var_rang_FL_shift). The shift parameters can be determined using the following equation:
 ```
 FL_shift_1=fl_shift_1*FL_shift_stepsize-0.2
 FL_shift_2=fl_shift_2*FL_shift_stepsize-0.2
 FL_shift_3=fl_shift_3*FL_shift_stepsize-0.2
 FL_shift_4=fl_shift_4*FL_shift_stepsize-0.2
 ```
-where the FL_shift_stepsize will be defined using the second line of the following equations (can be changed during optimization, depending on the step size selected):
-```
-FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
-FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
-strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
-bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
-```
-E.g., in the current case, the shift parameters for the four stripes are 0 (1x0.2-0.2), -0.2 (0x0.2-0.2), 0.2 (2x0.2-0.2) and 0.2 (2x0.2-0.2), respectively. The shift parameters are defined as the translation of the force-length curve of the AFO materials, i.e, FL_shift_2=-0.2 means the force-length curve will move 0.2 unit to the left.
+where the FL_shift_stepsize is the step size of the design variable of FL_shift during the optimization. It was defined in ***Code (1)*** and can be changed as needed for the optimization.<br/>
+The shift parameters of the AFO are defined as the translation of the force-length curve of the AFO materials. E.g., in the current case, the shift parameters for the four stripes are -0.2 (0x0.2-0.2), -0.2 (0x0.2-0.2), -0.2 (0x0.2-0.2) and -0.2 (0x0.2-0.2), respectively, which means the force-length curve will move 0.2 units to the left.<br/>
 
 ```
-for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):     # Deisgn parameters of stripe orientation
+for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):         # Deisgn variable: stripe orientation (strip_ori)
 ```
 This code will determine the orientations of the stripes of the AFO for the four stripes, which can be determined using the following equation:
 ```
 Strip_orientation=np.array([strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4])*strip_orientation_stepsize
 ```
-where the strip_orientation_stepsize can be defined using the third line of the following equations (can be changed during the optimization, dependening on the step size selected):
-```
-FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
-FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
-strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
-bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
-```
+where the strip_orientation_stepsize is the step size of the design variable of Strip_orientation in the optimization. It was defined in ***Code (1)*** and can be changed as needed for the optmization.<br/>
 
 ```
-for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product(range(0,1), range(0,1), range (0,1), range(0,1)): # Design parameter: bottom endpoint location (bottom_location)
+for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):    # Design variable: bottom endpoint location (bottom_location)
 ```
 This code will determine the locations of the endpoints of the AFO representations at the bottom size (e.g. the location of the AFO representation relative to the leg segment). The locations can be determined using the following equation:
 ```
 bottom_location_angle=np.array([bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4])*bottom_location_stepsize
 ```
-where the bottom_location_stepsize can be defined using the fourth line of the following equations (can be changed based on the step sizes selected):
-```
-FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
-FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
-strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
-bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
-```
+where the bottom_location_stepsize was defined in ***Code (1)***, and can be changed as needed during the optimization.<br/>
+
 The definations of the design parameters in the AFO can be found in the Guidelines in the repo.<br/>
 
 ***(ii) The development of AFO in the musculoskeletal model and run the simulation:***<br/>
