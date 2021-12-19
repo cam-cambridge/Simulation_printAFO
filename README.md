@@ -31,16 +31,16 @@ The batch simulation code will change the design parameters, develop the AFO rep
 *---  (Code 6):* Put the running simulation results from the simulation results folders to an excel documents. <br/>
 
 ***(Code 0): The normal whole process of walk and running simulation:*** <br/>
-This part of codes is a normal simulation process for the walk and running activities, which will perform model scaling, inverse kinematics (IK), residual reduction algorithm (RRA), computed muscle control (CMC) and forward dynamics. The results of the model scaling, IK and RRA will be used in the following codes. The simulation results will be stored in the Simulation_printAFO\Gait simulation\Model outputs folder.<br/>
+This part of codes is a normal simulation process for the walk and running activities, which will perform model scaling, inverse kinematics (IK), residual reduction algorithm (RRA), computed muscle control (CMC) and forward dynamics. The results of the model scaling, IK and RRA will be used in the following codes. The simulation results will be stored in: Simulation_printAFO\Gait simulation\Model outputs.<br/>
 
-***(Code 1) The determination of ranges of the design variables and step size for each variable for optimization:*** <br/>
+***(Code 1): The determination of ranges of the design variables and step size for each variable for optimization:*** <br/>
 This part of codes is to provide the values or the ranges of the design variables for the AFO representation in the model and simulation, using the following equations:
 ```
 # The ranges for design variables
-Var_range_FL_amplification=itertools.product(range(1,2), range(1,2), range(1,2), range(1,2))     # Range of design variables: force-length amplification (fl_am)
-Var_rang_FL_shift=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))              # Range of design variables: force-length shift (fl_shift)
-Var_range_stripe_orientation=itertools.product(range(0,1), range(0,1), range(0,1), range(0,1))   # Range of design variables: stripe orientation (strip_ori)
-Var_range_bottom_location=itertools.product(range(0,1), range(0,1), range (0,1), range(0,1))     # Range of design variables: bottom endpoint location (bottom_location)
+Var_range_FL_amplification=[range(1,2), range(1,2), range(1,2), range(1,2)]         # Range of design variables: force-length amplification (fl_am)
+Var_rang_FL_shift=[range(0,1), range(0,1), range(0,1), range(0,1)]                  # Range of design variables: force-length shift (fl_shift)
+Var_range_stripe_orientation=[range(0,1), range(0,1), range(0,1), range(0,1)]       # Range of design variables: stripe orientation (strip_ori)
+Var_range_bottom_location=[range(0,1), range(0,1), range (0,1), range(0,1)]         # Range of design variables: bottom endpoint location (bottom_location)
 ```
 This part of code is also to provide the step sizes for the design variables for batch simulation and optimization:<br/>
 ```
@@ -50,19 +50,21 @@ FL_shift_stepsize=0.2                             # The step size for the design
 strip_orientation_stepsize=5                      # The step size for the design parameter: strap orientation, can be changed to any number
 bottom_location_stepsize=5                        # The step size for the design parameter: bottom endpoint location, can be changed to any number
 ```
-These codes will be used in the following steps (Codes 3-6), the explaination of which will be elaborated below. <br/>
+This part of codes will be used as input in the following steps (Codes 3-6), the explaination of which will be elaborated below. <br/>
 
+***(Code 2): The walk and running simulation for the models with and without AFO:*** <br/>
+This part of codes will run the CMC simulation of walk and running activities for the model without AFO. These simulations should be performed based on the results from the model scaling, IK, RRA in code 0, the results of which will be used to compute the differences of muscle forces or demand between the models with and without AFO.
+The results of this part of simulation will store in: Simulation_printAFO\Gait simulation\Model outputs\4_CMC\SimulationOutput_Walk_0000000000000000.<br/>
 
-***(1) Batch simulation for the DL, walk and run:*** <br/>
-
-This part of codes will change the design parameters of the AFO in the model and run the model automatically, the processes are: (1) the code will change the design parameters in the AFO design.txt file in the AFO Design folders; (2) an AFO representation model will be created in the musculoskeletal model; (3) the code will run the simulation of drop landing, walking and running. The code use a loop to achieve these: <br/>
+***(Code 3): Batch simulation for the drop landing, walk and run:*** <br/>
+This part of codes will develop AFO representation in the MSK model based on a series of design parameters and run the model automatically, the processes are: (1) a set of design parameters for the AFO will be provided in a text file - AFO input.txt, located in: Simulation_printAFO\AFO Design; (2) an AFO representation will be created in the MSK model based on the design parameters in the AFO input.txt file; (3) the codes will change the design parameters of the AFO in the AFO input.txt file and a new AFO representation will be created in the MSK model automatically; (4) the codes will then run the simulation of drop landing, walk and running. All of these will be achieved through a loop code: <br/>
 
 ***(i) The change of design parameters in the AFO design.txt file in the AFO Design folder:***<br/>
 
 ```
-for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product(range(2,4), range(8,9), range(1,2), range(3,4)):        # Design parameter: force-length amplification (fl_am)
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):            # Design variable: force-length amplification (fl_am)
 ```
-This code will determine the amplification parameters of the AFO materials (force-length relationship) for the four stripes. The amplification is defined as the scaling factors of the force generated by the AFO strape with the same extension, and is determined using the following equation:
+This code will determine the amplification parameters of the AFO materials (force-length relationship) for the four stripes based on the range of design variables of the force-length amplification defined in ***Code 1*** (Var_range_FL_amplification). The amplification is defined as the scaling factors of the force generated by the AFO strape with the same extension, and is determined using the following equation:
 ```
 # The amplification (scaling) of the force-length relationship
 FL_amplification_1=fl_am_1*FL_amplification_stepsize
@@ -70,14 +72,11 @@ FL_amplification_2=fl_am_2*FL_amplification_stepsize
 FL_amplification_3=fl_am_3*FL_amplification_stepsize
 FL_amplification_4=fl_am_4*FL_amplification_stepsize
 ```
-where the FL_amplification_stepsize can be defined using the first line of the following (can be changed during the optimization).
-```
-FL_amplification_stepsize=20                                     # The step size for the design parameter: force-length amplification, can be changed to any number
-FL_shift_stepsize=0.2                                            # The step size for the design parameter: force-length shift, can be changed to any number
-strip_orientation_stepsize=5                                     # The step size for the design parameter: strap orientation, can be changed to any number
-bottom_location_stepsize=5                                       # The step size for the design parameter: bottom endpoint location, can be changed to any number
-```
-The amplification of the force-length relationship for the AFO materials can be then determined using the desigan varialbes (fl_am_) and the step size selected (FL_amplification_stepsize). e.g., in the current case, the amplification parameters of the four stripes are 40, 160, 20 and 60, respectively.
+where the FL_amplification_stepsize is the step size of the design variable (FL_amplification) during the optimization, which will be defined in ***Code (1)***. It can be changed and defined as needed during the optimization.<br/>
+The design varibale FL_amplifcation represents the number of the fibres in each strip of the AFO. e.g., in the current case, the amplification variables of the four stripes of the AFO are 60, 60, 60 and 60, respectively, representing the fibres for the four stripes are 60, 60, 60 and 60.<br/>
+
+
+
 
 ```
 for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)): # Design parameter: force-length shift (fl_shift)
