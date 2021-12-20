@@ -137,11 +137,15 @@ For drop landing, the interested simulation result parameters are: maximum subta
 ```
 Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']     # The specified parameter to extract
 ```
-Similarly, the codes use a loop to collect the results from the simulation result of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section (i))
+
+Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the range of design variables in the loop syntax should correspond to the loop syntax in the batch simulation, which are both determined using the ranges of design variables defined in ***Code 1***:
+
 ```
-or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
-    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                              # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                        # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):    # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):
+                  # Design variable: bottom endpoint location (bottom_location)
 ```
 After running, the excel file will be stored in *.\Simulation_printAFO\Drop landing\DL simulation results * <br/>
 
@@ -186,4 +190,4 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_ampli
 ```
 When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Simulation_printAFO/Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Simulation_printAFO/Running simulation/Modeloutputs**).
 
-**Tips:** The seven parts of the codes are disabled using "" symbols before and after the codes, which should be removed to enable the code for running. The seven parts of codes can also be run one by one by removing the """ symbols before and after each part of the codes. 
+**Tips:** The seven parts of the codes are disabled using "" symbols before and after each section of the codes, which should be removed to enable the code for running. The seven parts of codes can also be run one by one by removing the """ symbols before and after each part of the codes. 
