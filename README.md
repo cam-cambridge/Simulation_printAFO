@@ -119,15 +119,16 @@ This code will call the module "AFO0_Simulation" module to demonstrate the muscu
 >>>>>>'AFODroplanding': to demonstrate and run drop landing model with AFO <br/>
 >>>>>>'Walk_AFO' or 'Run_AFO': to demonstrate and run walk or running model with AFO <br/>
 
-*Second parameter:* 'model': to demonstrate the musculoskeletal model with AFO <br/>
+*Second parameter:* to determine whether demonstrating the MSK model or running the simulation:<br/>
+>>>>>> 'model': to demonstrate the MSK model with AFO <br/>
 >>>>>> 'simulation': to run drop landing, walk and running simulations <br/>
 
 *Third parameter:* the folder for storing the drop landing simulation results <br/>
 
 After the batch of simulation, the simulation results will store in:<br/>
-*Drop landing:* ./Drop landing/DL simulation results <br/>
-*Gait simulation:* ./Gait simulation/Model outputs/5_ForwardDynamics_1st *and* ./Gait simulation/Model outputs/5_ForwardDynamics_1st
-*Running simulation:* ./Running simulation/Model outputs/5_ForwardDynamics
+*Drop landing:* .\Simulation_printAFO\Drop landing\DL simulation results <br/>
+*Gait simulation:* .\Simulation_printAFO\Gait simulation\Model outputs\4_CMC <br/>
+*Running simulation:* .\Simulation_printAFO_CAMG\Running simulation\Model outputs\4_CMC <br/>
 
 ***(Code 4): Collection of the drop landing simulation results and put them into an excel file:*** <br/>
 
@@ -142,7 +143,7 @@ or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9
     for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
         for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
 ```
-After running, the excel file will be stored in *./Drop landing/DL simulation results* <br/>
+After running, the excel file will be stored in *.\Simulation_printAFO\Drop landing\DL simulation results * <br/>
 
 ***(Code 5): Collection of the walk simulation results and put them into an excel file:*** <br/>
 
@@ -163,7 +164,7 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_ampli
             for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):  
                         # Design variable: bottom endpoint location (bottom_location)
 ```
-When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Gait simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Gait simulation/Modeloutputs**).
+When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Simulation_printAFO/Gait simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Simulation_printAFO/Gait simulation/Modeloutputs**).
 
 ***(Code 6): Collection of the running simulation results and put them into an excel file:*** <br/>
 
@@ -183,6 +184,6 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_ampli
             for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):     
                         # Design variable: bottom endpoint location (bottom_location)
 ```
-When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Running simulation/Modeloutputs**).
+When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Simulation_printAFO/Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Simulation_printAFO/Running simulation/Modeloutputs**).
 
 **Tips:** The seven parts of the codes are disabled using "" symbols before and after the codes, which should be removed to enable the code for running. The seven parts of codes can also be run one by one by removing the """ symbols before and after each part of the codes. 
