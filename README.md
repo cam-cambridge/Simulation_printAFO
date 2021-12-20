@@ -8,13 +8,13 @@ This repository mainly includes the python codes, OpenSim musculoskeletal models
 
 ## **2. Architecture of the files and folders** <br/>
 
-![image](https://user-images.githubusercontent.com/14294455/143143898-af1cb7da-dccf-4e96-b800-2dfbe2634f57.png)
+![image](https://user-images.githubusercontent.com/14294455/146776293-e0a96fbd-f1c3-436c-b2dc-0bd61e7ef227.png)
 
 The batch simulation pipeline is stricted to the architecture of the files and folers, as shown in the figure above: <br/>
 ***Simulation_printeAFO:*** the folder for all the simulation pipeline files. All the folders and codes should be put in this folder in the architecture shown above. The folder include AFO Design folder, Drop landing folder, Gait simulation folder, Running simulation folder, Batch simulation code folder. <br/>
 ***AFO Design:*** the design parameters for the AFO in .txt format. It includes two files: AFO input_default: the original design parameters; AFO input: the desgin paraeters for the AFO models in the musculoskeletal models. The AFO Design folder can be downloaded directly from the repo. <br/>
 ***Drop landing:*** the drop landing model and associated files. The Drop landing folder can be downloaded directly from the repo. <br/>
-***Gait simulation:*** the musculoskeletal models and files required for the gait simulation. Due to the large size of the files, the files were separated into two folders, one is "Gait Simulation.rar", which should be decompressed after downloaded, the second one is "4_CMC.rar", which should be decrompressed and then putted into the "Gait simulation" folder. <br/>
+***Gait simulation:*** the musculoskeletal models and files required for the gait simulation. It should be decompressed after downloaded. <br/>
 ***Running simulation:*** the musculoskeletal models (same with the model for gait simulation) and files required for the running simulation. It should be decompressed after downloaded. <br/>
 ***Batch simulation code:*** the code for the batch simulation. Apart from the above folders, all the codes should be downloaded and put in the "Batch simulation code" folder.
 
