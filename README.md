@@ -100,7 +100,7 @@ where the strip_orientation_stepsize is the step size of the design variable of 
 ```
 for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):    # Design variable: bottom endpoint location (bottom_location)
 ```
-This code will determine the locations of the endpoints of the AFO representations at the bottom size (e.g. the location of the AFO representation relative to the leg segment). The locations can be determined using the following equation:
+This code will determine the locations of the endpoints of the AFO representations at the bottom side (e.g. the location of the AFO representation relative to the leg segment). The locations can be determined using the following equation:
 ```
 bottom_location_angle=np.array([bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4])*bottom_location_stepsize
 ```
@@ -129,7 +129,7 @@ After the batch of simulation, the simulation results will store in:<br/>
 *Gait simulation:* ./Gait simulation/Model outputs/5_ForwardDynamics_1st *and* ./Gait simulation/Model outputs/5_ForwardDynamics_1st
 *Running simulation:* ./Running simulation/Model outputs/5_ForwardDynamics
 
-***(2) Collection of the drop landing simulation results and put them into an excel file:*** <br/>
+***(Code 4): Collection of the drop landing simulation results and put them into an excel file:*** <br/>
 
 This part of codes will collect the interested simulation results from the drop landing and put them into an excel file. <br/>
 For drop landing, the interested simulation result parameters are: maximum subtalar angle, maximum ankle angle:
@@ -144,37 +144,44 @@ or af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9
 ```
 After running, the excel file will be stored in *./Drop landing/DL simulation results* <br/>
 
-***(3) Collection of the walk simulation results and put them into an excel file:*** <br/>
+***(Code 5): Collection of the walk simulation results and put them into an excel file:*** <br/>
 
 This part of codes will collect the interested simulation results from the walk simulation, and put them into an excel file. <br/>
-For walk, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the gait:
-```
-Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
-```
-This code provides the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
+For walk, the interested simulation result parameters are: average differences of muscle forces/demand beween models with and without AFO across the whole cycle:
 
-Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
 ```
-for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
-    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+Results_parameter=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r', 'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r', 'perlong_r', 'piri_r', 'psoas_r', 'recfem_r', 'sart_r', 'semimem_r', 'semiten_r', 'soleus_r', 'tfl_r', 'tibant_r', 'tibpost_r', 'vasint_r', 'vaslat_r', 'vasmed_r']              # The specified parameter to extract
+```
+This code provides the information about what results will collect from the simulation results, i.e. the instant time of the cycle, the name of each muslce in the MSK model. <br/>
+
+Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be correspond to the loop syntax in the AFO design parameters, which is determined using the ranges of design variables defined in ***Code 1***:
+```
+# For walk and run, sum the differences of muscle forces over the whole cycle
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):          # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):           # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):  
+                        # Design variable: bottom endpoint location (bottom_location)
 ```
 When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Gait simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Gait simulation/Modeloutputs**).
 
-***(4) Collection of the running simulation results and put them into an excel file:*** <br/>
+***(Code 6): Collection of the running simulation results and put them into an excel file:*** <br/>
 
 This part of codes will collect the interested simulation results from the running simulation, and put them into an excel file. <br/>
-For running, the interested simulation result parameters are: average differences of subtalar angles and ankle angles between models with and without AFO across the whole cycle:
+For running, the interested simulation result parameters are: average differences of muscle forces/demand beween models with and without AFO across the whole cycle:
 ```
-Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
+Results_parameter=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r', 'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r', 'perlong_r', 'piri_r', 'psoas_r', 'recfem_r', 'sart_r', 'semimem_r', 'semiten_r', 'soleus_r', 'tfl_r', 'tibant_r', 'tibpost_r', 'vasint_r', 'vaslat_r', 'vasmed_r']                       # The specified parameter to extract
 ```
-This code provides the information about what results will collect from the simulation results, i.e. the instant time, the subtalar angle and the ankle angle. <br/>
+This code provides the information about what results will collect from the simulation results, i.e. the instant time, the name of each muslce in the MSK model. <br/>
 
-Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be changed to correspond to the loop syntax in the AFO design parameters (e.g. section **3**/***(1)***/***(i)***)
+Similarly, the codes use a loop to collect the results from the batch simulation of each AFO design, therefore, the parameters of range in the loop syntax should be correspond to the loop syntax in the AFO design parameters, which is determined using the ranges of design variables defined in ***Code 1***:
 ```
-for af_am_1, af_am_2, af_am_3, af_am_4 in itertools.product(range(2,3), range(8,9), range(1,2), range(3,4)):     # Design parameters of force-length amplification
-    for af_shift_1, af_shift_2, af_shift_3, af_shift_4 in itertools.product(range(1,2), range(0,1), range(2,3), range(2,3)):   # Design parameters of force-length shift
-        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product(range(0,1), range(0,1), range(0,1), range(0,1)):
+# For walk and run, sum the differences of muscle forces over the whole cycle
+for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):            # Design variable: force-length amplification (fl_am)
+    for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):      # Design variable: force-length shift (fl_shift)
+        for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):   # Deisgn variable: stripe orientation (strip_ori)
+            for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):     
+                        # Design variable: bottom endpoint location (bottom_location)
 ```
 When running the code, a dialog box will appear, asking to select the batch simulation results folder. Select the model outputs folder, (e.g. **./Running simulation/Modeloutputs**), the excel file will be stored in the selected folder (e.g. **./Running simulation/Modeloutputs**).
 
