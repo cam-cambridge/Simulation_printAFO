@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import itertools
 import tkinter
 from tkinter import filedialog
+import math
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -22,23 +23,23 @@ AFO0_Simulation.Simulation('run', 'simulation', results_directory='')
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 """
 
-
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # (Code 1): The determination of ranges of the design variables and step size for each variable for optimization
 #      The necessary inputs for batch simulation, results collection in codes (3), (4), (5), (6)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # The ranges for design variables
-Var_range_FL_amplification=[range(1,2), range(1,2), range(1,2), range(1,2)]                                     # Range of design variables: force-length amplification (fl_am)
-Var_rang_FL_shift=[range(0,1), range(0,1), range(0,1), range(0,1)]                                                     # Range of design variables: force-length shift (fl_shift)
+Var_range_FL_amplification=[range(3,4), range(1,2), range(1,2), range(1,2)]                                     # Range of design variables: force-length amplification (fl_am)
+Var_rang_FL_shift=[range(1,2), range(1,2), range(1,2), range(1,2)]                                                     # Range of design variables: force-length shift (fl_shift)
 Var_range_stripe_orientation=[range(0,1), range(0,1), range(0,1), range(0,1)]                                     # Range of design variables: stripe orientation (strip_ori)
 Var_range_bottom_location=[range(0,1), range(0,1), range (0,1), range(0,1)]                                      # Range of design variables: bottom endpoint location (bottom_location)
 # The step size for each design variable during optimization
-FL_amplification_stepsize=60                                                                                                                # The step size for the design parameter: force-length amplification, can be changed to any number
+FL_amplification_stepsize=6                                                                                                                # The step size for the design parameter: force-length amplification, can be changed to any number
 FL_shift_stepsize=0.2                                                                                                                             # The step size for the design parameter: force-length shift, can be changed to any number
 strip_orientation_stepsize=5                                                                                                                   # The step size for the design parameter: strap orientation, can be changed to any number
 bottom_location_stepsize=5                                                                                                                   # The step size for the design parameter: bottom endpoint location, can be changed to any number
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+"""
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -60,6 +61,8 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_ampli
             for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):                # Design variable: bottom endpoint location (bottom_location)
                 #------------------------------------------------------------------------------
                 # The amplification (scaling) of the force-length relationship
+                #FL_amplification_1=FL_amplification_2=FL_amplification_3=FL_amplification_4=FL_amplification_stepsize*math.pow(10, fl_am_1)
+
                 FL_amplification_1=fl_am_1*FL_amplification_stepsize
                 FL_amplification_2=fl_am_2*FL_amplification_stepsize
                 FL_amplification_3=fl_am_3*FL_amplification_stepsize
@@ -90,11 +93,11 @@ for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_ampli
                                                                     +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)
                                                                     +str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
                 # The drop landing simulation DL
-                AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
+                #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', ('SimulationOutput_DL_'+ResultDirectory_parameter_str))
                 # The walking simulation Walk
                 AFO0_Simulation.Simulation('Walk_AFO', 'simulation', ('SimulationOutput_Walk_'+ResultDirectory_parameter_str))
                 # The running simulation Run
-                AFO0_Simulation.Simulation('Run_AFO', 'simulation', ('SimulationOutput_Run_'+ResultDirectory_parameter_str))
+                #AFO0_Simulation.Simulation('Run_AFO', 'simulation', ('SimulationOutput_Run_'+ResultDirectory_parameter_str))
                 #-----------------------------------------------------------------------------
                 # Resume the design parameters to origin value in the AFO design parameter files: copy a default text into the design text file
                 # 1/FL_amplification_1, -FL_shift_1: invalid parameters, 'Resume design file': command for resuming the design parameter txt file
