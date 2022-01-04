@@ -8,8 +8,16 @@ def objective(MusDiff_walk, MusDiff_walk, Subtablar_drop):
 	return Func
 
 # derivative of objective function
-def derivative(x):
+def derivative(solution):
+	import AFO_Simulation_Optimization
+	import numpy as np
+	# Input a small increas for each design parameter
+	Variable_increment=[0.5, 0.5, 1, 0.2]
+	[AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift]=solution
+	[AFO_bottom_location_r1, Stripe_orientation_r1, AFO_FL_amplification_r1, AFO_FL_shift_r1]=np.array(solution)+np.array(Variable_increment)
+	# Run simulation of drop landing, walk and running
 	
+
 	return #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
 #input a small increase while keeping the other design parameters constant
