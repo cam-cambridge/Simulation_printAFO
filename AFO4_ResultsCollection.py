@@ -6,19 +6,17 @@ def Simulationresultscollection(output_folder, Results_parameter, DL_results):
     import os
     import tkinter
     from tkinter import filedialog
-    """
-    # Previous code
+
     # The folder path of pthon script
-    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
-    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
-    """
+    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: Simulation_printAFO
+    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script:Simulation_printAFO_CAMG
 
     # The joining of the folders python simulation, drop landing (DL) and output folders
     #DL_results_directory=os.path.join(path_simulation, 'Drop landing', output_folder)
     # previous code
-    # DL_results_directory=os.path.join(path_simulation, output_folder)
-    DL_results_directory=output_folder
+    # DL_results_directory=output_folder
     #DL_results="default_states_degrees.mot"
+    DL_results_directory=os.path.join(path_simulation, output_folder)
 
     #directory=os.path.join(path, results_directory)
     if not os.path.isdir(DL_results_directory):
