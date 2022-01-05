@@ -1,22 +1,64 @@
 # -*- coding: utf-8 -*-
+import math
+import AFO_Simulation_Optimization
+import numpy as np
 
-def objective(MusDiff_walk, MusDiff_walk, Subtablar_drop):
+def objective(Subtablar_drop, MusDiff_walk, MusDiff_run):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	import math
-	Func=abs(MusDiff_walk)+abs(MusDiff_walk)+math.exp(Subtalar_drop)
+	Func=abs(MusDiff_walk)+abs(MusDiff_run)+math.exp(Subtalar_drop)
 	return Func
 
 # derivative of objective function
 def derivative(solution):
-	import AFO_Simulation_Optimization
-	import numpy as np
-	# Input a small increas for each design parameter
-	Variable_increment=[0.5, 0.5, 1, 0.2]
+	# Input a small increase for each design parameter
+	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
+	V_increment=[0.5,0.5,1,0.2]
+	#----------------------------------------------------------------------------------------------------------------------------
+	# Cost function for initial solution
 	[AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift]=solution
-	[AFO_bottom_location_r1, Stripe_orientation_r1, AFO_FL_amplification_r1, AFO_FL_shift_r1]=np.array(solution)+np.array(Variable_increment)
-	# Run simulation of drop landing, walk and running
-	
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift)
+	Objective_ini=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
+	#----------------------------------------------------------------------------------------------------------------------------
+	# The derivative for design variable AFO_bottom_location
+	#----------------------------------------------------------------------------------------------------------------------------
+	# AFO_bottom_location for strip 1
+	# Cost function for small increased AFO_bottom_location for strip 1
+	AFO_bottom_location[0]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strip 1
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift)
+	Objective_bottom_location_strip1=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
+	# Calculate the  partitial derivative for AFO_bottom_location for strip 1
+	Gradient_bottom_location_strip1=Objective_bottom_location_strip1- Objective_ini
+	AFO_bottom_location[0]-=V_increment[0]
+	#--------------------------------------------------------------------------------------
+	# AFO_bottom_location for strip 2
+	# Cost function for small increased AFO_bottom_location for strip 2
+	AFO_bottom_location[1]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strip 2
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift)
+	Objective_bottom_location_strip2=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
+	# Calculate the  partitial derivative for AFO_bottom_location for strip 2
+	Gradient_bottom_location_strip2=Objective_bottom_location_strip2- Objective_ini
+	AFO_bottom_location[1]-=V_increment[1]
+	#--------------------------------------------------------------------------------------
+	# AFO_bottom_location for strip 3
+	# Cost function for small increased AFO_bottom_location for strip 3
+	AFO_bottom_location[2]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strip 2
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift)
+	Objective_bottom_location_strip3=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
+	# Calculate the  partitial derivative for AFO_bottom_location for strip 3
+	Gradient_bottom_location_strip3=Objective_bottom_location_strip3- Objective_ini
+	AFO_bottom_location[2]-=V_increment[2]
+	#--------------------------------------------------------------------------------------
+	# AFO_bottom_location for strip 4
+	# Cost function for small increased AFO_bottom_location for strip 4
+	AFO_bottom_location[3]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strip 2
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift)
+	Objective_bottom_location_strip4=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
+	# Calculate the  partitial derivative for AFO_bottom_location for strip 4
+	Gradient_bottom_location_strip4=Objective_bottom_location_strip4- Objective_ini
+	AFO_bottom_location[3]-=V_increment[3]
+		
+
 
 	return #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
@@ -29,9 +71,11 @@ def derivative(solution):
 # This defines the gradient descent algorithm
 def gradient_descent(objective, derivative, bounds, n_iter, step_size):
 	# generate an initial point
-	solution = #This is any combination of design parameters. It doesn't matter what the combination is,
-    #it is just a starting point for the optimisation
+	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
+	# solution=(AFO_bottom_location, AFO_stripe_orientations, AFO_FL_amplification, AFO_FL_shift)
+	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [10,10,10,10], [2,2,2,2]]
 
+    #it is just a starting point for the optimisation
     # run the gradient descent
 	for i in range(n_iter):
 		# calculate gradient
