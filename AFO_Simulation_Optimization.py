@@ -15,6 +15,7 @@ from tkinter import filedialog
 import math
 
 def Main_Simulation (AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift):
+
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Change the design parameters in the AFO design text file
     AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[0], AFO_FL_shift[0], 'AFO_FLrelationship_one')
@@ -35,43 +36,55 @@ def Main_Simulation (AFO_bottom_location, Stripe_orientation, AFO_FL_amplificati
     # Resume the design parameters to origin value in the AFO design parameter files: copy a default text into the design text file
     # 1/FL_amplification_1, -FL_shift_1: invalid parameters, 'Resume design file': command for resuming the design parameter txt file
     AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_1, -FL_shift_1, 'Resume design file')
+
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Collect the simulation results for drop landing, walk and running
     #-----------------------------------------------------------------------------
     # For drop landing activity, collect the maximum subtalar angle and ankle angle
-    Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
-    Subtalar_matrix_DL=[]
+    Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
+    output_folder_DL='Drop landing\DL simulation results\SimulationOutput_DL_AFO'
+    data_DL= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL, Results_parameter_DL, 'default_states_degrees.mot')      # put the specified results into a matrix
+    Subtalar_DL_max=max(data_DL[:,1])                                                                                                                                                                    # The maximum subtalar angle during drop landing
 
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    #  (Code 4): Put the simulation results from the results folders to an excel documents_Drop landing
-    #                  For drop landing activity, collect the maximum subtalar angle and ankle angle
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    Results_parameter=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
-    Subtalar_matrix_DL=[]
-    # Open and select the destination folder
-    root =tkinter.Tk()                                                      # Open the dialog of the file
-    root.withdraw()
-    SelectionPath=filedialog.askdirectory()                       # the path of the selected directory
-    for fl_am_1, fl_am_2, fl_am_3, fl_am_4 in itertools.product (*Var_range_FL_amplification):                                                                                               # Design variable: force-length amplification (fl_am)
-        for fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4 in itertools.product(*Var_rang_FL_shift):                                                                                                   # Design variable: force-length shift (fl_shift)
-            for strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4 in itertools.product (*Var_range_stripe_orientation):                                                                      # Deisgn variable: stripe orientation (strip_ori)
-                for  bottom_location_1, bottom_location_2, bottom_location_3, bottom_location_4 in itertools.product (*Var_range_bottom_location):                # Design variable: bottom endpoint location (bottom_location)
-                    simulationresults_parameter_str=(str(fl_am_1)+str(fl_am_2)+str(fl_am_3)+str(fl_am_4)+str(fl_shift_1)+str(fl_shift_2)+str(fl_shift_3)+str(fl_shift_4)      # The name of the result folder
-                                                                            +str(strip_ori_1)+str(strip_ori_2)+str(strip_ori_3)+str(strip_ori_4)+str(bottom_location_1)+str(bottom_location_2)+str(bottom_location_3)+str(bottom_location_4))
-                    output_folder=os.path.join(SelectionPath, ('SimulationOutput_DL_'+simulationresults_parameter_str))
-                    data= AFO4_ResultsCollection.Simulationresultscollection(output_folder, Results_parameter, 'default_states_degrees.mot')                                                  # put the specified results into a matrix
-                    if data.size==0:                                                                                                                                                                                                                               # If the folder does not exit, skip the current loop to the next one.
-                        continue
-                    else:
-                        # transform the variables to numbers
-                        Var_to_num=(fl_am_1*pow(10,15)+fl_am_2*pow(10,14)+fl_am_3*pow(10,13)+fl_am_4*pow(10,12)+fl_shift_1*pow(10,11)+fl_shift_2*pow(10,10)+fl_shift_3*pow(10,9)+fl_shift_4*pow(10,8)+strip_ori_1*pow(10,7)
-                                        +strip_ori_2*pow(10,6)+strip_ori_3*pow(10,5)+strip_ori_4*pow(10,4)+bottom_location_1*pow(10,3)+bottom_location_2*pow(10,2)+bottom_location_3*pow(10,1)+bottom_location_1)
-                        Subtalar_matrix_DL.append(([Var_to_num, fl_am_1, fl_am_2, fl_am_3, fl_am_4, fl_shift_1, fl_shift_2, fl_shift_3, fl_shift_4, strip_ori_1, strip_ori_2, strip_ori_3, strip_ori_4, bottom_location_1,
-                                                                       bottom_location_2, bottom_location_3, bottom_location_4, max(data[:,1]), max(data[:,2])]))                                    # Put the four variables and the subtalar angles into a list
-    Subtalar_matrix_DL=np.array(Subtalar_matrix_DL)                                                                                                                                                                                                      # Transform the list to the matrix
-    Excel_title=['Variables_in_num', 'fl_am_1','fl_am_2','fl_am_3','fl_am_4', 'fl_shift_1', 'fl_shift_2', 'fl_shift_3', 'fl_shift_4', 'strip_ori_1', 'strip_ori_2', 'strip_ori_3', 'strip_ori_4',
-                       'bottom_location_1', 'bottom_location_2', 'bottom_location_3', 'bottom_location_4', 'Max subtalar angle', 'Max ankle angle']                                                                 # Define the title of the excel
-    AFO4_ResultsCollection.DLResultstoExcel(SelectionPath, 'Results.xls', 'DL_Platform 25', Excel_title, Subtalar_matrix_DL)                                                                                  # Put the four variables and subtalar angles to an excel
-    # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    #-----------------------------------------------------------------------------
+    #  For walk, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+    #  inteplote the curve across the whole cycle into lots of points (equal to the time instances for model without AFO) and calculate the differences of muscle forces for these points
+    # The parameters collected from the simulation results of walk_the muscle forces for all the muscles in the right leg
+    Results_parameter_walk=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
+                                      'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r',
+                                      'perlong_r', 'piri_r', 'psoas_r', 'recfem_r', 'sart_r', 'semimem_r', 'semiten_r', 'soleus_r', 'tfl_r', 'tibant_r', 'tibpost_r', 'vasint_r', 'vaslat_r', 'vasmed_r']
+    # The folder that includes the results of walking simulation without AFO
+    output_folder_walk_withoutAFO='Gait simulation\Model outputs\\4_CMC\SimulationOutput_walk_withoutAFO'
+    # The total muscle force for all the muscles in the right leg
+    data_walk_withoutAFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_walk_withoutAFO, Results_parameter_walk, 'cmc_MuscleAnalysis_TendonForce.sto')
+    # The folder that includes the results of walking simulation with AFO
+    output_folder_walk_AFO='Gait simulation\Model outputs\\4_CMC\SimulationOutput_walk_AFO'
+    # The total muscle force for all the muscles in the right leg
+    data_walk_AFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_walk_AFO, Results_parameter_walk, 'cmc_MuscleAnalysis_TendonForce.sto')
+    diff_average_musforce_WholeMuscle_walk=[]
+    for muscle_num in range (0, len(data_walk_withoutAFO[0])):
+        [diff_total_musforce_walk, diff_average_musforce_walk, diff_max_musforce_walk]=AFO4_ResultsCollection.curvecomparison(data_walk_withoutAFO, data_walk_AFO, muscle_num, len(data_walk_withoutAFO))
+        diff_average_musforce_WholeMuscle_walk.append(diff_average_musforce_walk)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
+        diff_average_musforce_total_walk=np.sum(diff_average_musforce_WholeMuscle_walk)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
 
-    return MusDiff_walk, MusDiff_run, Subtalar_drop
+    #-----------------------------------------------------------------------------
+    #  For running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+    #  inteplote the curve across the whole cycle into lots of points (equal to the time instances for model without AFO) and calculate the differences of muscle forces for these points
+    # The parameters collected from the simulation results of running_the muscle forces for all the muscles in the right leg
+    Results_parameter_run=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
+                                      'gasmed_r', 'glmax1_r', 'glmax2_r', 'glmax3_r', 'glmed1_r', 'glmed2_r', 'glmed3_r', 'glmin1_r', 'glmin2_r', 'glmin3_r', 'grac_r', 'iliacus_r', 'perbrev_r',
+                                      'perlong_r', 'piri_r', 'psoas_r', 'recfem_r', 'sart_r', 'semimem_r', 'semiten_r', 'soleus_r', 'tfl_r', 'tibant_r', 'tibpost_r', 'vasint_r', 'vaslat_r', 'vasmed_r']
+    # The folder that includes the results of running simulation without AFO
+    output_folder_run_withoutAFO='Running simulation\Model outputs\\4_CMC\SimulationOutput_Run_withoutAFO'
+    # The total muscle force for all the muscles in the right leg
+    data_run_withoutAFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_run_withoutAFO, Results_parameter_run, 'cmc_MuscleAnalysis_TendonForce.sto')
+    # The folder that includes the results of running simulation with AFO
+    output_folder_run_AFO='Running simulation\Model outputs\\4_CMC\SimulationOutput_Run_AFO'
+    # The total muscle force for all the muscles in the right leg
+    data_run_AFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_run_AFO, Results_parameter_run, 'cmc_MuscleAnalysis_TendonForce.sto')
+    diff_average_musforce_WholeMuscle_run=[]
+    for muscle_num_r in range (0, len(data_run_withoutAFO[0])):
+        [diff_total_musforce_run, diff_average_musforce_run, diff_max_musforce_run]=AFO4_ResultsCollection.curvecomparison(data_run_withoutAFO, data_run_AFO, muscle_num_r, len(data_run_withoutAFO))
+        diff_average_musforce_WholeMuscle_run.append(diff_average_musforce_run)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
+        diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
+    return Subtalar_DL_max, diff_average_musforce_total_walk, diff_average_musforce_total_run
