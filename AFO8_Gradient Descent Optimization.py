@@ -150,12 +150,18 @@ def gradient_descent(objective, derivative, bounds, n_iter, step_size):
 		# calculate gradient
 		gradient = derivative(solution)
 		# take a step
-		solution = solution - step_size * gradient
+		solution = np.array(solution) - step_size * np.array(gradient)
 		# evaluate candidate point
-		solution_eval = objective(solution)
+		"""
+		[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution[0], solution[1], solution[2], solution[3])
+		# Calculate the objective function for the solution with small change
+		Objective_eval=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
 		# report progress
 		print('>%d f(%s) = %.5f' % (i, solution, solution_eval))
-	return [solution, solution_eval]
+		"""
+		print('>%d f(%s) = %.5f' % (i, solution))
+	# return [solution, solution_eval]
+	return solution
 
 # define the total iterations
 n_iter = 30
