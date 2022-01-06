@@ -148,6 +148,7 @@ def gradient_descent(objective, derivative, bounds, n_iter, step_size):
     # run the gradient descent
 	for i in range(n_iter):
 		# calculate gradient
+		solution=list(solution)
 		gradient = derivative(solution)
 		# take a step
 		solution = np.array(solution) - step_size * np.array(gradient)
