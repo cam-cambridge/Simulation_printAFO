@@ -2,7 +2,6 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
-
 def output_mechprops(strap_orientation, theta_0, n_elements,label):
     strap_orientation  = math.radians(strap_orientation) # convert from degrees to radians
 
