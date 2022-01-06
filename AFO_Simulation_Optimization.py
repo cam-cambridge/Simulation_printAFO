@@ -15,7 +15,6 @@ from tkinter import filedialog
 import math
 
 def Main_Simulation (AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift):
-
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Change the design parameters in the AFO design text file
     AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[0], AFO_FL_shift[0], 'AFO_FLrelationship_one')
