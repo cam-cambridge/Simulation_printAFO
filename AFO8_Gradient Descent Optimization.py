@@ -143,6 +143,8 @@ def gradient_descent(objective, derivative, bounds, n_iter, step_size):
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=(AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification, AFO_FL_shift)
 	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [10,10,10,10], [2,2,2,2]]
+	bounds_upper=[[30, 120, 260, 360], [-45, 10, 10, 60], [100,100,100,100], [4,4,4,4]]
+	bounds_low=[[30, 120, 260, 360], [-45, 10, 10, 60], [100,100,100,100], [4,4,4,4]]
 
     #it is just a starting point for the optimisation
     # run the gradient descent
