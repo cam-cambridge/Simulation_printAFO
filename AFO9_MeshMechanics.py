@@ -87,3 +87,4 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
         # add matrix to list
         FL_matrix_lst.append(FL_matrix)
     return FL_matrix_lst
+#
