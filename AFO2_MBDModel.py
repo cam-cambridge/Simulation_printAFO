@@ -116,7 +116,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
     # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
     AFO_top_tibial=AFO_representation[0]
     AFO_bottom_calcn=AFO_representation[1]
-    AFO_stripe_length=AFO_representation[2]
+    AFO_strap_length=AFO_representation[2]
     # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     AFO_Fmagnitude=AFO_material[0]
     AFO_F_L=AFO_material[1]
@@ -167,7 +167,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                 index_t=0
                 for k1 in range (len(AFO_top_tibial)):
                     AFO_F_L_T=AFO_F_L[k1]
-                    AFO_F_L_T=AFO_F_L_T.reshape(2,-1)
+                    #AFO_F_L_T=AFO_F_L_T.reshape(2,-1)
                     f_w.writelines(['				<Ligament name="orthosis_',str(k1+1),'">',"\n"])
                     f_w.writelines(['''					<!--Flag indicating whether the force is applied or not. If true the forceis applied to the MultibodySystem otherwise the force is not applied.NOTE: Prior to OpenSim 4.0, this behavior was controlled by the 'isDisabled' property, where 'true' meant that force was not being applied. Thus, if 'isDisabled' is true, then 'appliesForce` is false.-->
                     <appliesForce>true</appliesForce>
@@ -215,7 +215,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
                         </Appearance>
                     </GeometryPath>
                     <!--resting length of the ligament-->\n'''])
-                    AFO_length_withoutbracket='%.8f' %(AFO_stripe_length[k1])
+                    AFO_length_withoutbracket='%.8f' %(AFO_strap_length[k1])
                     f_w.writelines(["					<resting_length>",AFO_length_withoutbracket,"</resting_length>\n","					<!--force magnitude that scales the force-length curve-->\n"])
                     f_w.writelines(["					<pcsa_force>",str(AFO_Fmagnitude),"</pcsa_force>\n"])
                     f_w.writelines(['''					<!--Function representing the force-length behavior of the ligament-->
