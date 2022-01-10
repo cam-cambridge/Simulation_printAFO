@@ -14,28 +14,15 @@ import tkinter
 from tkinter import filedialog
 import math
 
-def Main_Simulation (AFO_bottom_location, Stripe_orientation, AFO_FL_amplification, AFO_FL_shift):
-    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    # Change the design parameters in the AFO design text file
-    AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[0], AFO_FL_shift[0], 'AFO_FLrelationship_one')
-    AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[1], AFO_FL_shift[1], 'AFO_FLrelationship_two')
-    AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[2], AFO_FL_shift[2], 'AFO_FLrelationship_three')
-    AFO3_ParaTestSelect.AFOmaterialVariables(AFO_FL_amplification[3], AFO_FL_shift[3], 'AFO_FLrelationship_four')
-    AFO3_ParaTestSelect.AFOmaterialVariables(Strip_orientation,Strip_orientation,'AFO_stripe_orientations')
-    AFO3_ParaTestSelect.AFOmaterialVariables(bottom_location_angle,bottom_location_angle,'AFO_bottom_location_angle')
+def Main_Simulation (DesignVariables):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Simulations of drop landing, walk and Running
     # The drop landing simulation DL
-    AFO0_Simulation.Simulation('AFODroplanding', 'simulation', 'SimulationOutput_DL_AFO')
+    AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO')
     # The walking simulation Walk
-    AFO0_Simulation.Simulation('Walk_AFO', 'simulation', 'SimulationOutput_Walk_AFO')
+    AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO')
     # The running simulation Run
-    AFO0_Simulation.Simulation('Run_AFO', 'simulation', 'SimulationOutput_Run_AFO')
-    #-----------------------------------------------------------------------------
-    # Resume the design parameters to origin value in the AFO design parameter files: copy a default text into the design text file
-    # 1/FL_amplification_1, -FL_shift_1: invalid parameters, 'Resume design file': command for resuming the design parameter txt file
-    AFO3_ParaTestSelect.AFOmaterialVariables(1/FL_amplification_1, -FL_shift_1, 'Resume design file')
-
+    AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO')
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Collect the simulation results for drop landing, walk and running
     #-----------------------------------------------------------------------------
