@@ -1,7 +1,7 @@
 #------------------------------------------------------------------------------------------------------------------------------------------
 # The MBD simulation of drop landing for new AFO desig (cross design)
 # DroplandingSimulation_AFO
-def Simulation(SimulationType, ModelOperation, results_directory):
+def Simulation(SimulationType, ModelOperation, DesignVariables, results_directory):
     import os
     import numpy as np
     import SetupFileGeneration
@@ -31,7 +31,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         # The AFO representation, AFO force magnitude, and platform inclination calculated from the design parameter file: AFO input.txt, using modue (AFO1_DesignParameter.AFODesignParameter)
         # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
         # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
-        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(folder_designparameters, txtfile_designparameters, tibial_center, calcn_center, talus_center)
+        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center)
        # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
         AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
         # Display the MBD drop landing model with AFO
@@ -104,7 +104,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
                 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 Model_AFO_origin=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_origin_file)
                 Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
-                [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt', tibial_r_center, calcn_r_center, talus_r_center)
+                [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
                 # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
                 AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
                 #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
@@ -181,7 +181,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             Model_AFO_origin=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_origin_file)
             Model_AFO_final=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_final_file)
-            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt', tibial_r_center, calcn_r_center, talus_r_center)
+            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
             # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
             AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
             #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
@@ -199,6 +199,7 @@ def Simulation(SimulationType, ModelOperation, results_directory):
         else:
             print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
         #
+
 def Scaling(path_simulation, SimulationType):
     import os
     import SetupFileGeneration
@@ -447,3 +448,207 @@ def Setupfile_resultsdir (SetupFile, results_directory):
             else:
                 f_w.write(line)
     #
+
+
+
+"""
+# 20220110
+def Simulation(SimulationType, ModelOperation, results_directory):
+    import os
+    import numpy as np
+    import SetupFileGeneration
+    import AFO1_DesignParameter
+    import AFO2_MBDModel
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Drop landing simulation if the drop landing related string is input
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    if SimulationType=='AFODroplanding' or SimulationType=='AFOdroplanding' or SimulationType=='AFODROPLANDING' or SimulationType=='AFODrop landing':
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The some input parameters for the model development, including the folders and models
+        foldername_droplanding='Drop landing'                                                                                           # The folders for drop landing model and simulation
+        msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
+        folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
+        txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
+        droplanding_forward_setup_file='default_Setup_ForwardTool.xml'                                               # The setup file for the drop landing forward dynamics
+        # The Global coordinates for right tibial and calcn for drop landing model
+        tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                    # tibial center coordinates in drop landing MBD model (position 0) in global coordinate system
+        calcn_center = np.array([-0.12397, -0.93387, 0.09142])                                                                  # calcn center coordinates in drop landing MBD model (position 0) in global coordinate system
+        talus_center=[-0.0752, -0.8919, 0.0835]
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The folder path of pthon script
+        path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
+        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+        # The joining of the folders python simulation, drop landing and MBD model
+        Model_AFO_droplanding=os.path.join(path_simulation, foldername_droplanding, msmodel_droplanding)
+        # The AFO representation, AFO force magnitude, and platform inclination calculated from the design parameter file: AFO input.txt, using modue (AFO1_DesignParameter.AFODesignParameter)
+        # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
+        # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
+        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(folder_designparameters, txtfile_designparameters, tibial_center, calcn_center, talus_center)
+       # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
+        AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+        # Display the MBD drop landing model with AFO
+        os.chdir(os.path.join(path_simulation, foldername_droplanding))
+        if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+            os.system(msmodel_droplanding)
+        elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.5)
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Gait simulation if the gait related string is input
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    elif SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' or SimulationType=='IK_walk' or SimulationType=='RRA_walk' or SimulationType=='rra_walk' or \
+           SimulationType=='CMC_walk' or SimulationType=='cmc_walk' or SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk' or\
+           SimulationType=='walk' or SimulationType=='Walk' or SimulationType=='Gait' or SimulationType=='gait' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO' or\
+           SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
+           # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+           # The some input parameters for the model development, including the folders and models
+           foldername_gait='Gait simulation'
+           gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
+           gait_model_output=os.path.join(foldername_gait, 'Model outputs')
+           # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+           path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
+           path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
+           path_setupfiles=os.path.join(path_simulation, gait_setup_file_foldername)                                      # The path of the simulation setup files
+           SetupFileGeneration.dircreation(os.path.join(path_simulation, gait_model_output))
+           os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Gait simulation/Setup files
+           if SimulationType=='Scaling_walk' or SimulationType=='scaling_walk' :
+               Scaling(path_simulation, 'walk')
+           elif SimulationType=='IK_walk' :
+                #Scaling(path_simulation, 'walk')
+                IK(path_simulation, 'walk')
+           elif SimulationType=='RRA_walk' or SimulationType=='rra_walk' :
+                #Scaling(path_simulation, 'walk')
+                #IK(path_simulation, 'walk')
+                RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
+           elif SimulationType=='CMC_walk' or SimulationType=='cmc_walk':
+                Scaling(path_simulation, 'walk')
+                IK(path_simulation, 'walk')
+                RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
+                CMC(path_simulation, 'walk', 'SimulationOutput_Walk_0000000000000000')
+           elif SimulationType=='FD_walk' or SimulationType=='Forward dynamics_walk' or SimulationType=='Walk' or SimulationType=='walk' or SimulationType=='Gait' or SimulationType=='gait':
+                Scaling(path_simulation, 'walk')
+                IK(path_simulation, 'walk')
+                RRA(path_simulation, 'walk')
+                # The height_origin and height_scaled should be changed case by case
+                MuscleScaling(path_simulation, 'walk', "Fullbodymodel_Walk_RRA_modification_final.osim", "Fullbodymodel_Walk_RRA_modification_final.osim", 1.70, 1.83, 15)
+                CMC(path_simulation, 'walk', '')
+                FD(path_simulation, 'walk', '')
+           elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
+                # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                # The some input parameters for the model development, including the folders and models
+                foldername_gait='Gait simulation'
+                gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
+                gait_model_output=os.path.join(foldername_gait, 'Model outputs')
+                model_AFO_origin_folder='3_RRA'
+                model_AFO_origin_file='Fullbodymodel_Walk_RRA_adjusted.osim'
+                model_AFO_final_file='Fullbodymodel_Walk_RRA_final_AFO.osim'
+                # The Global coordinates for the right tibial, calcn and talus centers
+                tibial_r_center=[-0.06850, 0.474615, 0.09158]
+                calcn_r_center=[-0.13574, -0.05465, 0.10344]
+                talus_r_center=[-0.07999, 0.015015, 0.091579]
+                # The Global coordinates for the left tibial, calcn and talus centers
+                tibial_l_center=[-0.06850, 0.474615, -0.09158]
+                calcn_l_center=[-0.13574, -0.054654, -0.10344]
+                talus_l_center=[-0.07999, 0.015015, -0.091579]
+                # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+                Model_AFO_origin=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_origin_file)
+                Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
+                [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt', tibial_r_center, calcn_r_center, talus_r_center)
+                # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
+                AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
+                #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+                os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
+                if SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
+                    if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                        os.system(model_AFO_final_file)
+                    elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                        CMC(path_simulation, 'walk_AFO', results_directory)
+                        #FD(path_simulation, 'walk_1stpart_AFO', results_directory)                                                                      # Previous code using kinematics as objective function
+                        #FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
+                elif SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
+                    if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                        os.system(model_AFO_origin_file)
+                    elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                        CMC(path_simulation, 'walk', 'SimulationOutput_Walk_0000000000000000')
+                        #FD(path_simulation, 'walk_1stpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')          # Previous code using kinematics as objective function
+                        #FD(path_simulation, 'walk_2ndpart_withoutAFO', 'SimulationOutput_Walk_0000000000000000')
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Running simulation if the gait related string is input
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    else:
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        # The some input parameters for the model development, including the folders and models
+        foldername_run='Running simulation'
+        run_setup_file_foldername=os.path.join(foldername_run, 'Setup files')
+        run_model_output=os.path.join(foldername_run, 'Model outputs')
+        # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
+        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder for the python script: python simulation
+        path_setupfiles=os.path.join(path_simulation, run_setup_file_foldername)                                      # The path of the simulation setup files
+        SetupFileGeneration.dircreation(os.path.join(path_simulation, run_model_output))                        # Create the Model outputs folder, if the folder doesn't exit, then create it
+        os.chdir(path_setupfiles)                                                                                                                     # Set the current working directory: Running simulation/Setup files
+        if SimulationType=='Scaling_run' or SimulationType=='scaling_run' :
+            Scaling(path_simulation, 'run')
+        elif SimulationType=='IK_run':
+            # Scaling(path_simulation, 'run')
+            IK(path_simulation, 'run')
+        elif SimulationType=='RRA_run' or SimulationType=='rra_run':
+            # Scaling(path_simulation, 'run')
+            # IK(path_simulation, 'run')
+            RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
+        elif SimulationType=='CMC_run' or SimulationType=='cmc_run':
+            Scaling(path_simulation, 'run')
+            IK(path_simulation, 'run')
+            RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
+            CMC(path_simulation, 'run', 'SimulationOutput_Run_0000000000000000')
+        elif SimulationType=='FD_run' or SimulationType=='FD_RUN' or SimulationType=='Run' or SimulationType=='run':
+            Scaling(path_simulation, 'run')
+            IK(path_simulation, 'run')
+            RRA(path_simulation, 'run')
+            MuscleScaling (path_simulation, 'run', "Fullbodymodel_Run_RRA_modification_final.osim", "Fullbodymodel_Run_RRA_modification_final.osim", 1.70, 1.78, 15)
+            CMC(path_simulation, 'run', '')
+            FD(path_simulation, 'run_withoutAFO', 'SimulationOutput_Run_0000000000000000')
+        elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' or SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            # The some input parameters for the model development, including the folders and models
+            foldername_run='Running simulation'
+            run_setup_file_foldername=os.path.join(foldername_run, 'Setup files')
+            run_model_output=os.path.join(foldername_run, 'Model outputs')
+            model_AFO_origin_folder='3_RRA'
+            model_AFO_origin_file='Fullbodymodel_Run_RRA_adjusted.osim'
+            model_AFO_final_file='Fullbodymodel_Run_RRA_final_AFO.osim'
+            # The Global coordinates for the right tibial, calcn and talus centers
+            tibial_r_center=[-0.05590, 0.41140, 0.08558]
+            calcn_r_center=[-0.12120, -0.06647, 0.09444]
+            talus_r_center=[-0.06667, -0.019561, 0.08558]
+            # The Global coordinates for the left tibial, calcn and talus centers
+            tibial_l_center=[-0.05590, 0.41140, -0.08558]
+            calcn_l_center=[-0.12120, -0.06647, -0.09444]
+            talus_l_center=[-0.06667, -0.019561, -0.08558]
+            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+            Model_AFO_origin=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_origin_file)
+            Model_AFO_final=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_final_file)
+            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter('AFO Design', 'AFO input.txt', tibial_r_center, calcn_r_center, talus_r_center)
+            # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
+            AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
+            #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+            os.chdir(os.path.join(path_simulation, run_model_output, model_AFO_origin_folder))
+            if SimulationType=='Run_AFO' or SimulationType=='run_AFO':
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system(model_AFO_final_file)
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    CMC(path_simulation, 'run_AFO', results_directory)
+            elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
+                if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
+                    os.system(model_AFO_origin_file)
+                elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
+                    CMC(path_simulation, 'run', 'SimulationOutput_Run_0000000000000000')
+        else:
+            print('Input error: invalid input, please try again! Try "Scaling", "IK", "RRA", "CMC", "FD", or "Walk" or "Gait_AFO".')
+        #
+"""
