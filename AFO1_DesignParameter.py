@@ -29,7 +29,7 @@ def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_cente
 
 
     [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables
-    AFO_FLrelationship=AFO9_MeshMechanics.MeshMechanics(strap_orientations, theta_0_values, n_elements)
+    AFO_FLrelationship=AFO9_MeshMechanics.MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements)
     AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     AFO_representation=AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center)
     Platform_inclination=Platform_inclination
@@ -133,7 +133,7 @@ def AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center
     # The locations of the centers of the AFO cross sections at top and bottom
     AFO_bottom_center_global=np.array(talus_center)+np.array(AFO_bottom_center)
     AFO_top_center_global=np.array(talus_center)+np.array(AFO_bottom_center)+np.array([0, AFO_height, 0])
-    AFO_bottom=AFO_top=AFO_stripe_length=[]
+    AFO_bottom=AFO_top=AFO_strap_length=[]
     for i in range (len(AFO_bottom_location)):
         # The coordinates of the endpoint at the AFO bottom in the global CS
         bottom_endpoint_angle=AFO_bottom_location[i]*math.pi/180
