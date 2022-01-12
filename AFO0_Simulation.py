@@ -15,8 +15,8 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, results_director
         # The some input parameters for the model development, including the folders and models
         foldername_droplanding='Drop landing'                                                                                           # The folders for drop landing model and simulation
         msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
-        folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
-        txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
+        #folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
+        #txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
         droplanding_forward_setup_file='default_Setup_ForwardTool.xml'                                               # The setup file for the drop landing forward dynamics
         # The Global coordinates for right tibial and calcn for drop landing model
         tibial_center = np.array([-0.07520, -0.46192, 0.0835])                                                                    # tibial center coordinates in drop landing MBD model (position 0) in global coordinate system
