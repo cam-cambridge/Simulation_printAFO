@@ -3,7 +3,7 @@ import math
 import AFO_Simulation_Optimization
 import numpy as np
 
-def objective(Subtablar_drop, MusDiff_walk, MusDiff_run):
+def objective(Subtalar_drop, MusDiff_walk, MusDiff_run):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
 	Func=abs(MusDiff_walk)+abs(MusDiff_run)+math.exp(Subtalar_drop)
@@ -39,31 +39,31 @@ def derivative(solution, cmp_marker):
 	else:
 		AFO_bottom_location[0]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 1
 		# Call the module Gradient_calculation to calculate the gradient for AFO_bottom_location of strap 1
-		Gradient_bottom_location_strap1=Gradient_calculation(solution)
+		Gradient_bottom_location_strap1=Gradient_calculation(solution, Objective_ini)
 		AFO_bottom_location[0]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 1
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 2
 	if cmp_marker[0][1]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_bottom_location_strap2=0
 	else:
 		AFO_bottom_location[1]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 2
-		Gradient_bottom_location_strap2=Gradient_calculation(solution)
+		Gradient_bottom_location_strap2=Gradient_calculation(solution, Objective_ini)
 		AFO_bottom_location[1]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 2
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 3
 	if cmp_marker[0][2]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_bottom_location_strap3=0
 	else:
 		AFO_bottom_location[2]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 3
-		Gradient_bottom_location_strap3=Gradient_calculation(solution)
+		Gradient_bottom_location_strap3=Gradient_calculation(solution, Objective_ini)
 		AFO_bottom_location[2]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 3
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 4
 	if cmp_marker[0][3]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_bottom_location_strap4=0
 	else:
 		AFO_bottom_location[3]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 4
-		Gradient_bottom_location_strap4=Gradient_calculation(solution)
+		Gradient_bottom_location_strap4=Gradient_calculation(solution, Objective_ini)
 		AFO_bottom_location[3]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 4
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable AFO_strap_orientation
@@ -71,112 +71,112 @@ def derivative(solution, cmp_marker):
 	# AFO_strap_orientation for strap 1
 	# Cost function for small increased AFO_strap_orientation for strap 1
 	if cmp_marker[1][0]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_strap_orientation_strap1=0
 	else:
-		strap_orientation[0]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 1
+		AFO_strap_orientation[0]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 1
 		# Call the module Gradient_calculation to calculate the gradient for AFO_strap_orientation of strap 1
-		Gradient_strap_orientation_strap1=Gradient_calculation(solution)
-		strap_orientation[0]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 1
+		Gradient_strap_orientation_strap1=Gradient_calculation(solution, Objective_ini)
+		AFO_strap_orientation[0]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 1
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 2
 	if cmp_marker[1][1]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_strap_orientation_strap2=0
 	else:
-		strap_orientation[1]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 2
-		Gradient_strap_orientation_strap2=Gradient_calculation(solution)
-		strap_orientation[1]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 2
+		AFO_strap_orientation[1]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 2
+		Gradient_strap_orientation_strap2=Gradient_calculation(solution, Objective_ini)
+		AFO_strap_orientation[1]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 2
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 3
 	if cmp_marker[1][2]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_strap_orientation_strap3=0
 	else:
-		strap_orientation[2]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 3
-		Gradient_strap_orientation_strap3=Gradient_calculation(solution)
-		strap_orientation[2]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 3
+		AFO_strap_orientation[2]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 3
+		Gradient_strap_orientation_strap3=Gradient_calculation(solution, Objective_ini)
+		AFO_strap_orientation[2]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 3
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 4
 	if cmp_marker[1][3]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_strap_orientation_strap4=0
 	else:
-		strap_orientation[3]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 4
-		Gradient_strap_orientation_strap4=Gradient_calculation(solution)
-		strap_orientation[3]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 4
+		AFO_strap_orientation[3]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 4
+		Gradient_strap_orientation_strap4=Gradient_calculation(solution, Objective_ini)
+		AFO_strap_orientation[3]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 4
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable AFO_FL_mplification
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# AFO_FL_amplification for strap 1
 	# Cost function for small increased AFO_FL_amplification for strap 1
 	if cmp_marker[2][0]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_theta_0_values_strap1=0
 	else:
-		AFO_FL_amplification[0]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 1
+		theta_0_values[0]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 1
 		# Call the module Gradient_calculation to calculate the gradient for AFO_FL_mplification of strap 1
-		Gradient_AFO_FL_amplification_strap1=Gradient_calculation(solution)
-		AFO_FL_amplification[0]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 1
+		Gradient_theta_0_values_strap1=Gradient_calculation(solution, Objective_ini)
+		theta_0_values[0]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 1
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_amplification for strap 2
 	if cmp_marker[2][1]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_theta_0_values_strap2=0
 	else:
-		AFO_FL_amplification[1]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 2
-		Gradient_AFO_FL_amplification_strap2=Gradient_calculation(solution)
-		AFO_FL_amplification[1]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 2
+		theta_0_values[1]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 2
+		Gradient_theta_0_values_strap2=Gradient_calculation(solution, Objective_ini)
+		theta_0_values[1]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 2
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_amplification for strap 3
 	if cmp_marker[2][2]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_theta_0_values_strap3=0
 	else:
-		AFO_FL_amplification[2]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
-		Gradient_AFO_FL_amplification_strap3=Gradient_calculation(solution)
-		AFO_FL_amplification[2]-=V_increment[2]
+		theta_0_values[2]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
+		Gradient_theta_0_values_strap3=Gradient_calculation(solution, Objective_ini)
+		theta_0_values[2]-=V_increment[2]
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_amplification for strap 4
 	if cmp_marker[2][3]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_theta_0_values_strap4=0
 	else:
-		AFO_FL_amplification[3]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
-		Gradient_AFO_FL_amplification_strap4=Gradient_calculation(solution)
-		AFO_FL_amplification[3]-=V_increment[2]
+		theta_0_values[3]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
+		Gradient_theta_0_values_strap4=Gradient_calculation(solution, Objective_ini)
+		theta_0_values[3]-=V_increment[2]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable AFO_FL_shift
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# AFO_FL_shift for strap 1
 	# Cost function for small increased AFO_FL_shift for strap 1
 	if cmp_marker[3][0]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_n_elements_strap1=0
 	else:
-		AFO_FL_shift[0]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 1
+		n_elements[0]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 1
 		# Call the module Gradient_calculation to calculate the gradient for AFO_FL_shift of strap 1
-		Gradient_AFO_FL_shift_strap1=Gradient_calculation(solution)
-		AFO_FL_shift[0]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 1
+		Gradient_n_elements_strap1=Gradient_calculation(solution, Objective_ini)
+		n_elements[0]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 1
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_shift for strap 2
 	if cmp_marker[3][1]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_n_elements_strap2=0
 	else:
-		AFO_FL_shift[1]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 2
-		Gradient_AFO_FL_shift_strap2=Gradient_calculation(solution)
-		AFO_FL_shift[1]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 2
+		n_elements[1]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 2
+		Gradient_n_elements_strap2=Gradient_calculation(solution, Objective_ini)
+		n_elements[1]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 2
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_shift for strap 3
 	if cmp_marker[3][2]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_n_elements_strap3=0
 	else:
-		AFO_FL_shift[2]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 3
-		Gradient_AFO_FL_shift_strap3=Gradient_calculation(solution)
-		AFO_FL_shift[2]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 3
+		n_elements[2]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 3
+		Gradient_n_elements_strap3=Gradient_calculation(solution, Objective_ini)
+		n_elements[2]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 3
 	#--------------------------------------------------------------------------------------
 	# AFO_FL_shift for strap 4
 	if cmp_marker[3][3]=='False':
-		Gradient_bottom_location_strap1=0
+		Gradient_n_elements_strap4=0
 	else:
-		AFO_FL_shift[3]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 4
-		Gradient_AFO_FL_shift_strap4=Gradient_calculation(solution)
-		AFO_FL_shift[3]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 4
+		n_elements[3]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 4
+		Gradient_n_elements_strap4=Gradient_calculation(solution, Objective_ini)
+		n_elements[3]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 4
 	return [[Gradient_bottom_location_strap1, Gradient_bottom_location_strap2, Gradient_bottom_location_strap3, Gradient_bottom_location_strap4],
                 [Gradient_strap_orientation_strap1, Gradient_strap_orientation_strap2, Gradient_strap_orientation_strap3, Gradient_strap_orientation_strap4],
-			    [Gradient_AFO_FL_amplification_strap1, Gradient_AFO_FL_amplification_strap2, Gradient_AFO_FL_amplification_strap3, Gradient_AFO_FL_amplification_strap4],
-			    [Gradient_AFO_FL_shift_strap1, Gradient_AFO_FL_shift_strap2, Gradient_AFO_FL_shift_strap3, Gradient_AFO_FL_shift_strap4]]
+			    [Gradient_theta_0_values_strap1, Gradient_theta_0_values_strap2, Gradient_theta_0_values_strap3, Gradient_theta_0_values_strap4],
+			    [Gradient_n_elements_strap1, Gradient_n_elements_strap2, Gradient_n_elements_strap3, Gradient_n_elements_strap4]]
 #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
 #input a small increase while keeping the other design parameters constant
@@ -186,17 +186,16 @@ def derivative(solution, cmp_marker):
 #but it can be different for each design parameter
 
 # This defines the gradient descent algorithm
-def gradient_descent(objective, derivative, bounds, n_iter, step_size):
+def gradient_descent(objective, derivative, n_iter, step_size):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [0.38,0.38,0.38,0.38], [8, 8, 8, 8]]
-	bounds_upper=[[45, 60, 240, 315], [-20, -20, -20, -20], [0.38,0.38,0.38,0.38], [4,4,4,4]]
-	bounds_low=[[10, 120, 300, 345], [20, 20, 20, 20], [0,0,0,0], [5,5,5,5]]
+	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [0.38,0.38,0.38,0.38], [30, 100, 100, 30]]
+	bounds_upper=[[90, 180, 325, 360], [70, 70, 70, 70], [0.38,0.38,0.38,0.38], [300,300,300,300]]
+	bounds_low=[[0, 45, 180, 270], [-70, -70, -70, -70], [0,0,0,0], [0,0,0,0]]
 
     #it is just a starting point for the optimisation
     # run the gradient descent
-	gradient=gradient_T=[[0]*4]*4
 	for i in range(n_iter):
 		# calculate gradient
 		solution=list(solution)
@@ -228,10 +227,10 @@ def gradient_descent(objective, derivative, bounds, n_iter, step_size):
 	return solution
 
 # define the total iterations
-n_iter = 30
+n_iter = 2
 # define the step size, this value is something you'll probably need to experiment with
-step_size = 0.1
+step_size = 0.5
 # perform the gradient descent search
-best, score = gradient_descent(objective, derivative, bounds, n_iter, step_size)
+best, score = gradient_descent(objective, derivative, n_iter, step_size)
 print('Done!')
 print('f(%s) = %f' % (best, score))
