@@ -3,8 +3,15 @@ import math
 import numpy as np
 import AFO9_MeshMechanics
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-#  #  Define the design parameters for the AFO, including the fixed parameters and design varaibels
+#  Define the design parameters for the AFO, including the fixed parameters and design varaibels
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# Fixed parameters
+AFO_bottom_center=[0, 0, 0]
+AFO_cylinder_radius=0.0365
+AFO_height=0.1
+Platform_inclination=[25, 0, 0]
+AFO_Fmagnitude=2
+
 def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center):
     # Input:        (1)  Input_directory: the folder that include the AFO input design parameter file - AFO input.txt
     #                  (2)  Input_file: the text file including the design parameters of AFO: AFO input.txt
@@ -14,26 +21,13 @@ def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_cente
     #                 (3)  Platform_inclination: the inclination of the platform
     # Get the full path of the directory and .txt file for the input parameters
 
-    # Fixed parameters
-    AFO_bottom_center=[0, 0, 0]
-    AFO_cylinder_radius=0.0365
-    AFO_height=0.044
-    Platform_inclination=[25, 0, 0]
-    AFO_Fmagnitude=2
-
-    # Design variables
-    AFO_bottom_location=[14, 101, 259, 346]
-    AFO_strap_orientations=[-40, 0, 0, 50]
-    theta_0_values = [0.380506377, 0.380506377, 0.380506377, 0.380506377] # in radians, wave starting angle, function of sine wave amplitude and period
-    n_elements = [8, 8, 8, 8] # number of elements in the mesh
-
-
-    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables
+    global Platform_inclination, AFO_Fmagnitude # Fixed parameters_global Variables
+    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables  # Design variables
     AFO_FLrelationship=AFO9_MeshMechanics.MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements)
     AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     AFO_representation=AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center)
     Platform_inclination=Platform_inclination
-
+    return AFO_representation, AFO_material, Platform_inclination
     """
     # 20210109
     path_script = os.path.realpath(__file__)                                                                                              # The full document path of the python scrip
@@ -56,9 +50,8 @@ def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_cente
     # Platform_inclination=DesignParameters[5]
     Platform_inclination=DesignParameters[5]
     """
-    return AFO_representation, AFO_material, Platform_inclination
 
-
+"""
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Collect all the AFO design parameters from the txt file: AFO input.txt
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -100,6 +93,7 @@ def AFOParameterInput(File_AFOinput):
         AFO_FLrelationship=np.append(AFO_FLrelationship, AFO_FL_T)
     AFO_FLrelationship=AFO_FLrelationship.reshape(-1,int(len(AFO_FLrelationship)/len(AFO_bottom_location_angle)))
     return AFO_bottom_location, AFO_cylinder_radius, AFO_height, AFO_bottom_location_angle, AFO_stripe_orientations, Platform_inclination, AFO_Fmagnitude, AFO_FLrelationship
+"""
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
@@ -120,15 +114,9 @@ def AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center
     AFO_bottom_location_angle=DesignParameter[3]
     AFO_stripe_orientations=DesignParameter[4]
     """
-
-    AFO_bottom_center=[0, 0, 0]
-    AFO_cylinder_radius=0.0365
-    AFO_height=0.044
-
-    # Design variables
-    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables
-    #AFO_bottom_location=[14, 101, 259, 346]
-    #AFO_strap_orientations=[-40, 0, 0, 50]
+    
+    global AFO_bottom_center, AFO_height
+    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables    # Design variables
 
     # The locations of the centers of the AFO cross sections at top and bottom
     AFO_bottom_center_global=np.array(talus_center)+np.array(AFO_bottom_center)
@@ -254,9 +242,6 @@ def transformation(M_origin,Coord_local_origin,Coord_local_vector):
             M_new.append(T)
             T=[]
         return M_new
-
-
-
 
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
