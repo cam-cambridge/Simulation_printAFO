@@ -48,7 +48,7 @@ def Main_Simulation (DesignVariables):
     # The total muscle force for all the muscles in the right leg
     data_walk_AFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_walk_AFO, Results_parameter_walk, 'cmc_MuscleAnalysis_TendonForce.sto')
     diff_average_musforce_WholeMuscle_walk=[]
-    for muscle_num in range (0, len(data_walk_withoutAFO[0])):
+    for muscle_num in range (1, len(data_walk_withoutAFO[0])):
         [diff_total_musforce_walk, diff_average_musforce_walk, diff_max_musforce_walk]=AFO4_ResultsCollection.curvecomparison(data_walk_withoutAFO, data_walk_AFO, muscle_num, len(data_walk_withoutAFO))
         diff_average_musforce_WholeMuscle_walk.append(diff_average_musforce_walk)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_walk=np.sum(diff_average_musforce_WholeMuscle_walk)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
@@ -69,7 +69,7 @@ def Main_Simulation (DesignVariables):
     # The total muscle force for all the muscles in the right leg
     data_run_AFO=AFO4_ResultsCollection.Simulationresultscollection(output_folder_run_AFO, Results_parameter_run, 'cmc_MuscleAnalysis_TendonForce.sto')
     diff_average_musforce_WholeMuscle_run=[]
-    for muscle_num_r in range (0, len(data_run_withoutAFO[0])):
+    for muscle_num_r in range (1, len(data_run_withoutAFO[0])):
         [diff_total_musforce_run, diff_average_musforce_run, diff_max_musforce_run]=AFO4_ResultsCollection.curvecomparison(data_run_withoutAFO, data_run_AFO, muscle_num_r, len(data_run_withoutAFO))
         diff_average_musforce_WholeMuscle_run.append(diff_average_musforce_run)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
