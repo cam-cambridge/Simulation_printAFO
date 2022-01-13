@@ -3,10 +3,10 @@ import math
 import AFO_Simulation_Optimization
 import numpy as np
 
-def objective(Subtalar_drop, MusDiff_walk, MusDiff_run):
+def objective(Subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk)+abs(MusDiff_run)+math.exp(Subtalar_drop)
+	Func=abs(MusDiff_walk)+abs(MusDiff_run)+math.exp(Subtalar_drop)+e_elements/100
 	return Func
 
 # derivative of objective function
@@ -216,7 +216,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		solution = np.array(solution) - step_size * np.array(gradient)
 		# evaluate candidate point
 		"""
-		[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution[0], solution[1], solution[2], solution[3])
+		[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution)
 		# Calculate the objective function for the solution with small change
 		Objective_eval=objective(Subtablar_drop, MusDiff_walk, MusDiff_run)
 		# report progress
