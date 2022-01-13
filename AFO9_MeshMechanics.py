@@ -13,10 +13,11 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
         wave_height = (wave_length / 2) * math.tan(theta_0) # in mm
         wave_hypotenuse = wave_height / math.sin(theta_0) # in mm
         CSA_total = CSA_element * n_elements # in mm^2
+        E_effective = np.around((2041.1 - (2729.9 * (theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
 
         # populate decreasing array of theta based on starting value
         percentage = 0.9 # determines step change in theta values
-        values = 80 # determines number of values in theta array
+        values = 1000 # determines number of values in theta array
         theta_array = theta_0 * np.full(values,percentage).cumprod()
         theta_array = np.insert(theta_array,0,theta_0)
 
@@ -38,7 +39,7 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
 
             # calculate extension due to stretching under load based on Young's modulus
             stress_stretching = Force / CSA_total
-            strain_stretching = stress_stretching / Youngs
+            strain_stretching = stress_stretching / E_effective
             extension_stretching = strain_stretching * strap_length
 
             # sum extension due to both processes
