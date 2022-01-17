@@ -10,7 +10,7 @@ AFO_bottom_center=[0, 0, 0]
 AFO_cylinder_radius=0.0365
 AFO_height=0.1
 Platform_inclination=[25, 0, 0]
-AFO_Fmagnitude=2
+AFO_Fmagnitude=1
 
 def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center):
     # Input:        (1)  Input_directory: the folder that include the AFO input design parameter file - AFO input.txt
@@ -114,7 +114,7 @@ def AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center
     AFO_bottom_location_angle=DesignParameter[3]
     AFO_stripe_orientations=DesignParameter[4]
     """
-    
+
     global AFO_bottom_center, AFO_height
     [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables    # Design variables
 
