@@ -2,6 +2,8 @@
 import math
 import AFO_Simulation_Optimization
 import numpy as np
+import copy
+import multiprocessing
 
 def objective(Subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	# This is the cost function
@@ -9,18 +11,18 @@ def objective(Subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (Subtalar_drop-15))+e_elements/100
 	return Func
 
+# Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
+def Gradient_calculation(solution_smallchange, Objective_ini):
+	# Run the simulation of drop landing, walk and running
+	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange)
+	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
+	Objective_SmallChange=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
+	# Calculate the  gradient after the small change
+	Gradient=Objective_SmallChange - Objective_ini
+	return Gradient
+
 # derivative of objective function
 def derivative(solution):
-	# Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
-	def Gradient_calculation(solution_smallchange, Objective_ini):
-		# Run the simulation of drop landing, walk and running
-		[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange)
-		# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
-		Objective_SmallChange=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
-		# Calculate the  gradient after the small change
-		Gradient=Objective_SmallChange - Objective_ini
-		return Gradient
-
 	# Input a small increase for each design parameter
 	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
 	V_increment=[1,1,1,5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
@@ -34,97 +36,103 @@ def derivative(solution):
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 1
 	# Cost function for small increased AFO_bottom_location for strap 1
-	AFO_bottom_location[0]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 1
+	solution_bottom_location_smallchange1=copy.deepcopu(solution)
+	solution_bottom_location_smallchange1[0][0]+=V_increment[0]
 	# Call the module Gradient_calculation to calculate the gradient for AFO_bottom_location of strap 1
-	Gradient_bottom_location_strap1=Gradient_calculation(solution, Objective_ini)
-	AFO_bottom_location[0]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 1
+	p11=multiprocessing.Process(target=Gradient_calculation, args=(solution_bottom_location_smallchange1, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 2
-	AFO_bottom_location[1]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 2
-	Gradient_bottom_location_strap2=Gradient_calculation(solution, Objective_ini)
-	AFO_bottom_location[1]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 2
+	solution_bottom_location_smallchange2=copy.deepcopu(solution)
+	solution_bottom_location_smallchange2[0][1]+=V_increment[0]
+	p12=multiprocessing.Process(target=Gradient_calculation, args=(solution_bottom_location_smallchange2, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 3
-	AFO_bottom_location[2]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 3
-	Gradient_bottom_location_strap3=Gradient_calculation(solution, Objective_ini)
-	AFO_bottom_location[2]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 3
+	solution_bottom_location_smallchange3=copy.deepcopu(solution)
+	solution_bottom_location_smallchange3[0][2]+=V_increment[0]
+	p13=multiprocessing.Process(target=Gradient_calculation, args=(solution_bottom_location_smallchange3, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_bottom_location for strap 4
-	AFO_bottom_location[3]+=V_increment[0]                                                                 # small incremen for design variable AFO_bottom_location for strap 4
-	Gradient_bottom_location_strap4=Gradient_calculation(solution, Objective_ini)
-	AFO_bottom_location[3]-=V_increment[0]                                                                 # recover the data to original solution  for design variable AFO_bottom_location for strap 4
+	solution_bottom_location_smallchange4=copy.deepcopu(solution)
+	solution_bottom_location_smallchange4[0][3]+=V_increment[0]
+	p14=multiprocessing.Process(target=Gradient_calculation, args=(solution_bottom_location_smallchange4, Objective_ini))
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable AFO_strap_orientation
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 1
 	# Cost function for small increased AFO_strap_orientation for strap 1
-	AFO_strap_orientation[0]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 1
+	solution_strap_orientation_smallchange1=copy.deepcopy(solution)
+	solution_strap_orientation_smallchange1+=V_increment[1]
 	# Call the module Gradient_calculation to calculate the gradient for AFO_strap_orientation of strap 1
-	Gradient_strap_orientation_strap1=Gradient_calculation(solution, Objective_ini)
-	AFO_strap_orientation[0]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 1
+	p21=multiprocessing.Process(target=Gradient_calculation, args=(solution_strap_orientation_smallchange1, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 2
-	AFO_strap_orientation[1]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 2
-	Gradient_strap_orientation_strap2=Gradient_calculation(solution, Objective_ini)
-	AFO_strap_orientation[1]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 2
+	solution_strap_orientation_smallchange2=copy.deepcopy(solution)
+	solution_strap_orientation_smallchange2+=V_increment[1]
+	p22=multiprocessing.Process(target=Gradient_calculation, args=(solution_strap_orientation_smallchange2, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 3
-	AFO_strap_orientation[2]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 3
-	Gradient_strap_orientation_strap3=Gradient_calculation(solution, Objective_ini)
-	AFO_strap_orientation[2]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 3
+	solution_strap_orientation_smallchange3=copy.deepcopy(solution)
+	solution_strap_orientation_smallchange3+=V_increment[1]
+	p23=multiprocessing.Process(target=Gradient_calculation, args=(solution_strap_orientation_smallchange3, Objective_ini))
 	#--------------------------------------------------------------------------------------
 	# AFO_strap_orientation for strap 4
-	AFO_strap_orientation[3]+=V_increment[1]                                                                 # small incremen for design variable strap_orientation for strap 4
-	Gradient_strap_orientation_strap4=Gradient_calculation(solution, Objective_ini)
-	AFO_strap_orientation[3]-=V_increment[1]                                                                 # recover the data to original solution  for design variable strap_orientation for strap 4
+	solution_strap_orientation_smallchange4=copy.deepcopy(solution)
+	solution_strap_orientation_smallchange4+=V_increment[1]
+	p24=multiprocessing.Process(target=Gradient_calculation, args=(solution_strap_orientation_smallchange4, Objective_ini))
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# The derivative for design variable AFO_FL_mplification
+	# The derivative for design variable theta_0_values
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# AFO_FL_amplification for strap 1
-	# Cost function for small increased AFO_FL_amplification for strap 1
-	theta_0_values[0]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 1
-	# Call the module Gradient_calculation to calculate the gradient for AFO_FL_mplification of strap 1
-	Gradient_theta_0_values_strap1=Gradient_calculation(solution, Objective_ini)
-	theta_0_values[0]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 1
+	# theta_0_values for strap 1
+	# Cost function for small increased theta_0_values for strap 1
+	solution_theta_0_values_smallchange1=copy.deepcopy(solution)
+	solution_theta_0_values_smallchange1+=V_increment[2]
+	# Call the module Gradient_calculation to calculate the gradient for theta_0_values of strap 1
+	p31=multiprocessing.Process(target=Gradient_calculation, args=(solution_theta_0_values_smallchange1, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_amplification for strap 2
-	theta_0_values[1]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 2
-	Gradient_theta_0_values_strap2=Gradient_calculation(solution, Objective_ini)
-	theta_0_values[1]-=V_increment[2]                                                                 # recover the data to original solution  for design variable AFO_FL_amplification for strap 2
+	# theta_0_values for strap 2
+	solution_theta_0_values_smallchange2=copy.deepcopy(solution)
+	solution_theta_0_values_smallchange2+=V_increment[2]
+	p32=multiprocessing.Process(target=Gradient_calculation, args=(solution_theta_0_values_smallchange2, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_amplification for strap 3
-	theta_0_values[2]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
-	Gradient_theta_0_values_strap3=Gradient_calculation(solution, Objective_ini)
-	theta_0_values[2]-=V_increment[2]
+	# theta_0_values for strap 3
+	solution_theta_0_values_smallchange3=copy.deepcopy(solution)
+	solution_theta_0_values_smallchange3+=V_increment[2]
+	p33=multiprocessing.Process(target=Gradient_calculation, args=(solution_theta_0_values_smallchange3, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_amplification for strap 4
-	theta_0_values[3]+=V_increment[2]                                                                 # small incremen for design variable AFO_FL_amplification for strap 3
-	Gradient_theta_0_values_strap4=Gradient_calculation(solution, Objective_ini)
-	theta_0_values[3]-=V_increment[2]
+	# theta_0_values for strap 4
+	solution_theta_0_values_smallchange4=copy.deepcopy(solution)
+	solution_theta_0_values_smallchange4+=V_increment[2]
+	p34=multiprocessing.Process(target=Gradient_calculation, args=(solution_theta_0_values_smallchange4, Objective_ini))
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# The derivative for design variable AFO_FL_shift
+	# The derivative for design variable n_elements
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# AFO_FL_shift for strap 1
-	# Cost function for small increased AFO_FL_shift for strap 1
-	n_elements[0]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 1
-	# Call the module Gradient_calculation to calculate the gradient for AFO_FL_shift of strap 1
-	Gradient_n_elements_strap1=Gradient_calculation(solution, Objective_ini)
-	n_elements[0]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 1
+	# n_elements for strap 1
+	# Cost function for small increased n_elements for strap 1
+	solution_n_elements_smallchange1=copy.deepcopy(solution)
+	solution_n_elements_smallchange1+=V_increment[3]
+	# Call the module Gradient_calculation to calculate the gradient for n_elements of strap 1
+	p41=multiprocessing.Process(target=Gradient_calculation, args=(solution_n_elements_smallchange1, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_shift for strap 2
-	n_elements[1]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 2
-	Gradient_n_elements_strap2=Gradient_calculation(solution, Objective_ini)
-	n_elements[1]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 2
+	# n_elements for strap 2
+	solution_n_elements_smallchange2=copy.deepcopy(solution)
+	solution_n_elements_smallchange2+=V_increment[3]
+	p42=multiprocessing.Process(target=Gradient_calculation, args=(solution_n_elements_smallchange2, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_shift for strap 3
-	n_elements[2]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 3
-	Gradient_n_elements_strap3=Gradient_calculation(solution, Objective_ini)
-	n_elements[2]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 3
+	# n_elements for strap 3
+	solution_n_elements_smallchange3=copy.deepcopy(solution)
+	solution_n_elements_smallchange3+=V_increment[3]
+	p43=multiprocessing.Process(target=Gradient_calculation, args=(solution_n_elements_smallchange3, Objective_ini))
 	#--------------------------------------------------------------------------------------
-	# AFO_FL_shift for strap 4
-	n_elements[3]+=V_increment[3]                                                                 # small incremen for design variable AFO_FL_shift for strap 4
-	Gradient_n_elements_strap4=Gradient_calculation(solution, Objective_ini)
-	n_elements[3]-=V_increment[3]                                                                 # recover the data to original solution  for design variable AFO_FL_shift for strap 4
+	# n_elements for strap 4
+	solution_n_elements_smallchange4=copy.deepcopy(solution)
+	solution_n_elements_smallchange4+=V_increment[3]
+	p44=multiprocessing.Process(target=Gradient_calculation, args=(solution_n_elements_smallchange4, Objective_ini))
+
+	p11.start(); p12.start(); p13.start(); p14.start();  p21.start(); p22.start(); p23.start(); p24.start()
+	p31.start(); p32.start(); p33.start(); p34.start();  p41.start(); p42.start(); p43.start(); p44.start()
+	p11.join(); p12.join(); p13.join(); p14.join(); p21.join(); p22.join(); p23.join(); p24.join()
+	p31.join(); p32.join(); p33.join(); p34.join(); p41.join(); p42.join(); p43.join(); p44.join()
+
 	return [[Gradient_bottom_location_strap1, Gradient_bottom_location_strap2, Gradient_bottom_location_strap3, Gradient_bottom_location_strap4],
                 [Gradient_strap_orientation_strap1, Gradient_strap_orientation_strap2, Gradient_strap_orientation_strap3, Gradient_strap_orientation_strap4],
 			    [Gradient_theta_0_values_strap1, Gradient_theta_0_values_strap2, Gradient_theta_0_values_strap3, Gradient_theta_0_values_strap4],
