@@ -219,3 +219,4 @@ class Population:
 if __name__ == '__main__':
                 pop = Population (20, 3, 3, [0, 127], [0, 1.0], 1, 1, 10, 'AFO simulation results\AFO simulation results.xls')
                 pop.run()
+#
