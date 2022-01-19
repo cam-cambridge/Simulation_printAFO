@@ -8,7 +8,7 @@ import multiprocessing
 def objective(Subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (Subtalar_drop-15))+e_elements/100
+	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (Subtalar_drop-15))+n_elements/100
 	return Func
 
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -32,8 +32,44 @@ def derivative(solution):
 	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution)
 	Objective_ini=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# The derivative for design variable AFO_bottom_location
+	# The derivative for design variable
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	# Small change for the design variables
+	# Small chaneg for the design variable_AFO_bottom_location for strap1, strap2, strap3 amd strap4
+	solution_bottom_location_smallchange1, solution_bottom_location_smallchange2=copy.deepcopu(solution), copy.deepcopu(solution)
+	solution_bottom_location_smallchange3, solution_bottom_location_smallchange4=copy.deepcopu(solution), copy.deepcopu(solution)
+	solution_bottom_location_smallchange1[0][0]+=V_increment[0]; solution_bottom_location_smallchange2[0][1]+=V_increment[0]
+	solution_bottom_location_smallchange3[0][2]+=V_increment[0]; solution_bottom_location_smallchange4[0][3]+=V_increment[0]
+	# Small change for the design variable_AFO_strap_orientation for strap1, strap2, strap3 amd strap4
+	solution_strap_orientation_smallchange1, solution_strap_orientation_smallchange2=copy.deepcopu(solution), copy.deepcopu(solution)
+	solution_strap_orientation_smallchange3, solution_strap_orientation_smallchange4=copy.deepcopu(solution), copy.deepcopu(solution)
+	solution_strap_orientation_smallchange1[1][0]+=V_increment[1]; solution_strap_orientation_smallchange2[1][1]+=V_increment[1]
+	solution_strap_orientation_smallchange3[1][2]+=V_increment[1]; solution_strap_orientation_smallchange4[1][3]+=V_increment[1]
+	# Small change for the design variable_theta_0_values
+	solution_theta_0_values_smallchange1, solution_theta_0_values_smallchange2=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_theta_0_values_smallchange3, solution_theta_0_values_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_theta_0_values_smallchange1[2][0]+=V_increment[2]; solution_theta_0_values_smallchange2[2][1]+=V_increment[2]
+	solution_theta_0_values_smallchange3[2][2]+=V_increment[2]; solution_theta_0_values_smallchange4[2][3]+=V_increment[2]
+	# Small change for the design variable_n_elements
+	solution_n_elements_smallchange1, solution_n_elements_smallchange2=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_n_elements_smallchange3, solution_n_elements_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_n_elements_smallchange1[3][0]+=V_increment[3]; solution_n_elements_smallchange2[3][1]+=V_increment[3]
+	solution_n_elements_smallchange3[3][2]+=V_increment[3]; solution_n_elements_smallchange4[3][3]+=V_increment[3]
+
+	solution_smallchange_list=[solution_bottom_location_smallchange1, solution_bottom_location_smallchange2, solution_bottom_location_smallchange3, solution_bottom_location_smallchange4,
+	                                             solution_strap_orientation_smallchange1, solution_strap_orientation_smallchange2, solution_strap_orientation_smallchange3, solution_strap_orientation_smallchange4,
+												 solution_theta_0_values_smallchange1, solution_theta_0_values_smallchange2, solution_theta_0_values_smallchange3, solution_theta_0_values_smallchange4,
+												 solution_n_elements_smallchange1, solution_n_elements_smallchange2, solution_n_elements_smallchange3, solution_n_elements_smallchange4]
+	Gradient=[]
+	pool=Pool(processes=16)
+	for solution_smallchange in solution_smallchange_list:
+		gradient_temp=pool.apply_async(Gradient_calculation, (solution_smallchange, Objective_ini))
+		Gradient.append(gradient_temp.get())
+	pool.close()
+	pool.join()
+	return Gradient
+
+	
 	# AFO_bottom_location for strap 1
 	# Cost function for small increased AFO_bottom_location for strap 1
 	solution_bottom_location_smallchange1=copy.deepcopu(solution)
