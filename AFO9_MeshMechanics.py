@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 def MeshMechanics (strap_orientations, theta_0_values, n_elements):
-    def output_mechprops(strap_orientation, theta_0, n_elements,label):
+    def output_mechprops(strap_orientation, theta_0, n_elements):
         strap_orientation  = math.radians(strap_orientation) # convert from degrees to radians
         theta_0 = math.radians(theta_0) # convert from degrees to radians
 
@@ -68,20 +68,20 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
     #AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
     AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
     n_waves = 20 # fixed to be able to divide height into wave length that is printable (~5mm)
-    
+
     # those based on experimental results
     K_element = 0.8 # bending stiffness, in N*mm
     CSA_element = 0.0557332 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
     force_limit = 2 # # Max force per element, in N, based on fatigue results for h = 1mm
 
     FL_matrix_lst = []
-    
+
 
     for i, theta_0 in enumerate(theta_0_values):
         strap_orientation = strap_orientations[i]
         n_elements_values = n_elements[i]
-        label = labels[i]
-        Force_array,extension_array,length_array = output_mechprops(strap_orientation, theta_0, n_elements_values,label)
+        #label = labels[i]
+        Force_array,extension_array,length_array = output_mechprops(strap_orientation, theta_0, n_elements_values)
 
         # combine arrays into Force-Length matrix for OpenSim
         FL_matrix = np.vstack((Force_array,length_array))
