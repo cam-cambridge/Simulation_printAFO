@@ -1,19 +1,25 @@
 #------------------------------------------------------------------------------------------------------------------------------------------
 # The MBD simulation of drop landing for new AFO desig (cross design)
 # DroplandingSimulation_AFO
-def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory):
+#def Simulation(SimulationType, ModelOperation, DesignVariables, results_directory):
+def Simulation(Parallel_simu_paralist):
     import os
     import numpy as np
     import SetupFileGeneration
     import AFO1_DesignParameter
     import AFO2_MBDModel
+    # Parameter list for parallel simulation
+    SimulationType=Parallel_simu_paralist[0]
+    ModelOperation=Parallel_simu_paralist[1]
+    DesignVariables=Parallel_simu_paralist[2]
+    results_directory=Parallel_simu_paralist[3]
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Drop landing simulation if the drop landing related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     if SimulationType=='AFODroplanding' or SimulationType=='AFOdroplanding' or SimulationType=='AFODROPLANDING' or SimulationType=='AFODrop landing':
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The some input parameters for the model development, including the folders and models
-        foldername_droplanding='Simulation models\Drop landing'+str(model_directory)                         # The folders for drop landing model and simulation
+        foldername_droplanding='Simulation models\Drop landing'+str(results_directory)                         # The folders for drop landing model and simulation
         msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
         #folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
         #txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
@@ -39,7 +45,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
             os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, model_directory, 0.5)
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.5)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Gait simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -49,7 +55,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
            SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
            # The some input parameters for the model development, including the folders and models
-           foldername_gait='Simulation models\Gait simulation'+str(model_directory)
+           foldername_gait='Simulation models\Gait simulation'+str(results_directory)
            gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
            gait_model_output=os.path.join(foldername_gait, 'Model outputs')
            # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -87,7 +93,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
            elif SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO' or SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
                 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 # The some input parameters for the model development, including the folders and models
-                foldername_gait='Simulation models\Gait simulation'+str(model_directory)
+                foldername_gait='Simulation models\Gait simulation'+str(results_directory)
                 gait_setup_file_foldername=os.path.join(foldername_gait, 'Setup files')
                 gait_model_output=os.path.join(foldername_gait, 'Model outputs')
                 model_AFO_origin_folder='3_RRA'
@@ -113,9 +119,9 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
                     if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                         os.system(model_AFO_final_file)
                     elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                        CMC(path_simulation, 'walk_AFO', model_directory)
-                        #FD(path_simulation, 'walk_1stpart_AFO', model_directory)                                                                      # Previous code using kinematics as objective function
-                        #FD(path_simulation, 'walk_2ndpart_AFO', model_directory)
+                        CMC(path_simulation, 'walk_AFO', results_directory)
+                        #FD(path_simulation, 'walk_1stpart_AFO', results_directory)                                                                      # Previous code using kinematics as objective function
+                        #FD(path_simulation, 'walk_2ndpart_AFO', results_directory)
                 elif SimulationType=='Walk_withoutAFO' or SimulationType=='walk_withoutAFO':
                     if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                         os.system(model_AFO_origin_file)
@@ -129,7 +135,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
     else:
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The some input parameters for the model development, including the folders and models
-        foldername_run='Simulation models\Running simulation'+str(model_directory)
+        foldername_run='Simulation models\Running simulation'+str(results_directory)
         run_setup_file_foldername=os.path.join(foldername_run, 'Setup files')
         run_model_output=os.path.join(foldername_run, 'Model outputs')
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -164,7 +170,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
         elif SimulationType=='Run_AFO' or SimulationType=='run_AFO' or SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             # The some input parameters for the model development, including the folders and models
-            foldername_run='Simulation models\Running simulation'+str(model_directory)
+            foldername_run='Simulation models\Running simulation'+str(results_directory)
             run_setup_file_foldername=os.path.join(foldername_run, 'Setup files')
             run_model_output=os.path.join(foldername_run, 'Model outputs')
             model_AFO_origin_folder='3_RRA'
@@ -190,7 +196,7 @@ def Simulation(SimulationType, ModelOperation, DesignVariables, model_directory)
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                     os.system(model_AFO_final_file)
                 elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-                    CMC(path_simulation, 'run_AFO', model_directory)
+                    CMC(path_simulation, 'run_AFO', results_directory)
             elif SimulationType=='Run_withoutAFO' or SimulationType=='run_withoutAFO':
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
                     os.system(model_AFO_origin_file)
@@ -310,32 +316,32 @@ def MuscleScaling (path_simulation, SimulationType, osimModel_origin, osimModel_
     elif SimulationType=='run':
         osimModel_adjusted.printToXML("Fullbodymodel_Run_RRA_adjusted.osim")
     #
-def CMC(path_simulation, SimulationType, model_directory):
+def CMC(path_simulation, SimulationType, results_directory):
     import os
     #--------------------------------------------------------------------------------
     #CMC (Computed Muscle Control)
     if SimulationType=='walk' or SimulationType=='walk_AFO':
-        os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
+        os.chdir(os.path.join(path_simulation, 'Simulation models\Gait simulation'+str(results_directory)+'\Setup files'))
         if SimulationType=='walk':
             CMC_setup='4_Walk_cmc_setup_withoutAFO.xml'
         if SimulationType=='walk_AFO':
             CMC_setup='4_Walk_cmc_setup_AFO.xml'
-        model_directory='Model outputs/4_CMC/'+model_directory
-        Setupfile_resultsdir(CMC_setup, model_directory)
+        results_directory='Model outputs/4_CMC//'+results_directory
+        Setupfile_resultsdir(CMC_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
     if SimulationType=='run' or SimulationType=='run_AFO':
-        os.chdir(os.path.join(path_simulation, 'Running simulation\Setup files'))
+        os.chdir(os.path.join(path_simulation, 'Simulation models\Running simulation'+str(results_directory)+'\Setup files'))
         if SimulationType=='run':
             CMC_setup='4_Run_cmc_setup_withoutAFO.xml'
         if SimulationType=='run_AFO':
             CMC_setup='4_Run_cmc_setup_AFO.xml'
-        model_directory='Model outputs/4_CMC/'+model_directory
-        Setupfile_resultsdir(CMC_setup, model_directory)
+        results_directory='Model outputs/4_CMC//'+results_directory
+        Setupfile_resultsdir(CMC_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(CMC_setup)
         os.system(cmd)
     #
-def FD(path_simulation, SimulationType, model_directory):
+def FD(path_simulation, SimulationType, results_directory):
     import os
     #--------------------------------------------------------------------------------
     #Forward Dynamics (FD)
@@ -343,12 +349,12 @@ def FD(path_simulation, SimulationType, model_directory):
         os.chdir(os.path.join(path_simulation, 'Gait simulation\Setup files'))
         # SetupFileGeneration.dircreation(os.path.join(path_simulation,'Gait simulation', 'Model outputs', '5_ForwardDynamics'))                   # Create new folder for the results of IK
         FD_setup='5_Walk_Forward_setup_withoutAFO.xml'
-        #model_directory='Model outputs/5_ForwardDynamics/'+model_directory
+        #results_directory='Model outputs/5_ForwardDynamics/'+results_directory
         # To check whether the results directory exists or not, if no, create one
         """
-        if not os.path.isdir(model_directory):
-            os.makedirs(model_directory)
-        Setupfile_resultsdir(FD_setup, model_directory)
+        if not os.path.isdir(results_directory):
+            os.makedirs(results_directory)
+        Setupfile_resultsdir(FD_setup, results_directory)
         """
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
@@ -359,8 +365,8 @@ def FD(path_simulation, SimulationType, model_directory):
             FD_setup='5_Walk_Forward_setup_withoutAFO_1st.xml'
         elif SimulationType=='walk_1stpart_AFO':
             FD_setup='5_Walk_Forward_setup_AFO_1st.xml'
-        model_directory='Model outputs/5_ForwardDynamics_1st/'+model_directory
-        Setupfile_resultsdir(FD_setup, model_directory)
+        results_directory='Model outputs/5_ForwardDynamics_1st/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='walk_2ndpart_withoutAFO' or SimulationType=='walk_2ndpart_AFO':
@@ -370,8 +376,8 @@ def FD(path_simulation, SimulationType, model_directory):
             FD_setup='5_Walk_Forward_setup_withoutAFO_2nd.xml'
         elif SimulationType=='walk_2ndpart_AFO':
             FD_setup='5_Walk_Forward_setup_AFO_2nd.xml'
-        model_directory='Model outputs/5_ForwardDynamics_2nd/'+model_directory
-        Setupfile_resultsdir(FD_setup, model_directory)
+        results_directory='Model outputs/5_ForwardDynamics_2nd/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
     if SimulationType=='run_withoutAFO' or SimulationType=='run_AFO':
@@ -381,8 +387,8 @@ def FD(path_simulation, SimulationType, model_directory):
             FD_setup='5_Run_Forward_setup_withoutAFO.xml'
         elif SimulationType=='run_AFO':
             FD_setup='5_Run_Forward_setup_AFO.xml'
-        model_directory='Model outputs/5_ForwardDynamics/'+model_directory
-        Setupfile_resultsdir(FD_setup, model_directory)
+        results_directory='Model outputs/5_ForwardDynamics/'+results_directory
+        Setupfile_resultsdir(FD_setup, results_directory)
         cmd="opensim-cmd run-tool %s" %(FD_setup)
         os.system(cmd)
         print(FD_setup)
@@ -400,7 +406,7 @@ def FD_AFO(path_simulation, SimulationType):
     #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Generate the set up file for the drop landing forward dynamics simulations, and run the FD simulation using the set up file
-def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, model_directory, run_finaltime):
+def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directory, run_finaltime):
     import numpy as np
     import os
     # Set the current working directory
@@ -408,9 +414,9 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, model_directory
     OsModel_full=os.path.join(path, file_MBD)
 
     # To generate forward setup file (.xml), first check, if no, to create one
-    model_directory='DL simulation results/'+model_directory
-    if not os.path.isdir(model_directory):
-        os.makedirs(model_directory)
+    results_directory='DL simulation results/'+results_directory
+    if not os.path.isdir(results_directory):
+        os.makedirs(results_directory)
     if not os.path.exists(SetFile_forward):
         os.system("opensim-cmd print-xml forward")
 
@@ -421,8 +427,8 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, model_directory
         for line in lines:
             if line.strip().startswith('<model_file'):
                 f_w.writelines(['		<model_file>',OsModel_full,'</model_file>',"\n"])
-            elif line.strip().startswith('<model_directory>'):
-                f_w.writelines(['		<model_directory>./',model_directory,'</model_directory>',"\n"])
+            elif line.strip().startswith('<results_directory>'):
+                f_w.writelines(['		<results_directory>./',results_directory,'</results_directory>',"\n"])
             elif line.strip().startswith('<final_time>'):
                 f_w.writelines(["		<final_time>",str(run_finaltime),"</final_time>","\n"])
             elif line.strip().startswith('<solve_for_equilibrium_for_auxiliary_states>'):
@@ -435,15 +441,15 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, model_directory
     #
 #------------------------------------------------------------------------------------------------------------------------------------------
 # Change the results directory in the setup file based on the defined parameters
-def Setupfile_resultsdir (SetupFile, model_directory):
+def Setupfile_resultsdir (SetupFile, results_directory):
     import os
     # To put the results directory in the Setup file
     with open (SetupFile,"r",encoding="utf-8") as f:
         lines=f.readlines()
     with open (SetupFile,"w",encoding="utf-8") as f_w:
         for line in lines:
-            if line.strip().startswith('<model_directory>'):
-                f_w.writelines(['		<model_directory>../',model_directory,'</model_directory>',"\n"])
+            if line.strip().startswith('<results_directory>'):
+                f_w.writelines(['		<results_directory>../',results_directory,'</results_directory>',"\n"])
             else:
                 f_w.write(line)
     #
