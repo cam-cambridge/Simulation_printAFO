@@ -154,7 +154,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
 									</SurfaceProperties>
 								</Appearance>
 								<!--The radius of the cylinder.-->
-								<radius>0.047</radius>
+								<radius>0.0364</radius>
 								<!--The length of the cylinder.-->
 								<length>0.14999999999999999</length>
 							</WrapCylinder>\n'''])
