@@ -5,13 +5,8 @@ import AFO2_MBDModel
 import AFO3_ParaTestSelect
 import numpy as np
 import AFO4_ResultsCollection
-import AFO5_DoE
 import pandas as pd
-from mpl_toolkits.mplot3d import Axes3D
-import matplotlib.pyplot as plt
 import itertools
-import tkinter
-from tkinter import filedialog
 import math
 import multiprocessing
 from multiprocessing import Pool
@@ -19,21 +14,21 @@ from multiprocessing import Pool
 def Main_Simulation (DesignVariables, folder_index):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Simulations of drop landing, walk and Running
-    """
     # The drop landing simulation DL
     #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, str(folder_index))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', DesignVariables, str(folder_index)))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, str(folder_index))
+    AFO0_Simulation.Simulation(('Walk_AFO', 'simulation', DesignVariables, str(folder_index)))
     # The running simulation Run
     #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, str(folder_index))
+    AFO0_Simulation.Simulation(('Run_AFO', 'simulation', DesignVariables, str(folder_index)))
     """
     # The parallel simulation of the drop landing, walk and running
     Parallel_simu_paralist=[('AFODroplanding', 'simulation', DesignVariables, str(folder_index)), ('Walk_AFO', 'simulation', DesignVariables, str(folder_index)), ('Run_AFO', 'simulation', DesignVariables, str(folder_index))]
     pool=multiprocessing.Pool()
     pool.map(AFO0_Simulation.Simulation, Parallel_simu_paralist)
+    """
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Collect the simulation results for drop landing, walk and running
     #-----------------------------------------------------------------------------
