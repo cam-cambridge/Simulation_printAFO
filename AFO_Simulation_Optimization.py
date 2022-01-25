@@ -78,3 +78,16 @@ def Main_Simulation (DesignVariables, folder_index):
         diff_average_musforce_WholeMuscle_run.append(diff_average_musforce_run)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
     return Subtalar_DL_max, diff_average_musforce_total_walk, diff_average_musforce_total_run
+    #
+def Main_model_demo (DesignVariables, folder_index):
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Simulations of drop landing, walk and Running
+    # The drop landing simulation DL
+    #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index)))
+    # The walking simulation Walk
+    #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
+    AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
+    # The running simulation Run
+    #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
+    AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
