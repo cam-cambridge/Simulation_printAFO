@@ -84,8 +84,8 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
         Force_array,extension_array,length_array = output_mechprops(strap_orientation, theta_0, n_elements_values)
 
         # combine arrays into Force-Length matrix for OpenSim
-        FL_matrix = np.vstack((Force_array,length_array))
-
+        #FL_matrix = np.vstack((Force_array,length_array))
+        FL_matrix = np.vstack((length_array, Force_array))
         # add matrix to list
         FL_matrix_lst.append(FL_matrix)
     return FL_matrix_lst
