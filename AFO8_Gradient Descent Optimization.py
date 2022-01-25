@@ -18,9 +18,9 @@ def Gradient_calculation(solution_smallchange_list):
 	Objective_ini=solution_smallchange_list[1]
 	folder_index=solution_smallchange_list[2]
 	# Run the simulation of drop landing, walk and running
-	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
+	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
 	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
-	Objective_SmallChange=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
+	Objective_SmallChange=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
 	# Calculate the  gradient after the small change
 	Gradient=Objective_SmallChange - Objective_ini
 	return Gradient
@@ -29,9 +29,9 @@ def Gradient_calculation(solution_smallchange_list):
 """
 def Gradient_calculation(solution_smallchange, Objective_ini, folder_index):
 	# Run the simulation of drop landing, walk and running
-	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
+	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
 	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
-	Objective_SmallChange=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
+	Objective_SmallChange=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
 	# Calculate the  gradient after the small change
 	Gradient=Objective_SmallChange - Objective_ini
 	return Gradient
@@ -45,8 +45,10 @@ def derivative(solution):
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
-	[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
-	Objective_ini=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
+	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
+	Objective_ini=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
+	# Track the simulation results and objective function during iteration loops
+	Simulation_results_tracker=[Subtalar_drop, MusDiff_walk, MusDiff_run, Objective_ini]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -82,7 +84,7 @@ def derivative(solution):
 	pool=multiprocessing.Pool()
 	Gradient=pool.map(Gradient_calculation, solution_smallchange_list)
 	Gradient=np.array(results).reshape(4,4).tolist()
-	return Gradient
+	return Gradient, Simulation_results_tracker
 
 """
 	# 20220119
@@ -116,13 +118,13 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
 	solution = [[14, 101, 259, 346], [-20, 0, 0, 20], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
-	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0,0,0,0], [0,0,0,0]]
+	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [0,0,0,0]]
 
     #it is just a starting point for the optimisation
     # run the gradient descent
 	for i in range(n_iter):
 		# calculate gradient
-		solution=list(solution)
+		solution=list(solution)                  # Transfer the solution from other types into list type
 		#--------------------------------------------------------------------------
 		# Compare the solution with the upper and low bounds
 		cmp_boundslow=solution>bounds_low     # compare solution and bounds_low, if the values in solution bigger than bounds_low, then return true
@@ -130,29 +132,41 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		# If solution exceeds the bounds_low or bounds_upper, then update the solution with bounds
 		[bounds_low, solution, bounds_upper]=np.array([bounds_low, solution, bounds_upper])
 		solution=np.maximum(bounds_low, solution) # if solution is lower than bounds_low, update the solution with bounds_low
-		solution=np.minimum(solution, bounds_upper)
+		solution=np.minimum(solution, bounds_upper) # if solution is larger than bounds_upper, update the solution with bounds_upper
 		# record whether the solution reach the bounds or not, if solution is within the bounds, retunr true, otherwise, return false
 		cmp_marker=np.logical_and(bounds_low<solution, solution<bounds_upper)
 		#--------------------------------------------------------------------------
-		gradient = derivative(solution)
+		solution[3]=list(map(int, solution[3]))      # Make sure the design variables n_element are integer type
+		gradient, simulation_results_tracker = derivative(solution)
+		# record the history of solution,simulation results, cost function
+		Simulation_results_racker_list=[]
+		Solution_tracker_list=[]
+		Simulation_results_racker_list.append(simulation_results_tracker)
+		Solution_tracker_list.append(solution)
+		print('#####################################################################################################')
+		print('The number of iteration: %d' %(i))
+		print('Solution track: \n %s' %(solution))
+		print('Simulation results track: \n %s' %(simulation_results_tracker))
+		print('#####################################################################################################')
 		# take a step
 		solution = np.array(solution) - step_size * np.array(gradient)
-		# evaluate candidate point
-		[Subtablar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
-		# Calculate the objective function for the solution with small change
-		Objective_eval=objective(Subtablar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
-		# report progress
-		print('>%d f(%s) = %.5f' % (i, solution, solution_eval))
-		#print('>%d f(%s) = %.5f' % (i, solution))
-	return solution, solution_eval
+	# evaluate final candidate point
+	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
+	# Calculate the final objective function
+	Objective_final=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
+	Simulation_results_tracker_list.append([subtalar_drop, MusDiff_walk, MusDiff_run, Objective_final])
+	Solution_tracker_list.append(solution)
+	return Solution_tracker_list, Simulation_results_racker_list
 
 if __name__ == '__main__':
 	# define the total iterations
-	n_iter = 1
+	n_iter = 5
 	# define the step size, this value is something you'll probably need to experiment with
-	step_size = 0.5
+	step_size = 0.1
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
-	best, score= gradient_descent(objective, derivative, n_iter, step_size)
+	solution_tracker, simulation_results_tracker= gradient_descent(objective, derivative, n_iter, step_size)
 	print('Done!')
-	print('f(%s) = %f' % (best, score))
+	#print('f(%s) = %f' % (best, score))
+	print('Solution history: \n %s' %(Solution_tracker))
+	print('Simulation results and cost function history: \n %s' %(Simulation_results_racker))
