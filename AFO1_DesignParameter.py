@@ -6,9 +6,10 @@ import AFO9_MeshMechanics
 #  Define the design parameters for the AFO, including the fixed parameters and design varaibels
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Fixed parameters
-AFO_bottom_center=[0, 0, 0]
-AFO_cylinder_radius=0.0365
-AFO_height=0.1
+#AFO_bottom_center=[0, 0, 0]
+AFO_bottom_center=[0.002, 0, 0.006]
+AFO_cylinder_radius=0.040
+AFO_height=0.08
 Platform_inclination=[25, 0, 0]
 AFO_Fmagnitude=1
 
