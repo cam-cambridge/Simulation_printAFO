@@ -6,10 +6,10 @@ import copy
 import multiprocessing
 from multiprocessing import Pool
 
-def objective(Subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
+def objective(subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (Subtalar_drop-15))+n_elements/100
+	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (subtalar_drop-15))+n_elements/100
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -48,7 +48,7 @@ def derivative(solution):
 	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
 	Objective_ini=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
 	# Track the simulation results and objective function during iteration loops
-	Simulation_results_tracker=[Subtalar_drop, MusDiff_walk, MusDiff_run, Objective_ini]
+	Simulation_results_tracker=[subtalar_drop, MusDiff_walk, MusDiff_run, Objective_ini]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ def derivative(solution):
 												  (solution_n_elements_smallchange3, Objective_ini, 15), (solution_n_elements_smallchange4, Objective_ini, 16)]
 	pool=multiprocessing.Pool()
 	Gradient=pool.map(Gradient_calculation, solution_smallchange_list)
-	Gradient=np.array(results).reshape(4,4).tolist()
+	Gradient=np.array(Gradient).reshape(4,4).tolist()
 	return Gradient, Simulation_results_tracker
 
 """
