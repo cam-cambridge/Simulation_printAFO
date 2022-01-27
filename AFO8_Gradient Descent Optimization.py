@@ -143,11 +143,17 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		Solution_tracker_list=[]
 		Simulation_results_racker_list.append(simulation_results_tracker)
 		Solution_tracker_list.append(solution)
-		print('#####################################################################################################')
-		print('The number of iteration: %d' %(i))
-		print('Solution track: \n %s' %(solution))
-		print('Simulation results track: \n %s' %(simulation_results_tracker))
-		print('#####################################################################################################')
+		#--------------------------------------------------------------------------
+		# print iteration history to txt file
+		path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
+        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+		with open (os.path.join(path_simulation, 'log.txt'), 'a') as f:
+			print('#####################################################################################################', file=f)
+			print('The number of iteration: %d' %(i), file=f)
+			print('Solution track: \n %s' %(solution), file=f)
+			print('Simulation results track: \n %s' %(simulation_results_tracker), file=f)
+			print('#####################################################################################################', file=f)
+		#--------------------------------------------------------------------------
 		# take a step
 		solution = np.array(solution) - step_size * np.array(gradient)
 	# evaluate final candidate point
