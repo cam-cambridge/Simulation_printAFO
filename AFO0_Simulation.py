@@ -45,7 +45,7 @@ def Simulation(Parallel_simu_paralist):
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
             os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.5)
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.25)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Gait simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
