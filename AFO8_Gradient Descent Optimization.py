@@ -5,6 +5,7 @@ import numpy as np
 import copy
 import multiprocessing
 from multiprocessing import Pool
+import os
 
 def objective(subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
 	# This is the cost function
@@ -139,40 +140,42 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		solution[3]=list(map(int, solution[3]))      # Make sure the design variables n_element are integer type
 		gradient, simulation_results_tracker = derivative(solution)
 		# record the history of solution,simulation results, cost function
-		Simulation_results_racker_list=[]
+		Simulation_results_tracker_list=[]
 		Solution_tracker_list=[]
-		Simulation_results_racker_list.append(simulation_results_tracker)
+		Simulation_results_tracker_list.append(simulation_results_tracker)
 		Solution_tracker_list.append(solution)
 		#--------------------------------------------------------------------------
 		# print iteration history to txt file
 		path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
         path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
 		with open (os.path.join(path_simulation, 'log.txt'), 'a') as f:
-			print('#####################################################################################################', file=f)
-			print('The number of iteration: %d' %(i), file=f)
-			print('Solution track: \n %s' %(solution), file=f)
-			print('Simulation results track: \n %s' %(simulation_results_tracker), file=f)
-			print('#####################################################################################################', file=f)
+			print('The number of iteration: %d \n' %(i), file=f)
+			print('The solution track: \n %s\n' %(solution), file=f)
+			print('The gradient track: \n %s\n' %(gradient), file=f)
+			print('The simulation results track: \n %s' %(simulation_results_tracker), file=f)
 		#--------------------------------------------------------------------------
 		# take a step
 		solution = np.array(solution) - step_size * np.array(gradient)
+		with open(os.path.join(path_simulation, 'log.txt'), 'a') as f:
+			print('The updated solution: \n %s' % (solution), file=f)
+			print('#####################################################################################################', file=f)
 	# evaluate final candidate point
 	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
 	# Calculate the final objective function
 	Objective_final=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
 	Simulation_results_tracker_list.append([subtalar_drop, MusDiff_walk, MusDiff_run, Objective_final])
 	Solution_tracker_list.append(solution)
-	return Solution_tracker_list, Simulation_results_racker_list
+	return Solution_tracker_list, Simulation_results_tracker_list
 
 if __name__ == '__main__':
 	# define the total iterations
-	n_iter = 5
+	n_iter = 10
 	# define the step size, this value is something you'll probably need to experiment with
-	step_size = 0.1
+	step_size = 0.01
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
 	solution_tracker, simulation_results_tracker= gradient_descent(objective, derivative, n_iter, step_size)
 	print('Done!')
 	#print('f(%s) = %f' % (best, score))
-	print('Solution history: \n %s' %(Solution_tracker))
-	print('Simulation results and cost function history: \n %s' %(Simulation_results_racker))
+	print('Solution history: \n %s' %(solution_tracker))
+	print('Simulation results and cost function history: \n %s' %(simulation_results_tracker))
