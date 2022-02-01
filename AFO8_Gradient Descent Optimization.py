@@ -26,18 +26,6 @@ def Gradient_calculation(solution_smallchange_list):
 	Gradient=Objective_SmallChange - Objective_ini
 	return Gradient
 	#
-
-"""
-def Gradient_calculation(solution_smallchange, Objective_ini, folder_index):
-	# Run the simulation of drop landing, walk and running
-	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
-	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
-	Objective_SmallChange=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
-	# Calculate the  gradient after the small change
-	Gradient=Objective_SmallChange - Objective_ini
-	return Gradient
-"""
-
 # derivative of objective function
 def derivative(solution):
 	# Input a small increase for each design parameter
@@ -82,27 +70,11 @@ def derivative(solution):
 												  (solution_theta_0_values_smallchange3, Objective_ini, 11), (solution_theta_0_values_smallchange4, Objective_ini, 12),
 												  (solution_n_elements_smallchange1, Objective_ini, 13), (solution_n_elements_smallchange2, Objective_ini, 14),
 												  (solution_n_elements_smallchange3, Objective_ini, 15), (solution_n_elements_smallchange4, Objective_ini, 16)]
+    # The parallel simulation for 16 simulations of drop landing, walk and run
 	pool=multiprocessing.Pool()
 	Gradient=pool.map(Gradient_calculation, solution_smallchange_list)
 	Gradient=np.array(Gradient).reshape(4,4).tolist()
 	return Gradient, Simulation_results_tracker
-
-"""
-	# 20220119
-	solution_smallchange_list=[solution_bottom_location_smallchange1, solution_bottom_location_smallchange2, solution_bottom_location_smallchange3, solution_bottom_location_smallchange4,
-	                                             solution_strap_orientation_smallchange1, solution_strap_orientation_smallchange2, solution_strap_orientation_smallchange3, solution_strap_orientation_smallchange4,
-												 solution_theta_0_values_smallchange1, solution_theta_0_values_smallchange2, solution_theta_0_values_smallchange3, solution_theta_0_values_smallchange4,
-												 solution_n_elements_smallchange1, solution_n_elements_smallchange2, solution_n_elements_smallchange3, solution_n_elements_smallchange4]
-	Gradient=[]
-	pool=Pool(processes=16)
-	for folder_index, solution_smallchange in enumerate (solution_smallchange_list, start=1):
-		gradient_temp=pool.apply_async(Gradient_calculation, (solution_smallchange, Objective_ini, folder_index))
-		Gradient.append(gradient_temp.get())
-	pool.close()
-	pool.join()
-	Gradient=np.array(Gradient).reshape(4,4).tolist()
-	return Gradient
-"""
 
 #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
@@ -117,7 +89,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
+	solution = [[14, 101, 259, 346], [-20, 0, 0, 20], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
 	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [0,0,0,0]]
 
