@@ -13,7 +13,7 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
         wave_height = (wave_length / 2) * math.tan(theta_0) # in mm
         wave_hypotenuse = wave_height / math.sin(theta_0) # in mm
         CSA_total = CSA_element * n_elements # in mm^2
-        E_effective = np.around((2041.1 - (2729.9 * (theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
+        E_effective = np.around((2135.6 - (2732.2 * (theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
 
         # populate decreasing array of theta based on starting value
         percentage = 0.9 # determines step change in theta values
@@ -70,7 +70,7 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
     n_waves = 20 # fixed to be able to divide height into wave length that is printable (~5mm)
 
     # those based on experimental results
-    K_element = 0.8 # bending stiffness, in N*mm
+    K_element = 0.781 # bending stiffness, in N*mm
     CSA_element = 0.0557332 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
     force_limit = 2 # # Max force per element, in N, based on fatigue results for h = 1mm
 
