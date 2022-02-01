@@ -117,7 +117,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-20, 0, 0, 20], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
+	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
 	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [0,0,0,0]]
 
