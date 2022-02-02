@@ -1,7 +1,6 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-
 def MeshMechanics (strap_orientations, theta_0_values, n_elements):
     def output_mechprops(strap_orientation, theta_0, n_elements):
         strap_orientation  = math.radians(strap_orientation) # convert from degrees to radians
@@ -25,7 +24,6 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
         Force_array = []
         extension_array = []
         length_array = []
-
         for i, theta in enumerate(theta_array):
 
             # calculate extension due to bending to angle theta
@@ -56,7 +54,6 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
                 extension_array.append(extension_total)
                 length_array.append(length_factor)
 
-
         #convert lsts to arrays
         Force_array = np.array(Force_array)
         extension_array = np.array(extension_array)
@@ -75,7 +72,6 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
     force_limit = 2 # # Max force per element, in N, based on fatigue results for h = 1mm
 
     FL_matrix_lst = []
-
 
     for i, theta_0 in enumerate(theta_0_values):
         strap_orientation = strap_orientations[i]
