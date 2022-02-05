@@ -57,6 +57,7 @@ def Main_Simulation (DesignVariables, folder_index):
         [diff_total_musforce_walk, diff_average_musforce_walk, diff_max_musforce_walk]=AFO4_ResultsCollection.curvecomparison(data_walk_withoutAFO, data_walk_AFO, muscle_num, len(data_walk_withoutAFO))
         diff_average_musforce_WholeMuscle_walk.append(diff_average_musforce_walk)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_walk=np.sum(diff_average_musforce_WholeMuscle_walk)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
+        diff_average_musforce_total_walk_norm=diff_average_musforce_total_walk/85.0668
     #-----------------------------------------------------------------------------
     #  For running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
     #  inteplote the curve across the whole cycle into lots of points (equal to the time instances for model without AFO) and calculate the differences of muscle forces for these points
@@ -77,7 +78,8 @@ def Main_Simulation (DesignVariables, folder_index):
         [diff_total_musforce_run, diff_average_musforce_run, diff_max_musforce_run]=AFO4_ResultsCollection.curvecomparison(data_run_withoutAFO, data_run_AFO, muscle_num_r, len(data_run_withoutAFO))
         diff_average_musforce_WholeMuscle_run.append(diff_average_musforce_run)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
-    return Subtalar_DL_max, diff_average_musforce_total_walk, diff_average_musforce_total_run
+        diff_average_musforce_total_run_norm=diff_average_musforce_total_run/72.840
+    return Subtalar_DL_max, diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm
     #
 def Main_model_demo (DesignVariables, folder_index):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
