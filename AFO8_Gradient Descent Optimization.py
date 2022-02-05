@@ -7,10 +7,10 @@ import multiprocessing
 from multiprocessing import Pool
 import os
 
-def objective(subtalar_drop, MusDiff_walk, MusDiff_run, n_elements):
+def objective(subtalar_drop, MusDiff_walk_norm, MusDiff_run_norm, n_elements):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk)+abs(MusDiff_run)+np.maximum(0, (subtalar_drop-15))+n_elements/100
+	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+np.maximum(0, (subtalar_drop-15))+n_elements/100
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -73,9 +73,11 @@ def derivative(solution):
     # The parallel simulation for 16 simulations of drop landing, walk and run
 	pool=multiprocessing.Pool()
 	Gradient=pool.map(Gradient_calculation, solution_smallchange_list)
+	pool.close()
+	pool.join()
 	Gradient=np.array(Gradient).reshape(4,4).tolist()
 	return Gradient, Simulation_results_tracker
-
+	#
 #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
 #input a small increase while keeping the other design parameters constant
@@ -83,15 +85,14 @@ def derivative(solution):
 # caused by the small change in design parameter is then the "gradient".
 #What the best small change is is something you'll have to experiment with,
 #but it can be different for each design parameter
-
 # This defines the gradient descent algorithm
 def gradient_descent(objective, derivative, n_iter, step_size):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-20, 0, 0, 20], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
+	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
-	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [0,0,0,0]]
+	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [1,1,1,1]]
 
     #it is just a starting point for the optimisation
     # run the gradient descent
