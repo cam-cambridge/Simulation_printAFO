@@ -120,7 +120,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		#--------------------------------------------------------------------------
 		# print iteration history to txt file
 		path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
-        path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+		path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
 		with open (os.path.join(path_simulation, 'log.txt'), 'a') as f:
 			print('The number of iteration: %d \n' %(i), file=f)
 			print('The solution track: \n %s\n' %(solution), file=f)
