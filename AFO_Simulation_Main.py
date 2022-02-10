@@ -16,7 +16,7 @@ import math
 import AFO_Simulation_Optimization
 
 # Display the MSK model based on the provided solution (design variables)
-solution = [[30, 101, 259, 326], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
+solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 AFO_Simulation_Optimization.Main_model_demo (solution, 0)
 
 """
