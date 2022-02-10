@@ -1,9 +1,9 @@
+import opensim
+import numpy as np
 def LigMechanics (osimModel, motSto_file):
     # Aims: to export the lengths and forces of the ligaments (i.e. AFO straps) during a specific motion
     # Inputs: osimModel: the opensim model with ligaments
     #             motSto_file: the motion file loaded to the model for length and forces exportion
-    import opensim
-    import numpy as np
     # Set and update the path to the local OpenSim geometry directory
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
@@ -19,7 +19,7 @@ def LigMechanics (osimModel, motSto_file):
     num_coords=coords.getSize() # Get the number of coordinates in the model, including coordinates of forceset, such as BackBushing et al.
     # Update each model coordinate for each time frame
     vars=['knee_angle_r', 'ankle_angle_r', 'subtalar_angle_r']    # The coordinates that will be updated for calculate the ligament length
-    motSto_num=12    # The number of time instances selected for ligament lengths and forces
+    motSto_num=timestep_motSto    # The number of time instances selected for ligament lengths and forces
     motSto_interval=int(timestep_motSto/motSto_num)   # The number of intervals for the time instances
     strap_lengths=[]
     strap_forces=[]
@@ -47,8 +47,6 @@ def LigMechanics (osimModel, motSto_file):
     return strap_lengths, strap_forces
     #
 def Liginitstates(osimModel):
-    import opensim
-    import numpy as np
     # Set and update the path to the local OpenSim geometry directory
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
@@ -66,9 +64,21 @@ def Liginitstates(osimModel):
     return strap_lengths, strap_forces
     #
 if __name__ == '__main__':
-    osimModel='D:\Drop landing\Fullbodymodel_droplanding_AFO.osim'   # File path for opensim model
-    motSto_file='D:\Drop landing\DL simulation results\\11.mot'           # File path for motion file
+    import pandas as pd
+    osimModel='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Gait simulation0\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'   # File path for opensim model
+    motSto_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Gait simulation0\Model outputs\\4_CMC\AFO size 00400\cmc_states.sto'           # File path for motion file
     [strap_lengths_init, strap_forces_init]=Liginitstates(osimModel)
     [strap_lengths, strap_forces]=LigMechanics(osimModel, motSto_file)
     print(strap_lengths_init)
     print(strap_forces_init)
+
+    # Save results to an excel files
+    exe_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\DL simulation results\Results_20220210.xlsx'
+    sheet_name='Sheet1'
+    strap_length_forces=np.vstack((strap_lengths, strap_forces)).T
+    data_pd=pd.DataFrame(strap_length_forces)
+    data_pd.columns=['strap_1_length', 'strap_2_length', 'strap_3_length', 'strap_4_length', 'strap_1_force', 'strap_2_force', 'strap_3_force', 'strap_4_force']
+    data_writer=pd.ExcelWriter(exe_file)
+    data_pd.to_excel(data_writer, sheet_name)
+    data_writer.save()
+    data_writer.close()
