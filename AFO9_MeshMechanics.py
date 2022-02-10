@@ -74,6 +74,7 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     import numpy as np
+    import pandas as pd
     # The inputs for the module - AFO9_MeshMechanics
     AFO_strap_orientations=[-40, 0, 0, 50]
     theta_0_values=[20.34, 21.20, 13.18, 18.9]
@@ -91,7 +92,6 @@ if __name__ == '__main__':
     plt.subplot(2,2,4)
     plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
     plt.show()
-
     # The plot of the force-length relationship in one figure
     plt.figure()
     plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], marker='o', label='FL for strap 1')
@@ -99,3 +99,14 @@ if __name__ == '__main__':
     plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], marker='o', label='FL for strap 3')
     plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
     plt.show()
+    # Save results to an excel files
+    """
+    exe_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\DL simulation results\Results_20220210.xlsx'
+    sheet_name='Sheet1'
+    strap_length_forces=FL_matrix_lst[1].T
+    data_pd=pd.DataFrame(strap_length_forces)
+    data_writer=pd.ExcelWriter(exe_file)
+    data_pd.to_excel(data_writer, sheet_name)
+    data_writer.save()
+    data_writer.close()
+    """
