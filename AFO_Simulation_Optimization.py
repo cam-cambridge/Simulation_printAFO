@@ -10,10 +10,13 @@ import itertools
 import math
 import multiprocessing
 from multiprocessing import Pool
+import AFO9_MeshMechanics
+import AFO10_OpenSimAPI
 
 def Main_Simulation (DesignVariables, folder_index):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Simulations of drop landing, walk and Running
+    #-----------------------------------------------------------------------------
     # The drop landing simulation DL
     #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', DesignVariables, str(folder_index)))
@@ -23,22 +26,23 @@ def Main_Simulation (DesignVariables, folder_index):
     # The running simulation Run
     #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('Run_AFO', 'simulation', DesignVariables, str(folder_index)))
-    """
-    # The parallel simulation of the drop landing, walk and running
-    Parallel_simu_paralist=[('AFODroplanding', 'simulation', DesignVariables, str(folder_index)), ('Walk_AFO', 'simulation', DesignVariables, str(folder_index)), ('Run_AFO', 'simulation', DesignVariables, str(folder_index))]
-    pool=multiprocessing.Pool()
-    pool.map(AFO0_Simulation.Simulation, Parallel_simu_paralist)
-    """
+
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Collect the simulation results for drop landing, walk and running
-    #-----------------------------------------------------------------------------
+    #****************************************************
     # For drop landing activity, collect the maximum subtalar angle and ankle angle
     Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
     output_folder_DL='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+str(folder_index)
     data_DL= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL, Results_parameter_DL, 'default_states_degrees.mot')      # put the specified results into a matrix
     Subtalar_DL_max=max(data_DL[:,1])                                                                                                                                                                    # The maximum subtalar angle during drop landing
     #-----------------------------------------------------------------------------
+    # Collect the maximum ligament (strap) length and force during the drop landing simulation
+    osimModel='Simulation models\Drop landing'+str(folder_index)+'Fullbodymodel_droplanding_AFO.osim'
+    [DL_strap_lengths_max, DL_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL, 'default_states_degrees.mot', osimModel)
+
+    #-----------------------------------------------------------------------------
     #  For walk, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+    #****************************************************
     #  inteplote the curve across the whole cycle into lots of points (equal to the time instances for model without AFO) and calculate the differences of muscle forces for these points
     # The parameters collected from the simulation results of walk_the muscle forces for all the muscles in the right leg
     Results_parameter_walk=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
@@ -59,7 +63,13 @@ def Main_Simulation (DesignVariables, folder_index):
         diff_average_musforce_total_walk=np.sum(diff_average_musforce_WholeMuscle_walk)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
         diff_average_musforce_total_walk_norm=diff_average_musforce_total_walk/85.0668
     #-----------------------------------------------------------------------------
+    # Collect the maximum ligament (strap) force during the walk simulation
+    osimModel='Simulation models\Gait simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
+    [Walk_strap_lengths_max, Walk_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_walk_AFO, 'cmc_states.sto', osimModel)
+
+    #-----------------------------------------------------------------------------
     #  For running, collect the average differences of muscle forces between the models with and without AFO cross the whole cyecle
+    #****************************************************
     #  inteplote the curve across the whole cycle into lots of points (equal to the time instances for model without AFO) and calculate the differences of muscle forces for these points
     # The parameters collected from the simulation results of running_the muscle forces for all the muscles in the right leg
     Results_parameter_run=['time', 'addbrev_r', 'addlong_r', 'addmagDist_r', 'addmagIsch_r', 'addmagMid_r', 'addmagProx_r', 'bflh_r', 'bfsh_r', 'edl_r', 'ehl_r', 'fdl_r', 'fhl_r', 'gaslat_r',
@@ -79,7 +89,29 @@ def Main_Simulation (DesignVariables, folder_index):
         diff_average_musforce_WholeMuscle_run.append(diff_average_musforce_run)                                # The matrix include the absolute differences of muscle forces for each musch for each design case
         diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
         diff_average_musforce_total_run_norm=diff_average_musforce_total_run/72.840
-    return Subtalar_DL_max, diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm
+    #-----------------------------------------------------------------------------
+    # Collect the maximum ligament (strap) force during the runsimulation
+    osimModel='Simulation models\Running simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Run_RRA_final_AFO.osim'
+    [Run_strap_lengths_max, Run_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_run_AFO, 'cmc_states.sto', osimModel)
+
+    #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    # Collect the strap lengths and forces during simulation and compare to the fatigue force in AFO mechanics (AFO9_MeshMechanics)
+    #-----------------------------------------------------------------------------
+    # Collect the maximum ligament (strap) lengths or forces during the DL, walk and run
+    strap_lengths=np.vstack((DL_strap_lengths_max, Walk_strap_lengths_max, Run_strap_lengths_max)) # Combine the three max strap lengths for three activities
+    strap_forces=np.vstack((DL_strap_forces_max, Walk_strap_forces_max, Run_strap_forces_max)) # Combine the three max strap forces for three activities
+    strap_lengths_sim_max=np.max(strap_lengths, axis=0) # The maxim strap lengths for the three activities
+    strap_forces_sim_max=np.max(strap_forces, axis=0) # The maxim strap forces for the three activities
+    #-----------------------------------------------------------------------------
+    # Collect the maximum force in the AFO mechanics (AFO9_MeshMechanics)
+    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables  # Design variables
+    AFO_FL=AFO9_MeshMechanics.MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements)
+    FL_length_mesh_max=[max(AFO_FL[0][0]), max(AFO_FL[1][0]), max(AFO_FL[2][0]), max(AFO_FL[3][0])]
+    FL_force_mesh_max=[max(AFO_FL[0][1]), max(AFO_FL[1][1]), max(AFO_FL[2][1]), max(AFO_FL[3][1])]
+    #-----------------------------------------------------------------------------
+    # Calculate the differences between max strap forces and the fatigue forces
+    strap_force_diff=np.array(strap_forces_sim_max)-np.array(FL_force_mesh_max)
+    return Subtalar_DL_max, diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm, strap_forces_diff
     #
 def Main_model_demo (DesignVariables, folder_index):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
