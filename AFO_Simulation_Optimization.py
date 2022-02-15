@@ -29,6 +29,7 @@ def Main_Simulation (DesignVariables, folder_index):
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Collect the simulation results for drop landing, walk and running
+    #-----------------------------------------------------------------------------
     #****************************************************
     # For drop landing activity, collect the maximum subtalar angle and ankle angle
     Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']                                          # The specified parameter to extract
