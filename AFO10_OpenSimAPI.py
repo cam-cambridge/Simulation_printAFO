@@ -46,7 +46,34 @@ def LigMechanics (osimModel, motSto_file):
     strap_forces=np.array(strap_forces).T
     return strap_lengths, strap_forces
     #
+def LigSetRestingLength(osimModel):
+    import opensim
+    # Set and update the path to the local OpenSim geometry directory
+    path='C:\OpenSim 4.1\Geometry'
+    opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
+    # Load the model
+    myModel=opensim.Model(osimModel)           # Load the opensim model
+    state=myModel.initSystem()                    # Initial state
+    fset=myModel.getForceSet()
+    strap1=opensim.Ligament.safeDownCast(fset.get("orthosis_1"))
+    strap2=opensim.Ligament.safeDownCast(fset.get("orthosis_2"))
+    strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
+    strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
+    # Get the lengths of the straps in the MSK model
+    strap1_length=strap1.getLength(state)
+    strap2_length=strap2.getLength(state)
+    strap3_length=strap3.getLength(state)
+    strap4_length=strap4.getLength(state)
+    # Set the resting lengths for the straps using the extracted lengths
+    strap1.set_resting_length(strap1_length)
+    strap2.set_resting_length(strap2_length)
+    strap3.set_resting_length(strap3_length)
+    strap4.set_resting_length(strap4_length)
+    myModel.printToXML(osimModel)
+    #
 def Liginitstates(osimModel):
+    import opensim
+    import numpy as np
     # Set and update the path to the local OpenSim geometry directory
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
@@ -71,7 +98,6 @@ if __name__ == '__main__':
     [strap_lengths, strap_forces]=LigMechanics(osimModel, motSto_file)
     print(strap_lengths_init)
     print(strap_forces_init)
-
     # Save results to an excel files
     exe_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\DL simulation results\Results_20220210.xlsx'
     sheet_name='Sheet1'
@@ -82,3 +108,14 @@ if __name__ == '__main__':
     data_pd.to_excel(data_writer, sheet_name)
     data_writer.save()
     data_writer.close()
+
+"""
+# The API of getting the length and force in GUI
+myModel=getCurrentModel()
+fset=myModel.getForceSet()
+strap=modeling.Ligament.safeDownCast(fset.get("orthosis_4"))
+state=myModel.initSystem()
+length=strap.getLength(state)
+myModel.computeStateVariableDerivatives(state)
+strap_force=strap.getTension(state)
+"""
