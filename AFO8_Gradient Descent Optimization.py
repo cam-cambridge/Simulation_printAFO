@@ -7,10 +7,10 @@ import multiprocessing
 from multiprocessing import Pool
 import os
 
-def objective(subtalar_drop, MusDiff_walk_norm, MusDiff_run_norm, n_elements):
+def objective(subtalar_drop, MusDiff_walk_norm, MusDiff_run_norm, n_elements, strap_forces_diff):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+np.maximum(0, (subtalar_drop-15))+n_elements/100
+	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+np.maximum(0, (subtalar_drop-15))+n_elements/100+np.sum(np.max(([0,0,0,0], strap_forces_diff), axis=0))*1000
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -19,9 +19,9 @@ def Gradient_calculation(solution_smallchange_list):
 	Objective_ini=solution_smallchange_list[1]
 	folder_index=solution_smallchange_list[2]
 	# Run the simulation of drop landing, walk and running
-	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
+	[subtalar_drop, MusDiff_walk, MusDiff_run, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
 	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
-	Objective_SmallChange=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]))
+	Objective_SmallChange=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution_smallchange[3]), strap_forces_diff)
 	# Calculate the  gradient after the small change
 	Gradient=Objective_SmallChange - Objective_ini
 	return Gradient
@@ -34,10 +34,10 @@ def derivative(solution):
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
-	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
-	Objective_ini=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
+	[subtalar_drop, MusDiff_walk, MusDiff_run, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
+	Objective_ini=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]), strap_forces_diff)
 	# Track the simulation results and objective function during iteration loops
-	Simulation_results_tracker=[subtalar_drop, MusDiff_walk, MusDiff_run, Objective_ini]
+	Simulation_results_tracker=[subtalar_drop, MusDiff_walk, MusDiff_run, strap_forces_diff, Objective_ini]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# The derivative for design variable
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,10 +133,10 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 			print('The updated solution: \n %s' % (solution), file=f)
 			print('#####################################################################################################', file=f)
 	# evaluate final candidate point
-	[subtalar_drop, MusDiff_walk, MusDiff_run]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
+	[subtalar_drop, MusDiff_walk, MusDiff_run, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
 	# Calculate the final objective function
-	Objective_final=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]))
-	Simulation_results_tracker_list.append([subtalar_drop, MusDiff_walk, MusDiff_run, Objective_final])
+	Objective_final=objective(subtalar_drop, MusDiff_walk, MusDiff_run, np.sum(solution[3]), strap_forces_diff)
+	Simulation_results_tracker_list.append([subtalar_drop, MusDiff_walk, MusDiff_run, strap_forces_diff, Objective_final])
 	Solution_tracker_list.append(solution)
 	return Solution_tracker_list, Simulation_results_tracker_list
 
