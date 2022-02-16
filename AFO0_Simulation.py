@@ -435,6 +435,9 @@ def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directo
                 f_w.writelines(['		<solve_for_equilibrium_for_auxiliary_states>true</solve_for_equilibrium_for_auxiliary_states>',"\n"])
             else:
                 f_w.write(line)
+    # Set and update the path to the local OpenSim geometry directory
+    path='C:\OpenSim 4.1\Geometry'
+    opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
     # To run the simulation
     cmd="opensim-cmd -L \"C:\OpenSim 4.1\\bin\osimExampleComponents.dll\"  run-tool %s" %(SetFile_forward)
     os.system(cmd)
