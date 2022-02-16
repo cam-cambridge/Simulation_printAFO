@@ -38,7 +38,7 @@ def Main_Simulation (DesignVariables, folder_index):
     Subtalar_DL_max=max(data_DL[:,1])                                                                                                                                                                    # The maximum subtalar angle during drop landing
     #-----------------------------------------------------------------------------
     # Collect the maximum ligament (strap) length and force during the drop landing simulation
-    osimModel='Simulation models\Drop landing'+str(folder_index)+'Fullbodymodel_droplanding_AFO.osim'
+    osimModel='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_droplanding_AFO.osim'
     [DL_strap_lengths_max, DL_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL, 'default_states_degrees.mot', osimModel)
 
     #-----------------------------------------------------------------------------
