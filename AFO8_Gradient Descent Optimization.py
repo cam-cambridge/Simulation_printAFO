@@ -30,7 +30,7 @@ def Gradient_calculation(solution_smallchange_list):
 def derivative(solution):
 	# Input a small increase for each design parameter
 	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
-	V_increment=[1,1,1,5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
+	V_increment=[0.5,0.5,0.5,0.5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 	# define the total iterations
 	n_iter = 10
 	# define the step size, this value is something you'll probably need to experiment with
-	step_size = 0.01
+	step_size = 1
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
 	solution_tracker, simulation_results_tracker= gradient_descent(objective, derivative, n_iter, step_size)
