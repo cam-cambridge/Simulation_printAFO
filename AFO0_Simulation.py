@@ -409,6 +409,7 @@ def FD_AFO(path_simulation, SimulationType):
 def ForwardDynamics_Droplanding(path, file_MBD, SetFile_forward, results_directory, run_finaltime):
     import numpy as np
     import os
+    import opensim
     # Set the current working directory
     os.chdir(path)
     OsModel_full=os.path.join(path, file_MBD)
