@@ -111,7 +111,7 @@ def Main_Simulation (DesignVariables, folder_index):
     FL_force_mesh_max=[max(AFO_FL[0][1]), max(AFO_FL[1][1]), max(AFO_FL[2][1]), max(AFO_FL[3][1])]
     #-----------------------------------------------------------------------------
     # Calculate the differences between max strap forces and the fatigue forces
-    strap_force_diff=np.array(strap_forces_sim_max)-np.array(FL_force_mesh_max)
+    strap_forces_diff=np.array(strap_forces_sim_max)-np.array(FL_force_mesh_max)
     return Subtalar_DL_max, diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm, strap_forces_diff
     #
 def Main_model_demo (DesignVariables, folder_index):
