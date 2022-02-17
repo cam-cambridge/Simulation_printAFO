@@ -1,6 +1,6 @@
 import opensim
 import numpy as np
-def LigMechanicsMax (DL_results_output_folder, DL_results, osimModel):
+def LigMechanicsMax (Sim_output_folder, Sim_results, osimModel):
     # Aims: to export the maximum lengths and forces of the ligaments (i.e. AFO straps) during a specific motion
     # Inputs: osimModel: the opensim model with ligaments
     #             motSto_file: the motion file loaded to the model for length and forces exportion
@@ -18,23 +18,27 @@ def LigMechanicsMax (DL_results_output_folder, DL_results, osimModel):
     myModel=opensim.Model(osimModel)           # Load the opensim model
     state=myModel.initSystem()                    # Initial state
     # Load the motion file
-    motSto_file=os.path.join(path_simulaiton, DL_results_output_folder, DL_results)
+    motSto_file=os.path.join(path_simulation, Sim_output_folder, Sim_results)
+    motSto_file_type='states' in motSto_file        # Determine whether the file name includes 'states' or not, will be used in the below syntax
     # Storage the simulation results of motion
     motSto=opensim.Storage(motSto_file)
     timestep_motSto=motSto.getSize()    # The number of time step
     coords=myModel.getCoordinateSet()
     num_coords=coords.getSize() # Get the number of coordinates in the model, including coordinates of forceset, such as BackBushing et al.
     # Update each model coordinate for each time frame
-    vars=['knee_angle_r', 'ankle_angle_r', 'subtalar_angle_r']    # The coordinates that will be updated for calculate the ligament length
+    vars=['ankle_angle_r', 'subtalar_angle_r']    # The coordinates that will be updated for calculate the ligament length
     motSto_num=timestep_motSto    # The number of time instances selected for ligament lengths and forces
     motSto_interval=int(timestep_motSto/motSto_num)   # The number of intervals for the time instances
     strap_lengths=[]
     strap_forces=[]
-    for j in range (1,motSto_num):
+    for j in range (0,motSto_num):
         for i, var in enumerate (vars):
             coordvalue=opensim.ArrayDouble()
             #currentcoord=coords.get(i).getName()   # Get the name of coordinates in opensim model
-            currentcoord_fullname='/jointset/'+var.replace('_angle_', '_')+'/'+var+'/value'
+            if motSto_file_type==True:
+                currentcoord_fullname='/jointset/'+var.replace('_angle_', '_')+'/'+var+'/value'
+            else:
+                currentcoord_fullname=var
             motSto.getDataColumn(currentcoord_fullname, coordvalue)
             q=coordvalue.getitem(j*motSto_interval)
             myModel.updCoordinateSet().get(var).setValue(state, np.radians(q), False)
@@ -115,13 +119,14 @@ def LigMechanicsRealtime (osimModel, motSto_file):
     #motSto_file='D:\Drop landing\DL simulation results\\11.mot'           # File path for motion file
     myModel=opensim.Model(osimModel)           # Load the opensim model
     state=myModel.initSystem()                    # Initial state
+    motSto_file_type='states' in motSto_file        # Determine whether the file name includes 'states' or not, will be used in the below syntax
     # Storage the simulation results of motion
     motSto=opensim.Storage(motSto_file)
     timestep_motSto=motSto.getSize()    # The number of time step
     coords=myModel.getCoordinateSet()
     num_coords=coords.getSize() # Get the number of coordinates in the model, including coordinates of forceset, such as BackBushing et al.
     # Update each model coordinate for each time frame
-    vars=['knee_angle_r', 'ankle_angle_r', 'subtalar_angle_r']    # The coordinates that will be updated for calculate the ligament length
+    vars=['ankle_angle_r', 'subtalar_angle_r']    # The coordinates that will be updated for calculate the ligament length
     motSto_num=timestep_motSto    # The number of time instances selected for ligament lengths and forces
     motSto_interval=int(timestep_motSto/motSto_num)   # The number of intervals for the time instances
     strap_lengths=[]
@@ -130,7 +135,10 @@ def LigMechanicsRealtime (osimModel, motSto_file):
         for i, var in enumerate (vars):
             coordvalue=opensim.ArrayDouble()
             #currentcoord=coords.get(i).getName()   # Get the name of coordinates in opensim model
-            currentcoord_fullname='/jointset/'+var.replace('_angle_', '_')+'/'+var+'/value'
+            if motSto_file_type==True:
+                currentcoord_fullname='/jointset/'+var.replace('_angle_', '_')+'/'+var+'/value'
+            else:
+                currentcoord_fullname=var
             motSto.getDataColumn(currentcoord_fullname, coordvalue)
             q=coordvalue.getitem(j*motSto_interval)
             myModel.updCoordinateSet().get(var).setValue(state, np.radians(q), False)
@@ -151,12 +159,13 @@ def LigMechanicsRealtime (osimModel, motSto_file):
     #
 if __name__ == '__main__':
     import pandas as pd
-    osimModel='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Gait simulation0\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'   # File path for opensim model
-    motSto_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Gait simulation0\Model outputs\\4_CMC\AFO size 00400\cmc_states.sto'           # File path for motion file
-    [strap_lengths_init, strap_forces_init]=Liginitstates(osimModel)
-    [strap_lengths, strap_forces]=LigMechanicsRealtime (osimModel, motSto_file)
+    osimModel='D:\Trial\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
+    DL_results_output_folder='D:\Trial\\4_CMC\\1'
+    DL_results='cmc_states.sto'
+    [strap_length_max, strap_forces_max]=LigMechanicsMax(DL_results_output_folder, DL_results, osimModel)
+    print(strap_forces_max)
     # Save results to an excel files
-    exe_file='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\DL simulation results\Results_20220210.xlsx'
+    exe_file='D:\Trial\Results_20220210.xlsx'
     sheet_name='Sheet1'
     strap_length_forces=np.vstack((strap_lengths, strap_forces)).T
     data_pd=pd.DataFrame(strap_length_forces)
@@ -166,7 +175,6 @@ if __name__ == '__main__':
     data_writer.save()
     data_writer.close()
     #
-
 """
 # The API of getting the length and force in GUI
 myModel=getCurrentModel()
