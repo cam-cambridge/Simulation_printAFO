@@ -10,7 +10,9 @@ import os
 def objective(subtalar_drop, MusDiff_walk_norm, MusDiff_run_norm, n_elements, strap_forces_diff):
 	# This is the cost function
 	# to put the value of the cost function calculated for that simulation
-	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+np.maximum(0, (subtalar_drop-15))+n_elements/100+np.sum(np.max(([0,0,0,0], strap_forces_diff), axis=0))*1000
+	[strap_forces_diff_DL, strap_forces_diff_Walk, strap_forces_diff_Run]=strap_forces_diff
+	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+np.maximum(0, (subtalar_drop-15))+n_elements/100+\
+	           np.sum(np.int64(strap_forces_diff_DL>0))*100 + np.sum(np.int64(strap_forces_diff_Walk>0))*100 + np.sum(np.int64(strap_forces_diff_Run>0))*100
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
