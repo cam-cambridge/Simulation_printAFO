@@ -8,7 +8,7 @@ import AFO9_MeshMechanics
 # Fixed parameters
 #AFO_bottom_center=[0.002, 0, 0.006]
 AFO_bottom_center=[0, 0, 0]
-AFO_cylinder_radius=0.041
+AFO_cylinder_radius=0.0375
 AFO_height=0.1
 Platform_inclination=[25, 0, 0]
 AFO_Fmagnitude=1
