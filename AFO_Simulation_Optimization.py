@@ -122,7 +122,7 @@ def Main_model_demo (DesignVariables, folder_index):
     AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index)))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
+    #AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
     # The running simulation Run
     #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
+    #AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
