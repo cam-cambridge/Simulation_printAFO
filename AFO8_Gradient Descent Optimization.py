@@ -42,7 +42,7 @@ def derivative(solution):
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
 	[Angles_DL, Muscles_diff, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
-	Objective_ini=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution_smallchange[3]))
+	Objective_ini=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution[3]))
 	# Track the simulation results and objective function during iteration loops
 	Simulation_results_tracker=[Angles_DL, Muscles_diff, strap_forces_diff, Objective_ini]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
