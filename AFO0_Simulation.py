@@ -17,8 +17,11 @@ def Simulation(Parallel_simu_paralist):
     # Drop landing simulation if the drop landing related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     if SimulationType=='AFODroplanding' or SimulationType=='AFOdroplanding' or SimulationType=='AFODROPLANDING' or SimulationType=='AFODrop landing':
+        # For the drop landing activity, the Parallel_simu_paralist has 5 parameters, the 5th parameter is the plaform inclination
+        Platform_inclination=Parallel_simu_paralist[4]
+        results_directory_platform=results_directory+str(Platform_inclination[0])+str(Platform_inclination[1])+str(Platform_inclination[2])
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        # The some input parameters for the model development, including the folders and models
+        # The input parameters for the model development, including the folders and models
         foldername_droplanding='Simulation models\Drop landing'+str(results_directory)                         # The folders for drop landing model and simulation
         msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
         #folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
@@ -37,7 +40,7 @@ def Simulation(Parallel_simu_paralist):
         # The AFO representation, AFO force magnitude, and platform inclination calculated from the design parameter file: AFO input.txt, using modue (AFO1_DesignParameter.AFODesignParameter)
         # AFO_representation=[AFO_top_local, AFO_bottom_local, AFO_length]
         # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
-        [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center)
+        [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center)
        # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
         AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
         # Display the MBD drop landing model with AFO
@@ -45,7 +48,7 @@ def Simulation(Parallel_simu_paralist):
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
             os.system(msmodel_droplanding)
         elif ModelOperation=='simulation' or ModelOperation=='Simulation' or ModelOperation=='SIMULATION':
-            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory, 0.29)
+            ForwardDynamics_Droplanding(os.path.join(path_simulation, foldername_droplanding), msmodel_droplanding, droplanding_forward_setup_file, results_directory_platform, 0.3)
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     # Gait simulation if the gait related string is input
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -110,10 +113,10 @@ def Simulation(Parallel_simu_paralist):
                 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
                 Model_AFO_origin=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_origin_file)
                 Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
-                [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
+                [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
                 # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
                 AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
-                #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+                #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, AFO_representation, AFO_material)
                 os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
                 if SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
                     if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
@@ -187,10 +190,10 @@ def Simulation(Parallel_simu_paralist):
             # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
             Model_AFO_origin=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_origin_file)
             Model_AFO_final=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_final_file)
-            [AFO_representation, AFO_material, Platform_inclination]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
+            [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
             # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
             AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
-            #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+            #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, AFO_representation, AFO_material)
             os.chdir(os.path.join(path_simulation, run_model_output, model_AFO_origin_folder))
             if SimulationType=='Run_AFO' or SimulationType=='run_AFO':
                 if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
