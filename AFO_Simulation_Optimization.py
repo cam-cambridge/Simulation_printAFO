@@ -45,10 +45,10 @@ def Main_Simulation (DesignVariables, folder_index):
     # For drop landing, collect the maximum subtalar angle and ankle angle, and maximum strap forces
     #*****************************************************************************
     Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
-    platform0=[25,0,0]
-    platform45=[25,45,0]
-    results_directory_platform0=str(folder_index)+str(Platform_inclination0[0])+str(Platform_inclination0[1])+str(Platform_inclination0[2])   # The folder for the simulation results for platform orientation of  0 degree
-    results_directory_platform45=str(folder_index)+str(Platform_inclination45[0])+str(Platform_inclination45[1])+str(Platform_inclination45[2]) # The folder for simulation results for platform orienation of 45 degree
+    platform0=[25,0,0]    # The platform orientation of 0 degree, inclination of 25 degree
+    platform45=[25,45,0]   # The platform orientation of 45 degree, inclination of 25 degree
+    results_directory_platform0=str(folder_index)+str(Platform0[0])+str(Platform0[1])+str(Platform0[2])   # The folder for the simulation results for platform orientation of  0 degree
+    results_directory_platform45=str(folder_index)+str(Platform45[0])+str(Platform45[1])+str(Platform45[2]) # The folder for simulation results for platform orienation of 45 degree
     output_folder_DL_platform0='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+results_directory_platform0     # The folder path for the simulation with platform orientation of 0 degree
     output_folder_DL_platform45='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+results_directory_platform45  # The folder path for the simulation with platform orientation of 45 degree
     data_DL_platform0= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL_platform0, Results_parameter_DL, 'default_states_degrees.mot')  # put the specified results into a matrix for platform 0
