@@ -140,9 +140,14 @@ def Main_Simulation (DesignVariables, folder_index):
     #print('The differences of strap forces for DL: %s' %(strap_forces_diff_Run))
 
     #---------------------------------------------------------------------------------
-    # Put the differences of strap forces (between maximum real-time forces and fatigue forces) into a matrix strap_forces_sim
-    strap_forces_diff=[strap_forces_diff_DL, strap_forces_diff_Walk, strap_forces_diff_Run]
-    return Subtalar_DL_max, diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm, strap_forces_diff
+    # Put the subtalar and angles angle, muscle differences and strap forces into three matrixes
+    # The subtalar and ankle angles for drop landing with different platform orientations (0 and 45 degrees)
+    Angles_DL=[Subtalar_DL_max_platform0, Subtalar_DL_max_platform45, Ankle_DL_max_platform0, Ankle_DL_max_platform45]
+    # The normalized muscle forces differences for walk and running
+    Muscles_diff=[diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm]
+    # The differences of strap forces between simulation and fatigue values
+    strap_forces_diff=[strap_forces_diff_DL_platform0, strap_forces_diff_DL_platform45, strap_forces_diff_Walk, strap_forces_diff_Run]
+    return Angles_DL, Muscles_diff, strap_forces_diff
     #
 def Main_model_demo (DesignVariables, folder_index):
     #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
