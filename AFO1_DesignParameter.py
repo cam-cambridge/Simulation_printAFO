@@ -7,10 +7,10 @@ import AFO9_MeshMechanics
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Fixed parameters
 #AFO_bottom_center=[0.002, 0, 0.006]
-AFO_bottom_center=[0, 0, 0]
-AFO_cylinder_radius=0.0375
+AFO_bottom_center=[0, 0, 0]   # The center of the AFO bottom in the talus coordinate system
+AFO_radius_top=0.0375      # The radius of the circle for defining the AFO top endpoints
+AFO_radius_bottom=0.043   # The radius of the circle for defining the AFO bottom endpoints
 AFO_height=0.1
-Platform_inclination=[25, 0, 0]
 AFO_Fmagnitude=1
 
 def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center):
@@ -19,16 +19,14 @@ def AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_cente
     #                  (3,4,5) tibial_center, calcn_center, tabuls_center: The Global coordinates of the tibial, calcn and tabuls centers
     # Output:    (1)  AFO_representation: the local coordinates of the two endpoints for the AFO strips
     #                 (2)   AFO_material: the force magnitude and force-length relationship for the AFO material
-    #                 (3)  Platform_inclination: the inclination of the platform
     # Get the full path of the directory and .txt file for the input parameters
 
-    global Platform_inclination, AFO_Fmagnitude # Fixed parameters_global Variables
+    global AFO_Fmagnitude # Fixed parameters_global Variables
     [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables  # Design variables
     AFO_FLrelationship=AFO9_MeshMechanics.MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements)
     AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
     AFO_representation=AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center)
-    Platform_inclination=Platform_inclination
-    return AFO_representation, AFO_material, Platform_inclination
+    return AFO_representation, AFO_material
 
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 #  Create the endpoints matrixes for the AFO stripes in global and local coordinate systems (as input to develop AFO in the musculoskeletal model)
@@ -50,18 +48,18 @@ def AFORepresentation(DesignVariables, tibial_center, calcn_center, talus_center
     for i in range (len(AFO_bottom_location)):
         # The coordinates of the endpoint at the AFO bottom in the global CS
         bottom_endpoint_angle=AFO_bottom_location[i]*math.pi/180
-        x_bottom=AFO_bottom_center_global[0]+math.cos(bottom_endpoint_angle)*AFO_cylinder_radius
+        x_bottom=AFO_bottom_center_global[0]+math.cos(bottom_endpoint_angle)*AFO_radius_bottom
         y_bottom=AFO_bottom_center_global[1]
-        z_bottom=AFO_bottom_center_global[2]+math.sin(bottom_endpoint_angle)*AFO_cylinder_radius
+        z_bottom=AFO_bottom_center_global[2]+math.sin(bottom_endpoint_angle)*AFO_radius_bottom
         AFO_bottom=np.append(AFO_bottom, np.array([x_bottom, y_bottom, z_bottom]))
         # The coordinates of the endpoint at the AFO top in the global CS
-        top_endpoint_angle=bottom_endpoint_angle+AFO_height*math.tan(AFO_strap_orientations[i]/180*math.pi)/AFO_cylinder_radius
-        x_top=AFO_top_center_global[0]+math.cos(top_endpoint_angle)*AFO_cylinder_radius
+        top_endpoint_angle=bottom_endpoint_angle+AFO_height*math.tan(AFO_strap_orientations[i]/180*math.pi)/AFO_radius_bottom
+        x_top=AFO_top_center_global[0]+math.cos(top_endpoint_angle)*AFO_radius_top
         y_top=AFO_top_center_global[1]
-        z_top=AFO_top_center_global[2]+math.sin(top_endpoint_angle)*AFO_cylinder_radius
+        z_top=AFO_top_center_global[2]+math.sin(top_endpoint_angle)*AFO_radius_top
         AFO_top=np.append(AFO_top, np.array([x_top, y_top, z_top]))
         # The length of the AFO stripes
-        AFO_strap_length_T=AFO_height/(math.cos(AFO_strap_orientations[i]*math.pi/180))
+        AFO_strap_length_T=AFO_height/(math.cos(AFO_strap_orientations[i]*math.pi/180))  # This is a temporary length, a real length will be attributed using a strap length collection module AFO10_OpenSimAPI
         AFO_strap_length=np.append(AFO_strap_length, AFO_strap_length_T)
     # Transfer the endpoints of the AFO into 3D matrixes
     AFO_top=AFO_top.reshape(-1,3)
