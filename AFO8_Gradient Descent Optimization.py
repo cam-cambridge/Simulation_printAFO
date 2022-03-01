@@ -13,11 +13,17 @@ def objective(Angles_DL, Muscles_diff, strap_forces_diff, n_elements):
 	[Subtalar_DL_max_platform0, Subtalar_DL_max_platform45, Ankle_DL_max_platform0, Ankle_DL_max_platform45]=Angles_DL  # The angles for drop landing
 	[MusDiff_walk_norm, MusDiff_run_norm]=Muscles_diff   # Muscle differences for walk and running for models with and without AFO
 	[strap_forces_diff_DL_platform0, strap_forces_diff_DL_platform45, strap_forces_diff_Walk, strap_forces_diff_Run]=strap_forces_diff  # Differences of strap forces between simulation and fatigue values
+    """
 	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+n_elements/100+\
 	           np.maximum(0, (Subtalar_DL_max_platform0-15))+np.maximum(0, (Subtalar_DL_max_platform45-15))+\
-			   abs(Ankle_DL_max_platform0)+abs(Ankle_DL_max_platform45)+\
 			   np.sum(np.int64(strap_forces_diff_DL_platform0>0))*100+np.sum(np.int64(strap_forces_diff_DL_platform45>0))*100+\
 			   np.sum(np.int64(strap_forces_diff_Walk>0))*100 + np.sum(np.int64(strap_forces_diff_Run>0))*100
+	"""
+	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+n_elements/100+\
+	           np.maximum(0, (Subtalar_DL_max_platform0-15))*5+np.maximum(0, (Subtalar_DL_max_platform45-15))*5+\
+			   np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform0))/5+np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform45))/5 +\
+               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Walk))/5 +\
+               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Run))/5
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -151,7 +157,7 @@ if __name__ == '__main__':
 	# define the total iterations
 	n_iter = 10
 	# define the step size, this value is something you'll probably need to experiment with
-	step_size = 1
+	step_size = 0.5
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
 	solution_tracker, simulation_results_tracker= gradient_descent(objective, derivative, n_iter, step_size)
