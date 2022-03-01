@@ -23,7 +23,10 @@ def Simulation(Parallel_simu_paralist):
         # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         # The input parameters for the model development, including the folders and models
         foldername_droplanding='Simulation models\Drop landing'+str(results_directory)                         # The folders for drop landing model and simulation
-        msmodel_droplanding='Fullbodymodel_droplanding_AFO.osim'                                                   # The model for drop landing simulation
+        if Platform_inclination==[0, -45, -25]:
+            msmodel_droplanding='Fullbodymodel_DL_platform45_AFO.osim'                                                   # The model for drop landing simulation
+        else:
+            msmodel_droplanding='Fullbodymodel_DL_platform0_AFO.osim'
         #folder_designparameters='AFO Design'                                                                                           # The folder include the design parameter .txt file
         #txtfile_designparameters='AFO input.txt'                                                                                         # The txt file includes the design parameters
         droplanding_forward_setup_file='default_Setup_ForwardTool.xml'                                               # The setup file for the drop landing forward dynamics
