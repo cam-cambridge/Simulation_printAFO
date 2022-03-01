@@ -20,7 +20,7 @@ def Main_Simulation (DesignVariables, folder_index):
     # The drop landing simulation DL
     #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', DesignVariables, str(folder_index), [25, 0, 0]))
-    AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', DesignVariables, str(folder_index), [25, 45, 0]))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', DesignVariables, str(folder_index), [0, -45, -25]))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('Walk_AFO', 'simulation', DesignVariables, str(folder_index)))
@@ -46,7 +46,7 @@ def Main_Simulation (DesignVariables, folder_index):
     #*****************************************************************************
     Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
     platform0=[25,0,0]    # The platform orientation of 0 degree, inclination of 25 degree
-    platform45=[25,45,0]   # The platform orientation of 45 degree, inclination of 25 degree
+    platform45=[0,-45,-25]   # The platform orientation of 45 degree, inclination of 25 degree
     results_directory_platform0=str(folder_index)+str(Platform0[0])+str(Platform0[1])+str(Platform0[2])   # The folder for the simulation results for platform orientation of  0 degree
     results_directory_platform45=str(folder_index)+str(Platform45[0])+str(Platform45[1])+str(Platform45[2]) # The folder for simulation results for platform orienation of 45 degree
     output_folder_DL_platform0='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+results_directory_platform0     # The folder path for the simulation with platform orientation of 0 degree
@@ -55,15 +55,16 @@ def Main_Simulation (DesignVariables, folder_index):
     data_DL_platform45= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL_platform45, Results_parameter_DL, 'default_states_degrees.mot')  # put the specified results into a matrix for platform 45
     # The maximum subtalar angles for drop landing with two platfomr orientations (0 and 45 degrees)
     Subtalar_DL_max_platform0=max(data_DL_platform0[:,1])  # The maximum subtalar angle for drop landing with platform 0 orientation
-    Subtalar_DL_max_platform45=max(data_DL_platform45[:,1])  # The maximum subtalar angle for drop landing with platform 0 orientation
+    Subtalar_DL_max_platform45=max(data_DL_platform45[:,1])  # The maximum subtalar angle for drop landing with platform 45 orientation
     # The maximum ankle angles for drop landing with two platform orientations (0 and 45 degrees)
-    Ankle_DL_max_platform0=max(data_DL_platform0[:,1])  # The maximum ankle angle for drop landing with platform 0 orientation
-    Ankle_DL_max_platform45=max(data_DL_platform45[:,1])  # The maximum ankle angle for drop landing with platform 0 orientation
+    Ankle_DL_max_platform0=max(data_DL_platform0[:,2])  # The maximum ankle angle for drop landing with platform 0 orientation
+    Ankle_DL_max_platform45=max(data_DL_platform45[:,2])  # The maximum ankle angle for drop landing with platform 45 orientation
     #---------------------------------------------------------------------------------
     # Collect the maximum ligament (strap) length and force during the drop landing simulation
-    osimModel='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_droplanding_AFO.osim'
-    [DL_strap_lengths_max_platform0, DL_strap_forces_max_platform0]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform0, 'default_states_degrees.mot', osimModel)
-    [DL_strap_lengths_max_platform45, DL_strap_forces_max_platform45]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform45, 'default_states_degrees.mot', osimModel)
+    osimModel_platform0='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform0_AFO.osim'
+    osimModel_platform45='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform45_AFO.osim'
+    [DL_strap_lengths_max_platform0, DL_strap_forces_max_platform0]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform0, 'default_states_degrees.mot', osimModel_platform0)
+    [DL_strap_lengths_max_platform45, DL_strap_forces_max_platform45]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform45, 'default_states_degrees.mot', osimModel_platform45)
     #print('The max strap lengths for DL: %s'  %(DL_strap_lengths_max))
     #print('The max strap forces for DL: %s'  %(DL_strap_forces_max))
     #---------------------------------------------------------------------------------
@@ -155,10 +156,10 @@ def Main_model_demo (DesignVariables, folder_index):
     # The drop landing simulation DL
     #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [25, 0, 0]))
-    AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [25, 45, 0]))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [0, -45, -25]))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
+    #AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
     # The running simulation Run
     #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
     #AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
