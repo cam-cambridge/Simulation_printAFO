@@ -53,9 +53,11 @@ def LigMechanicsMax (Sim_output_folder, Sim_results, osimModel):
         strap_lengths.append([strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)])
         myModel.computeStateVariableDerivatives(state)
         strap_forces.append([strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)])
+    strap_lengths_realtime=np.array(strap_lengths).T
+    strap_forces_realtime=np.array(strap_forces).T
     strap_lengths_max=np.max(np.array(strap_lengths).T, axis=1)
     strap_forces_max=np.max(np.array(strap_forces).T, axis=1)
-    return strap_lengths_max, strap_forces_max
+    return strap_lengths_realtime, strap_forces_realtime, strap_lengths_max, strap_forces_max
     #
 def LigSetRestingLength(osimModel):
     # Set the resting length for the ligament (strap)
@@ -157,15 +159,91 @@ def LigMechanicsRealtime (osimModel, motSto_file):
     strap_forces=np.array(strap_forces).T
     return strap_lengths, strap_forces
     #
+def LigPeneMonitor(strap_lengths_realtime, threshold):
+    strap_lengths_grad=[]
+    strap_pene_monitor=[]
+    for strap_num in range (len(strap_lengths_realtime)):
+        strap_lengths_grad_temp=[]
+        strap_pene_monitor_temp='False'
+        for i,j in zip(strap_lengths_realtime[strap_num], strap_lengths_realtime[strap_num][1:]):
+            strap_lengths_grad_temp.append(j-i)
+            if abs(j-i)>threshold:
+                strap_pene_monitor_temp='True'
+        strap_lengths_grad.append(strap_lengths_grad_temp)
+        strap_pene_monitor.append(strap_pene_monitor_temp)
+    return strap_lengths_grad, strap_pene_monitor
+    #
 if __name__ == '__main__':
     import pandas as pd
-    osimModel='D:\Trial\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
-    DL_results_output_folder='D:\Trial\\4_CMC\\1'
-    DL_results='cmc_states.sto'
-    [strap_length_max, strap_forces_max]=LigMechanicsMax(DL_results_output_folder, DL_results, osimModel)
-    print(strap_forces_max)
+    import matplotlib.pyplot as plt
+
+    output_folder_DL_platform0='D:\Trial\Gait simulation0\Model outputs\\4_CMC\\0'
+    osimModel_platform0='D:\Trial\Gait simulation0\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
+    [strap_lengths, strap_forces, strap_lengths_max, strap_forces_max]=LigMechanicsMax(output_folder_DL_platform0, 'cmc_Kinematics_q.sto', osimModel_platform0)
+    [strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, 0.004)
+    strap_length_grad=strap_lengths
+    [nrow,ncolumn]=np.array(strap_length_grad).shape
+    strap_length_grad_index=list(range(ncolumn))
+
+    """
+    osimModel='D:\Trial\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
+    Results_file='D:\Trial\Drop landing0\DL simulation results\\02500\default_states_degrees1.mot'
+    [strap_length_ini, strap_force_ini]=Liginitstates(osimModel)
+    [strap_lengths, strap_forces]=LigMechanicsRealtime(osimModel, Results_file)
+    #strap_length_ini_reshape=np.array(strap_length_ini).reshape(-1,1)
+    #strap_length_rate=strap_lengths/strap_length_ini_reshape
+    #[nrow, ncolumn]=strap_lengths.shape
+    #strap_length_index=list(range(ncolumn))
+    strap_length_grad=[]
+    for strap_num in range (len(strap_lengths)):
+        strap_length_grad_temp=[]
+        for i,j in zip(strap_lengths[strap_num], strap_lengths[strap_num][1:]):
+            strap_length_grad_temp.append(j-i)
+        strap_length_grad.append(strap_length_grad_temp)
+    [nrow,ncolumn]=np.array(strap_length_grad).shape
+    strap_length_grad_index=list(range(ncolumn))
+    """
+
+    plt.figure()
+    plt.subplot(2,2,1)
+    #plt.plot(strap_length_index, strap_lengths[0], marker='o', label='Strap lengths for strap 1')
+    #plt.plot(strap_length_index, strap_length_rate[0], marker='o', label='Strap lengths for strap 1')
+    plt.plot(strap_length_grad_index, strap_length_grad[0], marker='o', label='Strap lengths for strap 1')
+    #plt.xlim((0,800))
+    #plt.ylim((-0.02, 0.002))
+    plt.subplot(2,2,2)
+    #plt.plot(strap_length_index, strap_lengths[1], marker='o', label='Strap lengths for strap 2')
+    #plt.plot(strap_length_index, strap_length_rate[1], marker='o', label='Strap lengths for strap 2')
+    plt.plot(strap_length_grad_index, strap_length_grad[1], marker='o', label='Strap lengths for strap 2')
+    #plt.xlim((0,800))
+    #plt.ylim((-0.02, 0.002))
+    plt.subplot(2,2,3)
+    #plt.plot(strap_length_index, strap_lengths[2], marker='o', label='Strap lengths for strap 3')
+    #plt.plot(strap_length_index, strap_length_rate[2], marker='o', label='Strap lengths for strap 3')
+    plt.plot(strap_length_grad_index, strap_length_grad[2], marker='o', label='Strap lengths for strap 3')
+    #plt.xlim((0,800))
+    #plt.ylim((-0.02, 0.002))
+    plt.subplot(2,2,4)
+    #plt.plot(strap_length_index, strap_lengths[3], marker='o', label='Strap lengths for strap 4')
+    #plt.plot(strap_length_index, strap_length_rate[3], marker='o', label='Strap lengths for strap 4')
+    plt.plot(strap_length_grad_index, strap_length_grad[3], marker='o', label='Strap lengths for strap 4')
+    #plt.xlim((0,800))
+    #plt.ylim((-0.02, 0.002))
+    plt.show()
+
+    """
+    # The plot of the force-length relationship in one figure
+    plt.figure()
+    plt.plot(strap_lengths[0], strap_forces[0], marker='o', label='Strap FL for strap 1')
+    plt.plot(strap_lengths[1], strap_forces[1], marker='o', label='Strap FL for strap 2')
+    plt.plot(strap_lengths[2], strap_forces[2], marker='o', label='Strap FL for strap 3')
+    plt.plot(strap_lengths[3], strap_forces[3], marker='o', label='Strap FL for strap 4')
+    plt.show()
+    """
+
+    """
     # Save results to an excel files
-    exe_file='D:\Trial\Results_20220210.xlsx'
+    exe_file='D:\Trial\Strap forces and lengths.xlsx'
     sheet_name='Sheet1'
     strap_length_forces=np.vstack((strap_lengths, strap_forces)).T
     data_pd=pd.DataFrame(strap_length_forces)
@@ -175,6 +253,8 @@ if __name__ == '__main__':
     data_writer.save()
     data_writer.close()
     #
+    """
+
 """
 # The API of getting the length and force in GUI
 myModel=getCurrentModel()
