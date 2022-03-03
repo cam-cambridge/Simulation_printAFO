@@ -32,7 +32,7 @@ def Gradient_calculation(solution_smallchange_list):
 	Objective_ini=solution_smallchange_list[1]
 	folder_index=solution_smallchange_list[2]
 	# Run the simulation of drop landing, walk and running
-	[Angles_DL, Muscles_diff, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
+	[Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor]=AFO_Simulation_Optimization.Main_Simulation(solution_smallchange, str(folder_index))
 	# Calculate the objective function for the solution with small change     # np.sum(solution_smallchange[3]) is the total element numbers for all the straps
 	Objective_SmallChange=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution_smallchange[3]))
 	# Calculate the  gradient after the small change
@@ -43,11 +43,13 @@ def Gradient_calculation(solution_smallchange_list):
 def derivative(solution):
 	# Input a small increase for each design parameter
 	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
-	V_increment=[0.5,0.5,0.5,0.5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
+	#V_increment=[0.5,0.5,0.5,0.5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
+	V_increment=[0.5, 0.5, 0.1,1]
+	#V_increment=[1,1,0.2,2]
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
-	[Angles_DL, Muscles_diff, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
+	[Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
 	Objective_ini=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution[3]))
 	# Track the simulation results and objective function during iteration loops
 	Simulation_results_tracker=[Angles_DL, Muscles_diff, strap_forces_diff, Objective_ini]
@@ -83,13 +85,13 @@ def derivative(solution):
 												  (solution_theta_0_values_smallchange3, Objective_ini, 11), (solution_theta_0_values_smallchange4, Objective_ini, 12),
 												  (solution_n_elements_smallchange1, Objective_ini, 13), (solution_n_elements_smallchange2, Objective_ini, 14),
 												  (solution_n_elements_smallchange3, Objective_ini, 15), (solution_n_elements_smallchange4, Objective_ini, 16)]
-    # The parallel simulation for 16 simulations of drop landing, walk and run
+	# The parallel simulation for 16 simulations of drop landing, walk and run
 	pool=multiprocessing.Pool()
 	Gradient=pool.map(Gradient_calculation, solution_smallchange_list)
 	pool.close()
 	pool.join()
 	Gradient=np.array(Gradient).reshape(4,4).tolist()
-	return Gradient, Simulation_results_tracker
+	return Gradient, Simulation_results_tracker, strap_pene_monitor
 	#
 #here you need to calculate the difference in the cost function caused by a small change in every design parameter
 #So, for every design parameter (mesh stiffness, mesh strain when high stiffness occurs, mesh orientation etc)
@@ -103,9 +105,11 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-40, 0, 0, 50], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
+	solution = [[14, 101, 259, 346], [-40, 0, 0, 40], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
 	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
 	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [1,1,1,1]]
+	#bounds_upper=[[90, 180, 360, 360], [0, 53.5, 53.5, 53.5], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
+	#bounds_low=[[0, 0, 180, 270], [-53.5, -53.5, -53.5, 0], [0.1,0.1,0.1,0.1], [1,1,1,1]]
 
     #it is just a starting point for the optimisation
     # run the gradient descent
@@ -124,12 +128,14 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		cmp_marker=np.logical_and(bounds_low<solution, solution<bounds_upper)
 		#--------------------------------------------------------------------------
 		solution[3]=list(map(int, solution[3]))      # Make sure the design variables n_element are integer type
-		gradient, simulation_results_tracker = derivative(solution)
+		gradient, simulation_results_tracker, strap_pene_monitor = derivative(solution)
 		# record the history of solution,simulation results, cost function
 		Simulation_results_tracker_list=[]
 		Solution_tracker_list=[]
+		Strap_pene_monitor_list=[]
 		Simulation_results_tracker_list.append(simulation_results_tracker)
 		Solution_tracker_list.append(solution)
+		Strap_pene_monitor_list.append(strap_pene_monitor)
 		#--------------------------------------------------------------------------
 		# print iteration history to txt file
 		path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
@@ -139,6 +145,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 			print('The solution track: \n %s\n' %(solution), file=f)
 			print('The gradient track: \n %s\n' %(gradient), file=f)
 			print('The simulation results track: \n %s' %(simulation_results_tracker), file=f)
+			print('The strap penetration status: \n %s' %(strap_pene_monitor), file=f)
 		#--------------------------------------------------------------------------
 		# take a step
 		solution = np.array(solution) - step_size * np.array(gradient)
@@ -146,12 +153,13 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 			print('The updated solution: \n %s' % (solution), file=f)
 			print('#####################################################################################################', file=f)
 	# evaluate final candidate point
-	[Angles_DL, Muscles_diff, strap_forces_diff]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
+	[Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor]=AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
 	# Calculate the final objective function
 	Objective_final=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution[3]))
 	Simulation_results_tracker_list.append([Angles_DL, Muscles_diff, strap_forces_diff, Objective_final])
 	Solution_tracker_list.append(solution)
-	return Solution_tracker_list, Simulation_results_tracker_list
+	Strap_pene_monitor_list.append(strap_pene_monitor)
+	return Solution_tracker_list, Simulation_results_tracker_list, Strap_pene_monitor_list
 
 if __name__ == '__main__':
 	# define the total iterations
@@ -160,8 +168,8 @@ if __name__ == '__main__':
 	step_size = 0.5
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
-	solution_tracker, simulation_results_tracker= gradient_descent(objective, derivative, n_iter, step_size)
+	solution_tracker, simulation_results_tracker, strap_pene_tracker= gradient_descent(objective, derivative, n_iter, step_size)
 	print('Done!')
 	#print('f(%s) = %f' % (best, score))
-	print('Solution history: \n %s' %(solution_tracker))
-	print('Simulation results and cost function history: \n %s' %(simulation_results_tracker))
+	#print('Solution history: \n %s' %(solution_tracker))
+	#print('Simulation results and cost function history: \n %s' %(simulation_results_tracker))
