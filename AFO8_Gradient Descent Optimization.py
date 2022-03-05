@@ -40,12 +40,10 @@ def Gradient_calculation(solution_smallchange_list):
 	return Gradient
 	#
 # derivative of objective function
-def derivative(solution):
+def derivative(solution, V_increment):
 	# Input a small increase for each design parameter
 	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
-	#V_increment=[0.5,0.5,0.5,0.5]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
-	V_increment=[0.5, 0.5, 0.1,1]
-	#V_increment=[1,1,0.2,2]
+	#V_increment=[0.5,0.5,0.1,1]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
 	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
@@ -101,7 +99,7 @@ def derivative(solution):
 #What the best small change is is something you'll have to experiment with,
 #but it can be different for each design parameter
 # This defines the gradient descent algorithm
-def gradient_descent(objective, derivative, n_iter, step_size):
+def gradient_descent(objective, derivative, n_iter, V_increment):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
@@ -114,6 +112,13 @@ def gradient_descent(objective, derivative, n_iter, step_size):
     #it is just a starting point for the optimisation
     # run the gradient descent
 	for i in range(n_iter):
+		# Using a varied increment during optimization
+		if i < int(n_iter/3):
+			V_increment_adp=V_increment*2
+		elif int(n_iter/3) <= i < int(n_iter/4*3):
+			V_increment_adp=V_increment
+		else:
+			V_increment_adp=V_increment *0.5
 		# calculate gradient
 		solution=list(solution)                  # Transfer the solution from other types into list type
 		#--------------------------------------------------------------------------
@@ -128,7 +133,7 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 		cmp_marker=np.logical_and(bounds_low<solution, solution<bounds_upper)
 		#--------------------------------------------------------------------------
 		solution[3]=list(map(int, solution[3]))      # Make sure the design variables n_element are integer type
-		gradient, simulation_results_tracker, strap_pene_monitor = derivative(solution)
+		gradient, simulation_results_tracker, strap_pene_monitor = derivative(solution, V_increment_adp)
 		# record the history of solution,simulation results, cost function
 		Simulation_results_tracker_list=[]
 		Solution_tracker_list=[]
@@ -148,7 +153,9 @@ def gradient_descent(objective, derivative, n_iter, step_size):
 			print('The strap penetration status: \n %s' %(strap_pene_monitor), file=f)
 		#--------------------------------------------------------------------------
 		# take a step
-		solution = np.array(solution) - step_size * np.array(gradient)
+		step_size=[[V_increment_adp[0]/max(gradient[0])], [V_increment_adp[1]/max(gradient[1])],
+		                  [V_increment_adp[2]/max(gradient[2])], [V_increment_adp[3]/max(gradient[3])]] # Define adaptive step size
+		solution = np.array(solution) - np.array(gradient)*step_size
 		with open(os.path.join(path_simulation, 'log.txt'), 'a') as f:
 			print('The updated solution: \n %s' % (solution), file=f)
 			print('#####################################################################################################', file=f)
@@ -165,10 +172,12 @@ if __name__ == '__main__':
 	# define the total iterations
 	n_iter = 10
 	# define the step size, this value is something you'll probably need to experiment with
-	step_size = 0.5
+	#step_size = 0.5
+	# The small change for the variables for calculating the gradient, the step size will be determined based on the V_increment
+	V_increment=[0.5, 0.5, 0.1, 1]
 	# perform the gradient descent search
 	#best, score = gradient_descent(objective, derivative, n_iter, step_size)
-	solution_tracker, simulation_results_tracker, strap_pene_tracker= gradient_descent(objective, derivative, n_iter, step_size)
+	solution_tracker, simulation_results_tracker, strap_pene_tracker= gradient_descent(objective, derivative, n_iter, V_increment)
 	print('Done!')
 	#print('f(%s) = %f' % (best, score))
 	#print('Solution history: \n %s' %(solution_tracker))
