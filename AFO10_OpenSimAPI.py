@@ -1,12 +1,10 @@
+import os
 import opensim
 import numpy as np
 def LigMechanicsMax (Sim_output_folder, Sim_results, osimModel):
     # Aims: to export the maximum lengths and forces of the ligaments (i.e. AFO straps) during a specific motion
     # Inputs: osimModel: the opensim model with ligaments
     #             motSto_file: the motion file loaded to the model for length and forces exportion
-    import os
-    import opensim
-    import numpy as np
     # The folder path of pthon script
     path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: Simulation_printAFO
     path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script:Simulation_printAFO_CAMG
@@ -61,7 +59,6 @@ def LigMechanicsMax (Sim_output_folder, Sim_results, osimModel):
     #
 def LigSetRestingLength(osimModel):
     # Set the resting length for the ligament (strap)
-    import opensim
     # Set and update the path to the local OpenSim geometry directory
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
@@ -85,15 +82,19 @@ def LigSetRestingLength(osimModel):
     strap4.set_resting_length(strap4_length)
     myModel.printToXML(osimModel)
     #
-def Liginitstates(osimModel):
+def Liginitstates(osimModel):    # Define the raltive path of opensim model, e.g. relative to the python code
     # Aims: to export the lengths and forces of the ligaments (i.e. AFO straps) at the initial state of model
     # Inputs: osimModel: the opensim model with ligaments
     # Set and update the path to the local OpenSim geometry directory
-    import opensim
-    import numpy as np
+    # Set and update the path to the local OpenSim geometry directory
+    # The folder path of pthon script
+    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: Simulation_printAFO
+    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script:Simulation_printAFO_CAMG
     # Set and update the path to the local OpenSim geometry directory
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
+    # Load the MSK model
+    osimModel=os.path.join(path_simulation, osimModel)
     # Load the model
     myModel=opensim.Model(osimModel)           # Load the opensim model
     state=myModel.initSystem()                    # Initial state
@@ -112,8 +113,6 @@ def LigMechanicsRealtime (osimModel, motSto_file):
     # Inputs: osimModel: the opensim model with ligaments
     #             motSto_file: the motion file loaded to the model for length and forces exportion
     # Set and update the path to the local OpenSim geometry directory
-    import opensim
-    import numpy as np
     path='C:\OpenSim 4.1\Geometry'
     opensim.ModelVisualizer.addDirToGeometrySearchPaths(path)
     # Load the model
@@ -159,16 +158,22 @@ def LigMechanicsRealtime (osimModel, motSto_file):
     strap_forces=np.array(strap_forces).T
     return strap_lengths, strap_forces
     #
-def LigPeneMonitor(strap_lengths_realtime, threshold):
+def LigPeneMonitor(strap_lengths_realtime, strap_length_ini, threshold):
     strap_lengths_grad=[]
     strap_pene_monitor=[]
     for strap_num in range (len(strap_lengths_realtime)):
         strap_lengths_grad_temp=[]
-        strap_pene_monitor_temp='False'
+        strap_pene_monitor_temp='No Penetration'
+        strap_length_index=0
         for i,j in zip(strap_lengths_realtime[strap_num], strap_lengths_realtime[strap_num][1:]):
+            strap_length_index+=1
             strap_lengths_grad_temp.append(j-i)
             if abs(j-i)>threshold:
-                strap_pene_monitor_temp='True'
+                print(j-i)
+                if strap_lengths_realtime[strap_num][strap_length_index] - strap_length_ini[strap_num] > 0:
+                    strap_pene_monitor_temp='Penetration stretch'
+                else:
+                    strap_pene_monitor_temp='Penetration slack'
         strap_lengths_grad.append(strap_lengths_grad_temp)
         strap_pene_monitor.append(strap_pene_monitor_temp)
     return strap_lengths_grad, strap_pene_monitor
@@ -176,14 +181,28 @@ def LigPeneMonitor(strap_lengths_realtime, threshold):
 if __name__ == '__main__':
     import pandas as pd
     import matplotlib.pyplot as plt
-
     output_folder_DL_platform0='D:\Trial\Gait simulation0\Model outputs\\4_CMC\\0'
     osimModel_platform0='D:\Trial\Gait simulation0\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
     [strap_lengths, strap_forces, strap_lengths_max, strap_forces_max]=LigMechanicsMax(output_folder_DL_platform0, 'cmc_Kinematics_q.sto', osimModel_platform0)
-    [strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, 0.004)
-    strap_length_grad=strap_lengths
+    #[strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, 0.004)
+    [strap_length_ini, strap_forces_ini]=Liginitstates(osimModel_platform0)
+    #strap_length_ini_reshape=np.array(strap_length_ini).reshape(-1,1)
+    #strap_length_rate=strap_lengths/strap_length_ini_reshape
+    [strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, strap_length_ini, 0.003)
+
+    strap_length_grad_grad=[]
+    a=1
+    for num in range(len(strap_length_grad)):
+        strap_length_grad_grad_temp=[]
+        for i,j in zip (strap_length_grad[num], strap_length_grad[num][1:]):
+            strap_length_grad_grad_temp.append(j/i)
+        strap_length_grad_grad.append(strap_length_grad_grad_temp)
+    strap_length_grad=strap_length_grad_grad
+    #strap_length_grad=strap_lengths
+
     [nrow,ncolumn]=np.array(strap_length_grad).shape
     strap_length_grad_index=list(range(ncolumn))
+    print(strap_pene_monitor)
 
     """
     osimModel='D:\Trial\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
