@@ -45,7 +45,7 @@ def Simulation(Parallel_simu_paralist):
         # AFO_material=[AFO_Fmagnitude, AFO_FLrelationship]
         [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_center, calcn_center, talus_center)
        # Generate the MBD drop landing model .osim file using module (AFO2_MBDModel.MBDmodel_Droplanding_AFO)
-        AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material)
+        AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, Platform_inclination, AFO_representation, AFO_material, DesignVariables)
         # Display the MBD drop landing model with AFO
         os.chdir(os.path.join(path_simulation, foldername_droplanding))
         if ModelOperation=='model' or ModelOperation=='Model' or ModelOperation=='MODEL':
@@ -118,7 +118,7 @@ def Simulation(Parallel_simu_paralist):
                 Model_AFO_final=os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder, model_AFO_final_file)
                 [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
                 # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
-                AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
+                AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material, DesignVariables)
                 #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, AFO_representation, AFO_material)
                 os.chdir(os.path.join(path_simulation, gait_model_output, model_AFO_origin_folder))
                 if SimulationType=='Gait_AFO' or SimulationType=='gait_AFO' or SimulationType=='Walk_AFO' or SimulationType=='walk_AFO':
@@ -195,7 +195,7 @@ def Simulation(Parallel_simu_paralist):
             Model_AFO_final=os.path.join(path_simulation, run_model_output, model_AFO_origin_folder, model_AFO_final_file)
             [AFO_representation, AFO_material]=AFO1_DesignParameter.AFODesignParameter(DesignVariables, tibial_r_center, calcn_r_center, talus_r_center)
             # Generate the MBD gait model .osim file using module (AFO2_MBDModel.MBDmodel_gait_AFO)
-            AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material)
+            AFO2_MBDModel.MBDmodel_Gait_AFO (Model_AFO_origin, Model_AFO_final, AFO_representation, AFO_material, DesignVariables)
             #AFO2_MBDModel.MBDmodel_Droplanding_AFO(Model_AFO_droplanding, AFO_representation, AFO_material)
             os.chdir(os.path.join(path_simulation, run_model_output, model_AFO_origin_folder))
             if SimulationType=='Run_AFO' or SimulationType=='run_AFO':
