@@ -1,12 +1,12 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-def MeshMechanics (strap_orientations, theta_0_values, n_elements):
-    def output_mechprops(strap_orientation, theta_0, n_elements):
-        strap_orientation  = math.radians(strap_orientation) # convert from degrees to radians
+import AFO10_OpenSimAPI
+def MeshMechanics (osimModel, theta_0_values, n_elements):
+    def output_mechprops(strap_length, theta_0, n_elements):
         theta_0 = math.radians(theta_0) # convert from degrees to radians
         #calculated parameters
-        strap_length = AFO_height / math.cos(strap_orientation) # in mm
+        strap_length = strap_length*1000 # in mm
         wave_length = strap_length / n_waves # in mm
         wave_height = (wave_length / 2) * math.tan(theta_0) # in mm
         wave_hypotenuse = wave_height / math.sin(theta_0) # in mm
@@ -59,11 +59,12 @@ def MeshMechanics (strap_orientations, theta_0_values, n_elements):
     CSA_element = 0.0557332 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
     force_limit = 2 # # Max force per element, in N, based on fatigue results for h = 1mm
     FL_matrix_lst = []
+    [strap_lengths, strap_forces]=AFO10_OpenSimAPI.Liginitstates(osimModel)
     for i, theta_0 in enumerate(theta_0_values):
-        strap_orientation = strap_orientations[i]
+        strap_length=strap_lengths[i]
         n_elements_values = n_elements[i]
         #label = labels[i]
-        Force_array,extension_array,length_array = output_mechprops(strap_orientation, theta_0, n_elements_values)
+        Force_array,extension_array,length_array = output_mechprops(strap_length, theta_0, n_elements_values)
         # combine arrays into Force-Length matrix for OpenSim
         #FL_matrix = np.vstack((Force_array,length_array))
         FL_matrix = np.vstack((length_array, Force_array))
@@ -76,11 +77,11 @@ if __name__ == '__main__':
     import numpy as np
     import pandas as pd
     # The inputs for the module - AFO9_MeshMechanics
-    AFO_strap_orientations=[-40, 0, 0, 50]
+    osimModel='D:\Trial\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
     theta_0_values=[20.34, 21.20, 13.18, 18.9]
     n_elements=[30, 100, 100, 30]
     # The force-length relationship of the straps
-    FL_matrix_lst=MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements)
+    FL_matrix_lst=MeshMechanics(osimModel, theta_0_values, n_elements)
     # The plot of force-length relationship in four sub-figures
     plt.figure()
     plt.subplot(2,2,1)
