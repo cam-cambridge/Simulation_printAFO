@@ -29,20 +29,11 @@ def Main_Simulation (DesignVariables, folder_index):
     AFO0_Simulation.Simulation(('Run_AFO', 'simulation', DesignVariables, str(folder_index)))
 
     #*****************************************************************************************************************
-    # Collect the maximum forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics)
-    #****************************************************************************************************************
-    [AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]=DesignVariables  # Design variables
-    AFO_FL=AFO9_MeshMechanics.MeshMechanics(AFO_strap_orientations, theta_0_values, n_elements) # Get the force-length relationship for the four straps
-    FL_length_mesh_max=[max(AFO_FL[0][0]), max(AFO_FL[1][0]), max(AFO_FL[2][0]), max(AFO_FL[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
-    FL_force_mesh_max=[max(AFO_FL[0][1]), max(AFO_FL[1][1]), max(AFO_FL[2][1]), max(AFO_FL[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
-    #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
-    #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
-
-    #*****************************************************************************************************************
     # Collect the simulation results for drop landing, walk and running
     #*****************************************************************************************************************
+    [AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]=DesignVariables    # Design variables
     #*****************************************************************************
-    # For drop landing, collect the maximum subtalar angle and ankle angle, and maximum strap forces
+    # For drop landing, collect the maximum subtalar angle and ankle angle, and maximum strap forces, and fatigue strap forces
     #*****************************************************************************
     Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
     platform0=[25,0,0]    # The platform orientation of 0 degree, inclination of 25 degree
@@ -60,19 +51,38 @@ def Main_Simulation (DesignVariables, folder_index):
     Ankle_DL_max_platform0=max(data_DL_platform0[:,2])  # The maximum ankle angle for drop landing with platform 0 orientation
     Ankle_DL_max_platform45=max(data_DL_platform45[:,2])  # The maximum ankle angle for drop landing with platform 45 orientation
     #---------------------------------------------------------------------------------
-    # Collect the maximum ligament (strap) length and force during the drop landing simulation
+    # The drop landing model for calculating the strap_length_ini and fatigue length
     osimModel_platform0='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform0_AFO.osim'
     osimModel_platform45='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform45_AFO.osim'
+    # Calculate the initial strap length at default position of drop landing
+    [DL_strap_lengths_ini_platform0, DL_strap_forces_ini_platform0]=AFO10_OpenSimAPI.Liginitstates(osimModel_platform0)
+    [DL_strap_lengths_ini_platform45, DL_strap_forces_ini_platform45]=AFO10_OpenSimAPI.Liginitstates(osimModel_platform45)
+    #---------------------------------------------------------------------------------
+    # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for drop landing
+    # Fatigue strap forces for drop landing of platform 0 degree
+    AFO_FL_platform0=AFO9_MeshMechanics.MeshMechanics(osimModel_platform0, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+    FL_length_mesh_max_platfrom0=[max(AFO_FL_platform0[0][0]), max(AFO_FL_platform0[1][0]), max(AFO_FL_platform0[2][0]), max(AFO_FL_platform0[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_platform0=[max(AFO_FL_platform0[0][1]), max(AFO_FL_platform0[1][1]), max(AFO_FL_platform0[2][1]), max(AFO_FL_platform0[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+    #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+    # Fatigue strap forces for drop landing of platform 45 degree
+    AFO_FL_platform45=AFO9_MeshMechanics.MeshMechanics(osimModel_platform45, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+    FL_length_mesh_max_platform45=[max(AFO_FL_platform45[0][0]), max(AFO_FL_platform45[1][0]), max(AFO_FL_platform45[2][0]), max(AFO_FL_platform45[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_platform45=[max(AFO_FL_platform45[0][1]), max(AFO_FL_platform45[1][1]), max(AFO_FL_platform45[2][1]), max(AFO_FL_platform45[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+    #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+    #---------------------------------------------------------------------------------
+    # Collect the maximum ligament (strap) length and force during the drop landing simulation
     [DL_strap_lengths_realtime_platform0, DL_strap_forces_realtime_platform0, DL_strap_lengths_max_platform0, DL_strap_forces_max_platform0]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform0, 'default_states_degrees.mot', osimModel_platform0)
     [DL_strap_lengths_realtime_platform45, DL_strap_forces_realtime_platform45, DL_strap_lengths_max_platform45, DL_strap_forces_max_platform45]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform45, 'default_states_degrees.mot', osimModel_platform45)
-    [DL_strap_lengths_grad_platform0, DL_strap_pene_monitor_platform0]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform0, 0.004)
-    [DL_strap_lengths_grad_platform45, DL_strap_pene_monitor_platform45]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform45, 0.004)
+    [DL_strap_lengths_grad_platform0, DL_strap_pene_monitor_platform0]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform0, DL_strap_lengths_ini_platform0, 0.004)
+    [DL_strap_lengths_grad_platform45, DL_strap_pene_monitor_platform45]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform45, DL_strap_lengths_ini_platform45, 0.004)
     #print('The max strap lengths for DL: %s'  %(DL_strap_lengths_max))
     #print('The max strap forces for DL: %s'  %(DL_strap_forces_max))
     #---------------------------------------------------------------------------------
     # Calculate the differences between the maximum real-time strap forces and the fatigure strap forces
-    strap_forces_diff_DL_platform0=np.array(DL_strap_forces_max_platform0)-np.array(FL_force_mesh_max)
-    strap_forces_diff_DL_platform45=np.array(DL_strap_forces_max_platform45)-np.array(FL_force_mesh_max)
+    strap_forces_diff_DL_platform0=np.array(DL_strap_forces_max_platform0)-np.array(FL_force_mesh_max_platform0)
+    strap_forces_diff_DL_platform45=np.array(DL_strap_forces_max_platform45)-np.array(FL_force_mesh_max_platform45)
     #print('The differences of strap forces for DL: %s' %(strap_forces_diff_DL))
 
     #*****************************************************************************
@@ -98,15 +108,27 @@ def Main_Simulation (DesignVariables, folder_index):
         diff_average_musforce_total_walk=np.sum(diff_average_musforce_WholeMuscle_walk)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
         diff_average_musforce_total_walk_norm=diff_average_musforce_total_walk/85.0668
     #---------------------------------------------------------------------------------
+    # The walk model for calculating the strap_length_ini and fatigue length
+    osimModel_walk='Simulation models\Gait simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
+    # Calculate the initial strap length at default postion of walk
+    [walk_strap_lengths_ini, walk_strap_forces_ini]=AFO10_OpenSimAPI.Liginitstates(osimModel_walk)
+    #---------------------------------------------------------------------------------
+    # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for walk
+    # Fatigue strap forces for walk
+    AFO_FL_walk=AFO9_MeshMechanics.MeshMechanics(osimModel_walk, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+    FL_length_mesh_max_walk=[max(AFO_FL_walk[0][0]), max(AFO_FL_walk[1][0]), max(AFO_FL_walk[2][0]), max(AFO_FL_walk[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_walk=[max(AFO_FL_walk[0][1]), max(AFO_FL_walk[1][1]), max(AFO_FL_walk[2][1]), max(AFO_FL_walk[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+    #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+    #---------------------------------------------------------------------------------
     # Collect the maximum ligament (strap) force during the walk simulation
-    osimModel='Simulation models\Gait simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Walk_RRA_final_AFO.osim'
-    [Walk_strap_lengths_realtime, Walk_strap_forces_realtime, Walk_strap_lengths_max, Walk_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_walk_AFO, 'cmc_Kinematics_q.sto', osimModel)
-    [Walk_strap_lengths_grad, Walk_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Walk_strap_lengths_realtime, 0.004)
+    [Walk_strap_lengths_realtime, Walk_strap_forces_realtime, Walk_strap_lengths_max, Walk_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_walk_AFO, 'cmc_Kinematics_q.sto', osimModel_walk)
+    [Walk_strap_lengths_grad, Walk_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Walk_strap_lengths_realtime, walk_strap_lengths_ini, 0.004)
     #print('The max strap lengths for Walk: %s' %(Walk_strap_lengths_max))
     #print('The max strap forces for Walk: %s' %(Walk_strap_forces_max))
     #---------------------------------------------------------------------------------
     # Calculate the differences between the maximum real-time strap forces and the fatigure strap forces
-    strap_forces_diff_Walk=np.array(Walk_strap_forces_max)-np.array(FL_force_mesh_max)
+    strap_forces_diff_Walk=np.array(Walk_strap_forces_max)-np.array(FL_force_mesh_max_walk)
     #print('The differences of strap forces for DL: %s' %(strap_forces_diff_Walk))
 
 
@@ -133,15 +155,27 @@ def Main_Simulation (DesignVariables, folder_index):
         diff_average_musforce_total_run=np.sum(diff_average_musforce_WholeMuscle_run)                     # The total differences of muscle forces for all the muscle in the right legs for each design case
         diff_average_musforce_total_run_norm=diff_average_musforce_total_run/72.840
     #---------------------------------------------------------------------------------
+    # The running model for calculating the strap_length_ini and fatigue length
+    osimModel_run='Simulation models\Running simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Run_RRA_final_AFO.osim'
+    # Calculate the initial strap length at default postion of running
+    [run_strap_lengths_ini, run_strap_forces_ini]=AFO10_OpenSimAPI.Liginitstates(osimModel_run)
+    #---------------------------------------------------------------------------------
+    # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for running
+    # Fatigue strap forces for running
+    AFO_FL_run=AFO9_MeshMechanics.MeshMechanics(osimModel_run, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+    FL_length_mesh_max_run=[max(AFO_FL_run[0][0]), max(AFO_FL_run[1][0]), max(AFO_FL_run[2][0]), max(AFO_FL_run[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_run=[max(AFO_FL_run[0][1]), max(AFO_FL_run[1][1]), max(AFO_FL_run[2][1]), max(AFO_FL_run[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+    #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+    #---------------------------------------------------------------------------------
     # Collect the maximum ligament (strap) force during the run simulation
-    osimModel='Simulation models\Running simulation'+str(folder_index)+'\Model outputs\\3_RRA\Fullbodymodel_Run_RRA_final_AFO.osim'
-    [Run_strap_lengths_realtime, DL_strap_forces_realtime, Run_strap_lengths_max, Run_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_run_AFO, 'cmc_Kinematics_q.sto', osimModel)
-    [Run_strap_lengths_grad, Run_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Run_strap_lengths_realtime, 0.004)
+    [Run_strap_lengths_realtime, DL_strap_forces_realtime, Run_strap_lengths_max, Run_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_run_AFO, 'cmc_Kinematics_q.sto', osimModel_run)
+    [Run_strap_lengths_grad, Run_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Run_strap_lengths_realtime, run_strap_lengths_ini, 0.004)
     #print('The max strap lengths for Run: %s' %(Run_strap_lengths_max))
     #print('The max strap forces for Run: %s' %(Run_strap_forces_max))
     #---------------------------------------------------------------------------------
     # Calculate the differences between the maximum real-time strap forces and the fatigure strap forces
-    strap_forces_diff_Run=np.array(Run_strap_forces_max)-np.array(FL_force_mesh_max)
+    strap_forces_diff_Run=np.array(Run_strap_forces_max)-np.array(FL_force_mesh_max_run)
     #print('The differences of strap forces for DL: %s' %(strap_forces_diff_Run))
 
     #---------------------------------------------------------------------------------
@@ -165,7 +199,7 @@ def Main_model_demo (DesignVariables, folder_index):
     #AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [0, -45, -25]))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
-    #AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
+    AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
     # The running simulation Run
     #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
-    AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
+    #AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
