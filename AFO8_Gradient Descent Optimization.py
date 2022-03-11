@@ -13,7 +13,7 @@ def objective(Angles_DL, Muscles_diff, strap_forces_diff, n_elements):
 	[Subtalar_DL_max_platform0, Subtalar_DL_max_platform45, Ankle_DL_max_platform0, Ankle_DL_max_platform45]=Angles_DL  # The angles for drop landing
 	[MusDiff_walk_norm, MusDiff_run_norm]=Muscles_diff   # Muscle differences for walk and running for models with and without AFO
 	[strap_forces_diff_DL_platform0, strap_forces_diff_DL_platform45, strap_forces_diff_Walk, strap_forces_diff_Run]=strap_forces_diff  # Differences of strap forces between simulation and fatigue values
-    """
+	"""
 	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+n_elements/100+\
 	           np.maximum(0, (Subtalar_DL_max_platform0-15))+np.maximum(0, (Subtalar_DL_max_platform45-15))+\
 			   np.sum(np.int64(strap_forces_diff_DL_platform0>0))*100+np.sum(np.int64(strap_forces_diff_DL_platform45>0))*100+\
@@ -43,10 +43,10 @@ def Gradient_calculation(solution_smallchange_list):
 def derivative(solution, V_increment):
 	# Input a small increase for each design parameter
 	# V_increment=[[0.5,0.5,0.5,0.5], [0.5,0.5,0.5,0.5],[1,1,1,1],[0.2,0.2,0.2,0.2]]
-	#V_increment=[0.5,0.5,0.1,1]                           # Small increment for AFO_bottom_location, AFO_strap_orientations, AFO_FL_amplification and AFO_FL_shift respectively
+	#V_increment=[0.5,0.5,0.1,1]                           # Small increment for AFO_bottom_location, AFO_stop_location, AFO_FL_amplification and AFO_FL_shift respectively
 	#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	# Calculate cost function for initial solution
-	[AFO_bottom_location, AFO_strap_orientation, theta_0_values, n_elements]=solution
+	[AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]=solution
 	[Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor]=AFO_Simulation_Optimization.Main_Simulation(solution, 0)
 	Objective_ini=objective(Angles_DL, Muscles_diff, strap_forces_diff, np.sum(solution[3]))
 	# Track the simulation results and objective function during iteration loops
@@ -60,11 +60,11 @@ def derivative(solution, V_increment):
 	solution_bottom_location_smallchange3, solution_bottom_location_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
 	solution_bottom_location_smallchange1[0][0]+=V_increment[0]; solution_bottom_location_smallchange2[0][1]+=V_increment[0]
 	solution_bottom_location_smallchange3[0][2]+=V_increment[0]; solution_bottom_location_smallchange4[0][3]+=V_increment[0]
-	# Small change for the design variable_AFO_strap_orientation for strap1, strap2, strap3 amd strap4
-	solution_strap_orientation_smallchange1, solution_strap_orientation_smallchange2=copy.deepcopy(solution), copy.deepcopy(solution)
-	solution_strap_orientation_smallchange3, solution_strap_orientation_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
-	solution_strap_orientation_smallchange1[1][0]+=V_increment[1]; solution_strap_orientation_smallchange2[1][1]+=V_increment[1]
-	solution_strap_orientation_smallchange3[1][2]+=V_increment[1]; solution_strap_orientation_smallchange4[1][3]+=V_increment[1]
+	# Small change for the design variable_AFO_top_location for strap1, strap2, strap3 amd strap4
+	solution_top_location_smallchange1, solution_top_location_smallchange2=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_top_location_smallchange3, solution_top_location_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
+	solution_top_location_smallchange1[1][0]+=V_increment[1]; solution_top_location_smallchange2[1][1]+=V_increment[1]
+	solution_top_location_smallchange3[1][2]+=V_increment[1]; solution_top_location_smallchange4[1][3]+=V_increment[1]
 	# Small change for the design variable_theta_0_values
 	solution_theta_0_values_smallchange1, solution_theta_0_values_smallchange2=copy.deepcopy(solution), copy.deepcopy(solution)
 	solution_theta_0_values_smallchange3, solution_theta_0_values_smallchange4=copy.deepcopy(solution), copy.deepcopy(solution)
@@ -77,8 +77,8 @@ def derivative(solution, V_increment):
 	solution_n_elements_smallchange3[3][2]+=V_increment[3]; solution_n_elements_smallchange4[3][3]+=V_increment[3]
 	solution_smallchange_list=[(solution_bottom_location_smallchange1, Objective_ini, 1), (solution_bottom_location_smallchange2, Objective_ini, 2),
 	                                              (solution_bottom_location_smallchange3, Objective_ini, 3), (solution_bottom_location_smallchange4, Objective_ini, 4),
-	                                              (solution_strap_orientation_smallchange1, Objective_ini, 5), (solution_strap_orientation_smallchange2, Objective_ini, 6),
-												  (solution_strap_orientation_smallchange3, Objective_ini, 7), (solution_strap_orientation_smallchange4, Objective_ini, 8),
+	                                              (solution_top_location_smallchange1, Objective_ini, 5), (solution_top_location_smallchange2, Objective_ini, 6),
+												  (solution_top_location_smallchange3, Objective_ini, 7), (solution_top_location_smallchange4, Objective_ini, 8),
 												  (solution_theta_0_values_smallchange1, Objective_ini, 9), (solution_theta_0_values_smallchange2, Objective_ini, 10),
 												  (solution_theta_0_values_smallchange3, Objective_ini, 11), (solution_theta_0_values_smallchange4, Objective_ini, 12),
 												  (solution_n_elements_smallchange1, Objective_ini, 13), (solution_n_elements_smallchange2, Objective_ini, 14),
@@ -102,23 +102,20 @@ def derivative(solution, V_increment):
 def gradient_descent(objective, derivative, n_iter, V_increment):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
-	# solution=[AFO_bottom_location, AFO_strap_orientations, theta_0_values, n_elements]
-	solution = [[14, 101, 259, 346], [-40, 0, 0, 40], [20.34, 21.20, 13.18, 18.9], [30, 100, 100, 30]]
-	bounds_upper=[[180, 180, 360, 360], [70, 70, 70, 70], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
-	bounds_low=[[0, 0, 180, 180], [-70, -70, -70, -70], [0.1,0.1,0.1,0.1], [1,1,1,1]]
-	#bounds_upper=[[90, 180, 360, 360], [0, 53.5, 53.5, 53.5], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
-	#bounds_low=[[0, 0, 180, 270], [-53.5, -53.5, -53.5, 0], [0.1,0.1,0.1,0.1], [1,1,1,1]]
-
+	# solution=[AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]
+	solution = [[45, 90, 270, 315], [315, 90, 270, 45], [20.34, 21.20, 13.18, 18.9], [60, 200, 200, 60]]
+	bounds_low=[[0, 30, 210, 270], [270, 0, 180, 0], [0.1,0.1,0.1,0.1], [1,1,1,1]]
+	bounds_upper=[[90, 150, 330, 360], [360, 180, 360, 90], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
     #it is just a starting point for the optimisation
     # run the gradient descent
 	for i in range(n_iter):
 		# Using a varied increment during optimization
 		if i < int(n_iter/3):
-			V_increment_adp=V_increment*2
+			V_increment_adp=list(np.array(V_increment)*2)
 		elif int(n_iter/3) <= i < int(n_iter/4*3):
-			V_increment_adp=V_increment
+			V_increment_adp=list(V_increment)
 		else:
-			V_increment_adp=V_increment *0.5
+			V_increment_adp=list(np.array(V_increment)*0.5)
 		# calculate gradient
 		solution=list(solution)                  # Transfer the solution from other types into list type
 		#--------------------------------------------------------------------------
@@ -170,7 +167,7 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
 
 if __name__ == '__main__':
 	# define the total iterations
-	n_iter = 10
+	n_iter = 5
 	# define the step size, this value is something you'll probably need to experiment with
 	#step_size = 0.5
 	# The small change for the variables for calculating the gradient, the step size will be determined based on the V_increment
