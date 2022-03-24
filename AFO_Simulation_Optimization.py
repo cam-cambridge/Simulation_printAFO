@@ -75,8 +75,8 @@ def Main_Simulation (DesignVariables, folder_index):
     # Collect the maximum ligament (strap) length and force during the drop landing simulation
     [DL_strap_lengths_realtime_platform0, DL_strap_forces_realtime_platform0, DL_strap_lengths_max_platform0, DL_strap_forces_max_platform0]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform0, 'default_states_degrees.mot', osimModel_platform0)
     [DL_strap_lengths_realtime_platform45, DL_strap_forces_realtime_platform45, DL_strap_lengths_max_platform45, DL_strap_forces_max_platform45]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform45, 'default_states_degrees.mot', osimModel_platform45)
-    [DL_strap_lengths_grad_platform0, DL_strap_pene_monitor_platform0]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform0, DL_strap_lengths_ini_platform0, 0.004)
-    [DL_strap_lengths_grad_platform45, DL_strap_pene_monitor_platform45]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform45, DL_strap_lengths_ini_platform45, 0.004)
+    [DL_strap_lengths_grad_platform0, DL_strap_pene_monitor_platform0]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform0, DL_strap_lengths_ini_platform0, 0.0045)
+    [DL_strap_lengths_grad_platform45, DL_strap_pene_monitor_platform45]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform45, DL_strap_lengths_ini_platform45, 0.0045)
     #print('The max strap lengths for DL: %s'  %(DL_strap_lengths_max))
     #print('The max strap forces for DL: %s'  %(DL_strap_forces_max))
     #---------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ def Main_Simulation (DesignVariables, folder_index):
     #---------------------------------------------------------------------------------
     # Collect the maximum ligament (strap) force during the walk simulation
     [Walk_strap_lengths_realtime, Walk_strap_forces_realtime, Walk_strap_lengths_max, Walk_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_walk_AFO, 'cmc_Kinematics_q.sto', osimModel_walk)
-    [Walk_strap_lengths_grad, Walk_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Walk_strap_lengths_realtime, walk_strap_lengths_ini, 0.004)
+    [Walk_strap_lengths_grad, Walk_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Walk_strap_lengths_realtime, walk_strap_lengths_ini, 0.0045)
     #print('The max strap lengths for Walk: %s' %(Walk_strap_lengths_max))
     #print('The max strap forces for Walk: %s' %(Walk_strap_forces_max))
     #---------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ def Main_Simulation (DesignVariables, folder_index):
     #---------------------------------------------------------------------------------
     # Collect the maximum ligament (strap) force during the run simulation
     [Run_strap_lengths_realtime, DL_strap_forces_realtime, Run_strap_lengths_max, Run_strap_forces_max]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_run_AFO, 'cmc_Kinematics_q.sto', osimModel_run)
-    [Run_strap_lengths_grad, Run_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Run_strap_lengths_realtime, run_strap_lengths_ini, 0.004)
+    [Run_strap_lengths_grad, Run_strap_pene_monitor]=AFO10_OpenSimAPI.LigPeneMonitor(Run_strap_lengths_realtime, run_strap_lengths_ini, 0.0045)
     #print('The max strap lengths for Run: %s' %(Run_strap_lengths_max))
     #print('The max strap forces for Run: %s' %(Run_strap_forces_max))
     #---------------------------------------------------------------------------------
@@ -195,11 +195,10 @@ def Main_model_demo (DesignVariables, folder_index):
     # Simulations of drop landing, walk and Running
     # The drop landing simulation DL
     #AFO0_Simulation.Simulation('AFODroplanding', 'simulation', DesignVariables, 'SimulationOutput_DL_AFO'+str(folder_index))
-    #AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [25, 0, 0]))
-    #AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [0, -45, -25]))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [25, 0, 0]))
+    AFO0_Simulation.Simulation(('AFODroplanding', 'model', DesignVariables, str(folder_index), [0, -45, -25]))
     # The walking simulation Walk
     #AFO0_Simulation.Simulation('Walk_AFO', 'simulation', DesignVariables, 'SimulationOutput_Walk_AFO'+str(folder_index))
     AFO0_Simulation.Simulation(('Walk_AFO', 'model', DesignVariables, str(folder_index)))
     # The running simulation Run
-    #AFO0_Simulation.Simulation('Run_AFO', 'simulation', DesignVariables, 'SimulationOutput_Run_AFO'+str(folder_index))
-    #AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
+    AFO0_Simulation.Simulation(('Run_AFO', 'model', DesignVariables, str(folder_index)))
