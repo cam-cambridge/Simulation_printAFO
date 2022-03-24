@@ -14,10 +14,45 @@ import tkinter
 from tkinter import filedialog
 import math
 import AFO_Simulation_Optimization
+import AFO9_MeshMechanics
+import AFO10_OpenSimAPI
 
+
+solution = [[82.00309497, 103.75333886, 307.64824499, 337.20043168], [329.90506602, 107.31456951, 180.58145355, 35.77007814], [16.69685122, 21.8, 20.66247472, 21.7], [5, 43, 1,1]]
 # Display the MSK model based on the provided solution (design variables)
-solution = [[45, 90, 270, 315], [315, 90, 270, 45], [20.34, 21.20, 13.18, 18.9], [60, 200, 200, 60]]
-AFO_Simulation_Optimization.Main_model_demo (solution, 0)
+#AFO_Simulation_Optimization.Main_model_demo (solution, 0)
+
+
+# Simulation of drop landing
+AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(0), [25, 0, 0]))
+AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(0), [0, -45, -25]))
+# The calculation of fatigue strap forces using module AFO9_MeshMechanics
+# The path of osim model and DL simulation results
+results_directory_platform0=str(02500)
+results_directory_platform45=str(00-45-25)
+output_folder_DL_platform0='Simulation models\Drop landing'+str(0)+'\DL simulation results\\'+results_directory_platform0
+output_folder_DL_platform45='Simulation models\Drop landing'+str(0)+'\DL simulation results\\'+results_directory_platform45
+osimModel_platform0='Simulation models\Drop landing'+str(0)+'\Fullbodymodel_DL_platform0_AFO.osim'
+osimModel_platform45='Simulation models\Drop landing'+str(0)+'\Fullbodymodel_DL_platform45_AFO.osim'
+# The mechanical properties produced from the AFO9_MeshMechanics
+theta_0_values=solution[2]
+n_elements=solution[3]
+FL_matrix_platform0=AFO9_MeshMechanics.MeshMechanics(osimModel_platform0, theta_0_values, n_elements)
+# The plot of force-length relationship in four sub-figures
+plt.figure()
+plt.subplot(2,2,1)
+plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], marker='o', label='FL for strap 1')
+plt.subplot(2,2,2)
+plt.plot(FL_matrix_lst[1][0], FL_matrix_lst[1][1], marker='o', label='FL for strap 2')
+plt.subplot(2,2,3)
+plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], marker='o', label='FL for strap 3')
+plt.subplot(2,2,4)
+plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
+plt.show()
+#The 
+
+
+
 
 """
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
