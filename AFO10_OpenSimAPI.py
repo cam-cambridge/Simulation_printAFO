@@ -188,7 +188,7 @@ if __name__ == '__main__':
     [strap_length_ini, strap_forces_ini]=Liginitstates(osimModel_platform0)
     #strap_length_ini_reshape=np.array(strap_length_ini).reshape(-1,1)
     #strap_length_rate=strap_lengths/strap_length_ini_reshape
-    [strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, strap_length_ini, 0.003)
+    [strap_length_grad, strap_pene_monitor]=LigPeneMonitor(strap_lengths, strap_length_ini, 0.004)
 
     strap_length_grad_grad=[]
     a=1
