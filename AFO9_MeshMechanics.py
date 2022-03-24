@@ -77,11 +77,12 @@ if __name__ == '__main__':
     import numpy as np
     import pandas as pd
     # The inputs for the module - AFO9_MeshMechanics
-    osimModel='D:\Trial\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
-    theta_0_values=[20.34, 21.20, 13.18, 18.9]
-    n_elements=[30, 100, 100, 30]
+    osimModel='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
+    theta_0_values=[14.24398141,12.17595211,12.54437899,15.51170568]
+    n_elements=[3, 112, 90,1]
     # The force-length relationship of the straps
     FL_matrix_lst=MeshMechanics(osimModel, theta_0_values, n_elements)
+    print(np.max(FL_matrix_lst[1]))
     # The plot of force-length relationship in four sub-figures
     plt.figure()
     plt.subplot(2,2,1)
