@@ -5,11 +5,11 @@ import numpy as np
 #  Define the design parameters for the AFO, including the fixed parameters and design varaibels
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # Fixed parameters
-#AFO_bottom_center=[0.002, 0, 0.006]
-AFO_bottom_center=[0, 0, 0]   # The center of the AFO bottom in the talus coordinate system
+AFO_bottom_center=[0.002, 0, 0.006]
+#AFO_bottom_center=[0, 0, 0]   # The center of the AFO bottom in the talus coordinate system
 AFO_radius_top=0.0375      # The radius of the circle for defining the AFO top endpoints
 AFO_radius_bottom=0.043  # The radius of the circle for defining the AFO bottom endpoints
-AFO_height=0.1
+AFO_height=0.12
 AFO_Fmagnitude=1
 
 """
