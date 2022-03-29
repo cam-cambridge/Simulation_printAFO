@@ -20,10 +20,11 @@ def objective(Angles_DL, Muscles_diff, strap_forces_diff, n_elements):
 			   np.sum(np.int64(strap_forces_diff_Walk>0))*100 + np.sum(np.int64(strap_forces_diff_Run>0))*100
 	"""
 	Func=abs(MusDiff_walk_norm)+abs(MusDiff_run_norm)+n_elements/100+\
-	           np.maximum(0, (Subtalar_DL_max_platform0-15))*20+np.maximum(0, (Subtalar_DL_max_platform45-15))*20+\
-			   np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform0))/5+np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform45))/5 +\
-               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Walk))/5 +\
-               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Run))/5
+	           np.maximum(0, (Subtalar_DL_max_platform0-15))*5+np.maximum(0, (Subtalar_DL_max_platform45-15))*5+\
+			   np.maximum(0, (Subtalar_DL_max_platform0-22))*80+np.maximum(0, (Subtalar_DL_max_platform45-22))*80+\
+			   np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform0))+np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_DL_platform45)) +\
+               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Walk)) +\
+               np.sum(np.maximum([0, 0, 0, 0], strap_forces_diff_Run))
 	return Func
 	#
 # Module used to calculate the gradient for each design parameter for each strap, including run the simulation and calculate the bojective function due to small change, calculate the gradient
@@ -103,19 +104,22 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
 	# generate an initial point
 	# solution: This is any combination of design parameters. It doesn't matter what the combination is,
 	# solution=[AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]
-	solution = [[45, 90, 270, 315], [315, 90, 270, 45], [20.34, 21.20, 13.18, 18.9], [60, 200, 200, 60]]
-	bounds_low=[[0, 30, 210, 270], [270, 0, 180, 0], [0.1,0.1,0.1,0.1], [1,1,1,1]]
-	bounds_upper=[[90, 150, 330, 360], [360, 180, 360, 90], [21.8, 21.8, 21.8, 21.8], [300,300,300,300]]
+	solution = [[78.34797621, 98.76524193, 303.99470923, 308.52765855],
+	                   [346.74725051, 168.681087, 186.95293291, 50.10293499],
+					   [16.49388527, 20.10848634, 21.28665269, 21.3181092],
+					   [12, 365, 171, 1]]
+	bounds_low=[[0, 45, 225, 270], [270, 0, 180, 0], [0.1, 0.1, 0.1, 0.1], [1, 200, 1, 1]]
+	bounds_upper=[[90, 135, 315, 360], [360, 180, 360, 90],[21.8, 21.8, 21.8, 21.8], [300, 450, 300, 300]]
     #it is just a starting point for the optimisation
     # run the gradient descent
-	for i in range(n_iter):
+	for i in range(1, n_iter):
 		# Using a varied increment during optimization
 		if i < int(n_iter/2):
-			V_increment_adp=list(np.array(V_increment)*2)
+			V_increment_adp=list(np.array(V_increment)*1)
 		elif int(n_iter/3) <= i < int(n_iter/4*3):
 			V_increment_adp=list(V_increment)
 		else:
-			V_increment_adp=list(np.array(V_increment)*0.5)
+			V_increment_adp=list(np.array(V_increment)*1)
 		# calculate gradient
 		solution=list(solution)                  # Transfer the solution from other types into list type
 		#--------------------------------------------------------------------------
@@ -129,7 +133,7 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
 		# record whether the solution reach the bounds or not, if solution is within the bounds, retunr true, otherwise, return false
 		cmp_marker=np.logical_and(bounds_low<solution, solution<bounds_upper)
 		#--------------------------------------------------------------------------
-		solution[3]=list(map(int, solution[3]))      # Make sure the design variables n_element are integer type
+		solution[3]=list(map(round, solution[3]))      # Make sure the design variables n_element are integer type
 		gradient, simulation_results_tracker, strap_pene_monitor = derivative(solution, V_increment_adp)
 		# record the history of solution,simulation results, cost function
 		Simulation_results_tracker_list=[]
@@ -162,12 +166,12 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
 			print('%s # The strap force differences for DL_45 degree for four straps' %(simulation_results_tracker[2][1]), file=f)
 			print('%s # The strap force differences for walk for four straps' %(simulation_results_tracker[2][2]), file=f)
 			print('%s # The strap force differences for running for four straps\n' %(simulation_results_tracker[2][3]), file=f)
-			print('%s # The cost function track: %d\n' %(simulation_results_tracker[3]), file=f)
+			print('The cost function track:  %s\n' %(simulation_results_tracker[3]), file=f)
 			print('The strap penetration status: \n %s' %(strap_pene_monitor), file=f)
 		#--------------------------------------------------------------------------
 		# take a step
-		step_size=[[V_increment_adp[0]/max(gradient[0])], [V_increment_adp[1]/max(gradient[1])],
-		                  [V_increment_adp[2]/max(gradient[2])], [V_increment_adp[3]/max(gradient[3])]] # Define adaptive step size
+		step_size=[[V_increment_adp[0]/max(abs(np.array(gradient[0])))], [V_increment_adp[1]/max(abs(np.array(gradient[1])))],
+		                  [V_increment_adp[2]/max(abs(np.array(gradient[2])))], [V_increment_adp[3]/max(abs(np.array(gradient[3])))]] # Define adaptive step size
 		solution = np.array(solution) - np.array(gradient)*step_size
 		with open(os.path.join(path_simulation, 'log.txt'), 'a') as f:
 			print('The updated solution (solution - gradient * step_size) track: \n %s' % (solution), file=f)
