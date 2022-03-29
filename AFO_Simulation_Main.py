@@ -17,40 +17,92 @@ import AFO_Simulation_Optimization
 import AFO9_MeshMechanics
 import AFO10_OpenSimAPI
 
-
-solution = [[82.00309497, 103.75333886, 307.64824499, 337.20043168], [329.90506602, 107.31456951, 180.58145355, 35.77007814], [16.69685122, 21.8, 20.66247472, 21.7], [5, 43, 1,1]]
+solution = [[83.57737476, 98.55371026, 314.77547762, 328.07150594],
+                   [270, 117.1889489, 180, 0.],
+                   [16.09500858, 21.5162595, 20.92202382, 21.67107155],
+                   [28, 415, 203, 9]]
 # Display the MSK model based on the provided solution (design variables)
 #AFO_Simulation_Optimization.Main_model_demo (solution, 0)
 
 
 # Simulation of drop landing
-AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(0), [25, 0, 0]))
-AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(0), [0, -45, -25]))
-# The calculation of fatigue strap forces using module AFO9_MeshMechanics
-# The path of osim model and DL simulation results
-results_directory_platform0=str(02500)
-results_directory_platform45=str(00-45-25)
-output_folder_DL_platform0='Simulation models\Drop landing'+str(0)+'\DL simulation results\\'+results_directory_platform0
-output_folder_DL_platform45='Simulation models\Drop landing'+str(0)+'\DL simulation results\\'+results_directory_platform45
-osimModel_platform0='Simulation models\Drop landing'+str(0)+'\Fullbodymodel_DL_platform0_AFO.osim'
-osimModel_platform45='Simulation models\Drop landing'+str(0)+'\Fullbodymodel_DL_platform45_AFO.osim'
-# The mechanical properties produced from the AFO9_MeshMechanics
-theta_0_values=solution[2]
-n_elements=solution[3]
-FL_matrix_platform0=AFO9_MeshMechanics.MeshMechanics(osimModel_platform0, theta_0_values, n_elements)
+folder_index=0
+[AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]=solution
+AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(folder_index), [25, 0, 0]))
+AFO0_Simulation.Simulation(('AFODroplanding', 'simulation', solution, str(folder_index), [0, -45, -25]))
+Results_parameter_DL=['time', '/jointset/subtalar_r/subtalar_angle_r/value', '/jointset/ankle_r/ankle_angle_r/value']   # The specified parameter to extract
+platform0=[25,0,0]    # The platform orientation of 0 degree, inclination of 25 degree
+platform45=[0,-45,-25]   # The platform orientation of 45 degree, inclination of 25 degree
+results_directory_platform0=str(folder_index)+str(platform0[0])+str(platform0[1])+str(platform0[2])   # The folder for the simulation results for platform orientation of  0 degree
+results_directory_platform45=str(folder_index)+str(platform45[0])+str(platform45[1])+str(platform45[2]) # The folder for simulation results for platform orienation of 45 degree
+output_folder_DL_platform0='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+results_directory_platform0     # The folder path for the simulation with platform orientation of 0 degree
+output_folder_DL_platform45='Simulation models\Drop landing'+str(folder_index)+'\DL simulation results\\'+results_directory_platform45  # The folder path for the simulation with platform orientation of 45 degree
+data_DL_platform0= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL_platform0, Results_parameter_DL, 'default_states_degrees.mot')  # put the specified results into a matrix for platform 0
+data_DL_platform45= AFO4_ResultsCollection.Simulationresultscollection(output_folder_DL_platform45, Results_parameter_DL, 'default_states_degrees.mot')  # put the specified results into a matrix for platform 45
+# The maximum subtalar angles for drop landing with two platfomr orientations (0 and 45 degrees)
+Subtalar_DL_max_platform0=max(data_DL_platform0[:,1])  # The maximum subtalar angle for drop landing with platform 0 orientation
+Subtalar_DL_max_platform45=max(data_DL_platform45[:,1])  # The maximum subtalar angle for drop landing with platform 45 orientation
+# The maximum ankle angles for drop landing with two platform orientations (0 and 45 degrees)
+Ankle_DL_max_platform0=max(data_DL_platform0[:,2])  # The maximum ankle angle for drop landing with platform 0 orientation
+Ankle_DL_max_platform45=max(data_DL_platform45[:,2])  # The maximum ankle angle for drop landing with platform 45 orientation
+#---------------------------------------------------------------------------------
+# The drop landing model for calculating the strap_length_ini and fatigue length
+osimModel_platform0='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform0_AFO.osim'
+osimModel_platform45='Simulation models\Drop landing'+str(folder_index)+'\Fullbodymodel_DL_platform45_AFO.osim'
+# Calculate the initial strap length at default position of drop landing
+[DL_strap_lengths_ini_platform0, DL_strap_forces_ini_platform0]=AFO10_OpenSimAPI.Liginitstates(osimModel_platform0)
+[DL_strap_lengths_ini_platform45, DL_strap_forces_ini_platform45]=AFO10_OpenSimAPI.Liginitstates(osimModel_platform45)
+#---------------------------------------------------------------------------------
+# Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for drop landing
+# Fatigue strap forces for drop landing of platform 0 degree
+AFO_FL_platform0=AFO9_MeshMechanics.MeshMechanics(osimModel_platform0, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+FL_length_mesh_max_platfrom0=[max(AFO_FL_platform0[0][0]), max(AFO_FL_platform0[1][0]), max(AFO_FL_platform0[2][0]), max(AFO_FL_platform0[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+FL_force_mesh_max_platform0=[max(AFO_FL_platform0[0][1]), max(AFO_FL_platform0[1][1]), max(AFO_FL_platform0[2][1]), max(AFO_FL_platform0[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+#print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+#print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+# Fatigue strap forces for drop landing of platform 45 degree
+AFO_FL_platform45=AFO9_MeshMechanics.MeshMechanics(osimModel_platform45, theta_0_values, n_elements) # Get the force-length relationship for the four straps
+FL_length_mesh_max_platform45=[max(AFO_FL_platform45[0][0]), max(AFO_FL_platform45[1][0]), max(AFO_FL_platform45[2][0]), max(AFO_FL_platform45[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+FL_force_mesh_max_platform45=[max(AFO_FL_platform45[0][1]), max(AFO_FL_platform45[1][1]), max(AFO_FL_platform45[2][1]), max(AFO_FL_platform45[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+#print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
+#print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
+#---------------------------------------------------------------------------------
+# Collect the maximum ligament (strap) length and force during the drop landing simulation
+[DL_strap_lengths_realtime_platform0, DL_strap_forces_realtime_platform0, DL_strap_lengths_max_platform0, DL_strap_forces_max_platform0]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform0, 'default_states_degrees.mot', osimModel_platform0)
+[DL_strap_lengths_realtime_platform45, DL_strap_forces_realtime_platform45, DL_strap_lengths_max_platform45, DL_strap_forces_max_platform45]=AFO10_OpenSimAPI.LigMechanicsMax (output_folder_DL_platform45, 'default_states_degrees.mot', osimModel_platform45)
+[DL_strap_lengths_grad_platform0, DL_strap_pene_monitor_platform0]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform0, DL_strap_lengths_ini_platform0, 0.0045)
+[DL_strap_lengths_grad_platform45, DL_strap_pene_monitor_platform45]=AFO10_OpenSimAPI.LigPeneMonitor(DL_strap_lengths_realtime_platform45, DL_strap_lengths_ini_platform45, 0.0045)
+#print('The max strap lengths for DL: %s'  %(DL_strap_lengths_max))
+#print('The max strap forces for DL: %s'  %(DL_strap_forces_max))
+#---------------------------------------------------------------------------------
+# Calculate the differences between the maximum real-time strap forces and the fatigure strap forces
+strap_forces_diff_DL_platform0=np.array(DL_strap_forces_max_platform0)-np.array(FL_force_mesh_max_platform0)
+strap_forces_diff_DL_platform45=np.array(DL_strap_forces_max_platform45)-np.array(FL_force_mesh_max_platform45)
+print('The maximum subtalar angle for platform 0: %s' %(Subtalar_DL_max_platform0))
+print('The maximum subtalar angle for platform 45: %s' %(Subtalar_DL_max_platform45))
+print('The differences of strap forces for DL_platform 0: %s' %(strap_forces_diff_DL_platform0))
+print('The differences of strap forces for DL_platform 45: %s' %(strap_forces_diff_DL_platform45))
+
 # The plot of force-length relationship in four sub-figures
+FL_matrix_lst=AFO_FL_platform0
+DL_strap_lengths_realtime_platform0=np.array(DL_strap_lengths_realtime_platform0)
+DL_strap_lengths_ini_platform0=np.array(DL_strap_lengths_ini_platform0).reshape(-1,1)
+DL_FL_matrix=DL_strap_lengths_realtime_platform0/DL_strap_lengths_ini_platform0
 plt.figure()
 plt.subplot(2,2,1)
-plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], marker='o', label='FL for strap 1')
+plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], color='r', marker='.', label='FL for strap 1')
+plt.plot(DL_FL_matrix[0], DL_strap_forces_realtime_platform0[0], color='b', marker='*', label='Realtime FL for strap 1')
+plt.plot()
 plt.subplot(2,2,2)
-plt.plot(FL_matrix_lst[1][0], FL_matrix_lst[1][1], marker='o', label='FL for strap 2')
+plt.plot(FL_matrix_lst[1][0], FL_matrix_lst[1][1], color='r', marker='.', label='FL for strap 2')
+plt.plot(DL_FL_matrix[1], DL_strap_forces_realtime_platform0[1], color='b', marker='*', label='Realtime FL for strap 2')
 plt.subplot(2,2,3)
-plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], marker='o', label='FL for strap 3')
+plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], color='r', marker='.', label='FL for strap 3')
+plt.plot(DL_FL_matrix[2], DL_strap_forces_realtime_platform0[2], color='b', marker='*', label='Realtime FL for strap 3')
 plt.subplot(2,2,4)
-plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
+plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], color='r', marker='.', label='FL for strap 4')
+plt.plot(DL_FL_matrix[3], DL_strap_forces_realtime_platform0[3], color='b', marker='*', label='Realtime FL for strap 3')
 plt.show()
-#The 
-
 
 
 
