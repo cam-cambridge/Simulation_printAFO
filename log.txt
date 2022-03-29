@@ -1,0 +1,627 @@
+The number of iteration: 1 
+
+The solution track:
+[ 78.34797621  98.76524193 303.99470923 308.52765855]  # The position (central angle) of bottom endpoints for four straps
+[346.74725051 168.681087   186.95293291  50.10293499]  # The position (central angle) of top endpoints for four straps
+[16.49388527 20.10848634 21.28665269 21.3181092 ]  # The start angles of the waves for four straps
+[ 30. 380. 200.  30.]  # The element numbers for four straps
+
+The gradient track:
+[-1.145779258868501, -1.9446568617600235, -0.8268707171776413, -2.277963710622444]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.2294790136024858, -1.5838006375147557, -1.7735826882972674, -2.6553956648555044]  # The derivative (gradient) of top endpoint position for four straps
+[-1.6844006916226988, -0.6072841983314277, -1.7500295340504408, -3.188827959875823]  # The derivative (gradient) of the start wave angles for four straps
+[-0.9783833438137748, -1.0605769705075545, -0.89179296628852, -1.6448239819062564]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[20.13050289, 15.14679297, 27.86772116, 9.78842342]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[1.8452477419095605, 10.720993200733954]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -58.84171393  -26.00222705 -397.55494104  -59.42958721] # The strap force differences for DL_0 degree for four straps
+[ -44.45004427 -114.44511023 -391.6223235   -57.7912493 ] # The strap force differences for DL_45 degree for four straps
+[ -57.98074082 -574.16036013 -101.92054939   31.38325818] # The strap force differences for walk for four straps
+[  -9.66219228 -311.5438169  -378.90186655  -28.48233411] # The strap force differences for running for four straps
+
+The cost function track:  76.73597842332404
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 78.5994682   99.19208298 304.17620262 309.02765855]
+ [346.70404056 168.9793101  187.28689118  50.60293499]
+ [ 16.54670721  20.12753046  21.34153271  21.4181092 ]
+ [ 30.59482556 380.64479664 200.5421814   31.        ]]
+#####################################################################################################
+The number of iteration: 2 
+
+The solution track:
+[ 78.5994682   99.19208298 304.17620262 309.02765855]  # The position (central angle) of bottom endpoints for four straps
+[346.70404056 168.9793101  187.28689118  50.60293499]  # The position (central angle) of top endpoints for four straps
+[16.54670721 20.12753046 21.34153271 21.4181092 ]  # The start angles of the waves for four straps
+[ 30. 380. 200.  31.]  # The element numbers for four straps
+
+The gradient track:
+[0.8810526241819048, -1.3476798535503747, 0.016091002397715215, 0.20547195720929778]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.6598619765124596, -0.10000353037847276, -0.29520447870233113, 0.14517511430635466]  # The derivative (gradient) of top endpoint position for four straps
+[3.0705269789334295, 0.5732058316344961, -0.3736591564296532, 0.466955229854932]  # The derivative (gradient) of the start wave angles for four straps
+[0.24252427466090865, 0.6046666926317954, -0.432493965938221, 3.170203690306323]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[20.04541672, 15.19990166, 27.84818123, 9.77921686]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[1.945317333100659, 8.920006697704611]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -59.61409719  -23.48590535 -397.5550322   -61.36962758] # The strap force differences for DL_0 degree for four straps
+[ -45.57559969 -113.57826688 -391.64320443  -59.67887968] # The strap force differences for DL_45 degree for four straps
+[ -57.90567037 -554.81969356 -113.48177691   29.8153632 ] # The strap force differences for walk for four straps
+[ -14.09821931 -321.63782874 -378.60271598  -27.12235602] # The strap force differences for running for four straps
+
+The cost function track:  73.31727912682506
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 78.27259063  99.69208298 304.17023273 308.95142681]
+ [346.20404056 169.05508619 187.51057772  50.49293084]
+ [ 16.44670721  20.10886246  21.35370193  21.40290154]
+ [ 29.92349884 379.80926567 200.13642466  30.        ]]
+#####################################################################################################
+The number of iteration: 3 
+
+The solution track:
+[ 78.27259063  99.69208298 304.17023273 308.95142681]  # The position (central angle) of bottom endpoints for four straps
+[346.20404056 169.05508619 187.51057772  50.49293084]  # The position (central angle) of top endpoints for four straps
+[16.44670721 20.10886246 21.35370193 21.40290154]  # The start angles of the waves for four straps
+[ 29. 379. 200.  30.]  # The element numbers for four straps
+
+The gradient track:
+[-1.2833324613199721, -1.2825175576358845, 0.8683776046031824, -0.22086570644195547]  # The derivative (gradient) of bottom endpoint position for four straps
+[-1.2996977857305865, -1.0718468494262083, -0.004374926835737369, -1.6377199979098975]  # The derivative (gradient) of top endpoint position for four straps
+[-1.3520369764040367, -0.0059619423894048396, -0.2117859281805181, -1.238037772674403]  # The derivative (gradient) of the start wave angles for four straps
+[-1.5231341200897361, -2.2092126743714715, 0.4831218950109104, -0.5788327134546165]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.89791062, 15.21936973, 27.82607284, 9.76818079]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.037830933922306, 10.098598053688674]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -57.69981969  -18.80246561 -397.74344944  -59.40052561] # The strap force differences for DL_0 degree for four straps
+[ -43.39965691 -110.42065303 -391.85585668  -57.76585953] # The strap force differences for DL_45 degree for four straps
+[ -55.93303333 -527.74863725 -118.9320369    28.50405419] # The strap force differences for walk for four straps
+[ -10.53057784 -318.93126558 -378.68288756  -27.15845888] # The strap force differences for running for four straps
+
+The cost function track:  72.60688492851946
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 78.77259063 100.19176549 303.83190356 309.03747844]
+ [346.60084154 169.38232371 187.51191339  50.99293084]
+ [ 16.54670721  20.10930342  21.36936614  21.49446988]
+ [ 29.68944658 380.         199.7813149   30.2620086 ]]
+#####################################################################################################
+The number of iteration: 4 
+
+The solution track:
+[ 78.77259063 100.19176549 303.83190356 309.03747844]  # The position (central angle) of bottom endpoints for four straps
+[346.60084154 169.38232371 187.51191339  50.99293084]  # The position (central angle) of top endpoints for four straps
+[16.54670721 20.10930342 21.36936614 21.49446988]  # The start angles of the waves for four straps
+[ 29. 380. 199.  30.]  # The element numbers for four straps
+
+The gradient track:
+[-1.7195899740050322, -0.09717830974562958, -0.7745209214846795, -1.2119012571528458]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.7636704568762411, 0.49821293295525493, -0.2868867744476091, 0.09256484601523596]  # The derivative (gradient) of top endpoint position for four straps
+[-1.363242523205571, -0.8245200167997098, 0.05923298911812935, -2.500261401534914]  # The derivative (gradient) of the start wave angles for four straps
+[-1.1812293392126492, -0.4389314918520739, -0.24549568510138897, 0.6348162414197702]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.75462185, 15.25031867, 27.79925811, 9.75533109]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.127883099479916, 10.351449887510327]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -57.60535281  -17.10640223 -396.04055507  -59.30883529] # The strap force differences for DL_0 degree for four straps
+[ -43.97211122 -110.16028823 -390.26756325  -57.69439655] # The strap force differences for DL_45 degree for four straps
+[ -55.89622395 -513.10273822 -119.6622605    26.52818704] # The strap force differences for walk for four straps
+[ -12.83938271 -323.03536257 -377.20345177  -28.14341815] # The strap force differences for running for four straps
+
+The cost function track:  70.41222262966312
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 79.27259063 100.22002173 304.05710868 309.38985932]
+ [346.10084154 169.05612742 187.69974754  50.93232561]
+ [ 16.60123121  20.14228078  21.36699707  21.59446988]
+ [ 30.         380.37158871 199.20783067  29.46258003]]
+#####################################################################################################
+The number of iteration: 5 
+
+The solution track:
+[ 79.27259063 100.22002173 304.05710868 309.38985932]  # The position (central angle) of bottom endpoints for four straps
+[346.10084154 169.05612742 187.69974754  50.93232561]  # The position (central angle) of top endpoints for four straps
+[16.60123121 20.14228078 21.36699707 21.59446988]  # The start angles of the waves for four straps
+[ 30. 380. 199.  29.]  # The element numbers for four straps
+
+The gradient track:
+[-1.1723319550448394, -0.8245463957326535, -0.9905776475381742, 0.20126914014798558]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.89906262148493, -0.02434022403001279, 0.4921996362201497, -1.0742603565239364]  # The derivative (gradient) of top endpoint position for four straps
+[-1.4009228032834784, 0.7662547286082173, 0.11462995429995715, -1.9114932632491701]  # The derivative (gradient) of the start wave angles for four straps
+[0.18213877330775574, 0.1927642251161359, -0.014147055806247977, 0.21225587948522673]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.79877464, 15.28733586, 27.80151898, 9.75681192]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[1.9875496224066345, 9.676100111826521]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -59.39721173  -17.63723501 -396.00931332  -57.34685201] # The strap force differences for DL_0 degree for four straps
+[ -46.10869655 -111.0810121  -390.19551615  -55.78782697] # The strap force differences for DL_45 degree for four straps
+[ -57.69520537 -518.76016641 -119.97313308   24.43085143] # The strap force differences for walk for four straps
+[ -18.88110185 -329.87490678 -377.10303727  -27.14263981] # The strap force differences for running for four straps
+
+The cost function track:  67.90505366002107
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 79.77259063 100.57169107 304.4795904  309.30401796]
+ [346.51929811 169.06745625 187.47065985  51.43232561]
+ [ 16.67452065  20.10219407  21.36100019  21.69446988]
+ [ 29.14189056 379.09183093 199.06665095  28.        ]]
+#####################################################################################################
+The number of iteration: 6 
+
+The solution track:
+[ 79.77259063 100.57169107 304.4795904  309.30401796]  # The position (central angle) of bottom endpoints for four straps
+[346.51929811 169.06745625 187.47065985  51.43232561]  # The position (central angle) of top endpoints for four straps
+[16.67452065 20.10219407 21.36100019 21.69446988]  # The start angles of the waves for four straps
+[ 29. 379. 199.  28.]  # The element numbers for four straps
+
+The gradient track:
+[-0.6740419509049076, -0.5596823424356643, 0.620221339929067, 2.8756228734188696]  # The derivative (gradient) of bottom endpoint position for four straps
+[1.423711306761028, -0.27029679828854825, 0.5474512984387232, -1.3216665478329261]  # The derivative (gradient) of top endpoint position for four straps
+[0.7408120632507931, 2.469625023273359, 0.317674161595896, -3.529031688528981]  # The derivative (gradient) of the start wave angles for four straps
+[1.5885856593313932, 0.004547545727170643, 0.3367321058848205, 3.722118694151952]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.65950944, 15.27703507, 27.78331594, 9.74804358]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.1497804746374243, 9.078897125431856]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -57.33288024  -13.48200373 -395.39935102  -55.25903868] # The strap force differences for DL_0 degree for four straps
+[ -45.03455462 -107.24354804 -389.55515732  -53.78216783] # The strap force differences for DL_45 degree for four straps
+[ -55.73232217 -495.07526636 -123.47024483   21.32512489] # The strap force differences for walk for four straps
+[ -21.869475   -324.80445982 -376.77761281  -27.89418439] # The strap force differences for running for four straps
+
+The cost function track:  63.58652504436562
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 79.88978993 100.66900604 304.37174919 308.80401796]
+ [346.01929811 169.16238308 187.27839781  51.89648802]
+ [ 16.65352872  20.03221382  21.35199845  21.79446988]
+ [ 28.57320392 378.99877824 198.90953214  27.        ]]
+#####################################################################################################
+The number of iteration: 7 
+
+The solution track:
+[ 79.88978993 100.66900604 304.37174919 308.80401796]  # The position (central angle) of bottom endpoints for four straps
+[346.01929811 169.16238308 187.27839781  51.89648802]  # The position (central angle) of top endpoints for four straps
+[16.65352872 20.03221382 21.35199845 21.79446988]  # The start angles of the waves for four straps
+[ 28. 378. 198.  27.]  # The element numbers for four straps
+
+The gradient track:
+[-0.31777982195756493, 0.7992980804310434, -0.23621067932054984, 1.6943582551878151]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.041041633550037204, 1.7898911676038836, -0.28723896548038397, -1.8293325109572223]  # The derivative (gradient) of top endpoint position for four straps
+[0.8470392622018608, 3.238499533581752, 0.12381630491397289, -1.5004324071527222]  # The derivative (gradient) of the start wave angles for four straps
+[-0.4867027733717464, -0.7180495135650773, -1.1227850038166807, 1.3298734758725246]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.53996588, 15.21605031, 27.77495592, 9.74330062]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.236643632682229, 8.982915513316035]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -55.29788772  -10.47609604 -393.35657083  -53.85082891] # The strap force differences for DL_0 degree for four straps
+[ -43.74987618 -103.24043459 -387.56190791  -52.46924478] # The strap force differences for DL_45 degree for four straps
+[ -53.74090176 -483.09965445 -120.45703743   18.08654379] # The strap force differences for walk for four straps
+[ -21.83330747 -313.67652751 -375.05207206  -31.18570745] # The strap force differences for running for four straps
+
+The cost function track:  59.39618388419311
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 79.98356579 100.4331356  304.44145424 308.30401796]
+ [346.03051577 168.67316334 187.35690703  52.39648802]
+ [ 16.62737342  19.93221382  21.34817519  21.84080098]
+ [ 28.36597675 378.53993822 198.84427957  26.        ]]
+#####################################################################################################
+The number of iteration: 8 
+
+The solution track:
+[ 79.98356579 100.4331356  304.44145424 308.30401796]  # The position (central angle) of bottom endpoints for four straps
+[346.03051577 168.67316334 187.35690703  52.39648802]  # The position (central angle) of top endpoints for four straps
+[16.62737342 19.93221382 21.34817519 21.8       ]  # The start angles of the waves for four straps
+[ 28. 378. 198.  26.]  # The element numbers for four straps
+
+The gradient track:
+[0.9263361878358083, 0.9989671392989692, 0.010271489796544131, -0.04372435801214891]  # The derivative (gradient) of bottom endpoint position for four straps
+[2.5446678724325835, 1.597920712192078, 0.071461406201486, -0.6313418584175707]  # The derivative (gradient) of top endpoint position for four straps
+[1.1102529060093644, 0.933577495498966, 0.24708635286931013, -1.641792072426064]  # The derivative (gradient) of the start wave angles for four straps
+[0.825510646286638, 0.5511441938286907, 0.7542763640461843, 0.4501388408850886]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.45365825, 15.07992721, 27.78160641, 9.74511295]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.068354790821483, 8.848142106965085]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -55.29073623  -10.89683587 -393.37438907  -51.73659731] # The strap force differences for DL_0 degree for four straps
+[ -44.01766449 -101.72867006 -387.54349676  -50.43078576] # The strap force differences for DL_45 degree for four straps
+[ -53.76682725 -491.74715522 -116.38295239   16.20064131] # The strap force differences for walk for four straps
+[ -22.38921894 -292.21632648 -375.29636258  -32.90725322] # The strap force differences for running for four straps
+
+The cost function track:  56.08506551083732
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 79.51991882  99.9331356  304.43631319 308.32590275]
+ [345.53051577 168.35918902 187.34286563  52.52053994]
+ [ 16.55974896  19.8753505   21.3331254   21.9       ]
+ [ 27.         377.33235968 197.08629117  25.45471468]]
+#####################################################################################################
+The number of iteration: 9 
+
+The solution track:
+[ 79.51991882  99.9331356  304.43631319 308.32590275]  # The position (central angle) of bottom endpoints for four straps
+[345.53051577 168.35918902 187.34286563  52.52053994]  # The position (central angle) of top endpoints for four straps
+[16.55974896 19.8753505  21.3331254  21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 197.  25.]  # The element numbers for four straps
+
+The gradient track:
+[-0.803608451318027, -0.7957178131010423, -0.6850623434288252, -0.6082772179201044]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.19052957110940838, -0.8294045691657175, -1.746951114074406, -0.2978048015779464]  # The derivative (gradient) of top endpoint position for four straps
+[0.32515858214456017, 0.3337313675025584, -1.0705157978119075, -2.5585102005762437]  # The derivative (gradient) of the start wave angles for four straps
+[-0.9096099310097969, -0.22726880858623133, -0.4855362757298991, -1.0861592355018956]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.51283571, 14.98799255, 27.805455, 9.75476966]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.087417628503411, 9.733375962597858]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.38493673  -11.9376698  -391.41843025  -49.73511893] # The strap force differences for DL_0 degree for four straps
+[ -42.40066863 -100.02670265 -385.57444959  -48.47744718] # The strap force differences for DL_45 degree for four straps
+[ -51.8681552  -506.24830104 -110.24983827   16.55780581] # The strap force differences for walk for four straps
+[ -17.74389905 -277.80279755 -373.50344776  -31.7562076 ] # The strap force differences for running for four straps
+
+The cost function track:  57.20277795223653
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.01991882 100.42822609 304.86255456 308.70436891]
+ [345.47598374 168.59657533 187.84286563  52.60577552]
+ [ 16.54704006  19.86230653  21.37496677  21.9       ]
+ [ 27.83745541 377.20924078 197.44702127  26.        ]]
+#####################################################################################################
+The number of iteration: 10 
+
+The solution track:
+[ 80.01991882 100.42822609 304.86255456 308.70436891]  # The position (central angle) of bottom endpoints for four straps
+[345.47598374 168.59657533 187.84286563  52.60577552]  # The position (central angle) of top endpoints for four straps
+[16.54704006 19.86230653 21.37496677 21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 197.  26.]  # The element numbers for four straps
+
+The gradient track:
+[-0.6881667423709743, -0.8206966769399813, 0.23968971428435992, 0.3734929682083532]  # The derivative (gradient) of bottom endpoint position for four straps
+[-1.3729166733759612, -2.0349878631472436, -0.9539254198950005, -0.3429042933826594]  # The derivative (gradient) of top endpoint position for four straps
+[0.23958446333140415, 2.7443202040971784, 0.4867396419689385, -1.8881578271447808]  # The derivative (gradient) of the start wave angles for four straps
+[-0.21491112870375417, -0.8919703642532326, -0.23000840767520714, 1.654205792355988]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.36248178, 15.00950447, 27.77918357, 9.74297449]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.2891244750376023, 10.019763652526693]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.28370864   -8.6571615  -391.3758947   -51.75899934] # The strap force differences for DL_0 degree for four straps
+[ -42.41293947  -98.35043199 -385.50603313  -50.43876728] # The strap force differences for DL_45 degree for four straps
+[ -51.74821107 -467.72267217 -121.65219754   16.18148973] # The strap force differences for walk for four straps
+[ -19.90698571 -278.63499924 -373.58518117  -31.80135634] # The strap force differences for running for four straps
+
+The cost function track:  56.62030910937349
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.43917648 100.92822609 304.71652637 308.47682262]
+ [345.81331172 169.09657533 188.07724674  52.6900277 ]
+ [ 16.53830987  19.76230653  21.35723052  21.86880239]
+ [ 27.12991801 377.53921366 197.13904462  25.        ]]
+#####################################################################################################
+The number of iteration: 11 
+
+The solution track:
+[ 80.43917648 100.92822609 304.71652637 308.47682262]  # The position (central angle) of bottom endpoints for four straps
+[345.81331172 169.09657533 188.07724674  52.6900277 ]  # The position (central angle) of top endpoints for four straps
+[16.53830987 19.76230653 21.35723052 21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 197.  25.]  # The element numbers for four straps
+
+The gradient track:
+[-1.0222331027973937, 7.447036416961538, -0.2902834804303396, 0.36199437633364084]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.18561799788346178, -0.4179557600234105, -0.4518920366240238, -0.5450767326827943]  # The derivative (gradient) of top endpoint position for four straps
+[-0.2761554082839339, 0.39436485323924586, -0.2735438425590786, -1.7176912711518]  # The derivative (gradient) of the start wave angles for four straps
+[-0.263128297388441, -0.12405909449714159, 0.7373743577066492, 0.524189852439271]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.07862548, 14.93593767, 27.74282581, 9.72619693]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.755922731658306, 9.44928100070079]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.24736025   -4.34808998 -391.78306775  -49.73294565] # The strap force differences for DL_0 degree for four straps
+[ -42.56323637  -94.22465576 -385.93435229  -48.47440906] # The strap force differences for DL_45 degree for four straps
+[ -51.7481131  -440.2084707  -111.00711539   16.62715133] # The strap force differences for walk for four straps
+[ -24.29037678 -265.393601   -373.47632929  -30.92650621] # The strap force differences for running for four straps
+
+The cost function track:  55.485482458555374
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.50781003 100.42822609 304.73601623 308.45251803]
+ [345.64304395 169.47996701 188.49176823  53.1900277 ]
+ [ 16.55438699  19.73934752  21.3731556   21.9       ]
+ [ 27.35684493 377.16824438 196.          24.28911299]]
+#####################################################################################################
+The number of iteration: 12 
+
+The solution track:
+[ 80.50781003 100.42822609 304.73601623 308.45251803]  # The position (central angle) of bottom endpoints for four straps
+[345.64304395 169.47996701 188.49176823  53.1900277 ]  # The position (central angle) of top endpoints for four straps
+[16.55438699 19.73934752 21.3731556  21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 196.  24.]  # The element numbers for four straps
+
+The gradient track:
+[0.3243120183191337, -2.194880662062097, -0.6430609719709253, -2.000525403174464]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.9405815212409578, -0.8322680477272542, -0.1844857074810733, -1.3087688769911665]  # The derivative (gradient) of top endpoint position for four straps
+[-1.2280911443732165, -0.4352047500162328, 1.1736559014553762, -1.0918899548910943]  # The derivative (gradient) of the start wave angles for four straps
+[-1.5727936452594875, -0.8928436759572094, 0.3116030972608712, 0.46932820674496156]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.17146147, 14.88024259, 27.76684118, 9.73639261]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.2847011155902157, 10.918705676691886]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.2033919    -6.86321064 -390.12438555  -47.68638686] # The strap force differences for DL_0 degree for four straps
+[ -42.84704962  -94.47543908 -384.25525826  -46.48081126] # The strap force differences for DL_45 degree for four straps
+[ -51.70724201 -459.98257084 -110.69026257   15.68062179] # The strap force differences for walk for four straps
+[ -23.65304029 -257.53544466 -371.83479823  -29.29322329] # The strap force differences for running for four straps
+
+The cost function track:  55.981335927611696
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.43393084 100.92822609 304.88250733 308.90824335]
+ [346.00238223 169.79792538 188.56224886  53.6900277 ]
+ [ 16.65438699  19.77478502  21.27758811  21.88890952]
+ [ 28.         377.56768011 195.80187922  23.70159581]]
+#####################################################################################################
+The number of iteration: 13 
+
+The solution track:
+[ 80.43393084 100.92822609 304.88250733 308.90824335]  # The position (central angle) of bottom endpoints for four straps
+[346.00238223 169.79792538 188.56224886  53.6900277 ]  # The position (central angle) of top endpoints for four straps
+[16.65438699 19.77478502 21.27758811 21.8       ]  # The start angles of the waves for four straps
+[ 28. 377. 195.  23.]  # The element numbers for four straps
+
+The gradient track:
+[-0.35671697202108277, -1.2576429023716358, -0.5180351915928796, -0.22214110899005846]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.24684631931385326, 1.1398494824613152, 0.6063912131823344, 0.3975118849601742]  # The derivative (gradient) of top endpoint position for four straps
+[0.3251286912403373, 0.3762268586226938, -0.1757106372884607, -2.215572434776476]  # The derivative (gradient) of the start wave angles for four straps
+[-0.6917778258150378, -0.7081704546117891, -1.2314882488981596, 0.8055723888359978]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.09239404, 14.95677373, 27.74176743, 9.72577611]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.752167120975675, 8.785880984427866]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -55.21044189   -4.16299055 -388.30820855  -45.69465747] # The strap force differences for DL_0 degree for four straps
+[ -44.58966557  -94.16568353 -382.410824    -44.52799103] # The strap force differences for DL_45 degree for four straps
+[ -53.70705907 -445.96948467 -100.18064183   15.05882284] # The strap force differences for walk for four straps
+[ -26.25763528 -268.73248699 -369.79492573  -27.01511889] # The strap force differences for running for four straps
+
+The cost function track:  53.288841144460555
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.5757505  101.42822609 305.08846214 308.9965598 ]
+ [345.894102   169.29792538 188.29625268  53.51565735]
+ [ 16.63971229  19.757804    21.28551882  21.9       ]
+ [ 28.56174131 377.57505255 196.          22.34585459]]
+#####################################################################################################
+The number of iteration: 14 
+
+The solution track:
+[ 80.5757505  101.42822609 305.08846214 308.9965598 ]  # The position (central angle) of bottom endpoints for four straps
+[345.894102   169.29792538 188.29625268  53.51565735]  # The position (central angle) of top endpoints for four straps
+[16.63971229 19.757804   21.28551882 21.8       ]  # The start angles of the waves for four straps
+[ 28. 377. 196.  22.]  # The element numbers for four straps
+
+The gradient track:
+[-0.6326924829539422, 13.063389610828878, -0.7822042298535337, -1.0686523317444596]  # The derivative (gradient) of bottom endpoint position for four straps
+[-1.0278239668933722, -1.7672521683585174, -2.5120034498600106, -1.4811636922405356]  # The derivative (gradient) of top endpoint position for four straps
+[-0.9703372589621182, -0.9377949789819127, -0.6528360068934589, -1.1659214638182007]  # The derivative (gradient) of the start wave angles for four straps
+[-0.16573007506205073, -1.0859960352491171, -0.7601190135638731, -0.9974121041237893]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[18.94071201, 14.96857974, 27.71420417, 9.71396638]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[3.8785633786410716, 9.076314432653712]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -55.18534332   -1.24251087 -389.8332034   -43.73420104] # The strap force differences for DL_0 degree for four straps
+[ -44.55339653  -92.75695132 -383.92789313  -42.61554536] # The strap force differences for DL_45 degree for four straps
+[ -53.73241595 -417.104598   -103.09193112   14.15385269] # The strap force differences for walk for four straps
+[ -27.03123855 -274.18898429 -371.44704913  -25.71278266] # The strap force differences for running for four straps
+
+The cost function track:  53.04229055601486
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.59996674 100.92822609 305.11840093 309.03746237]
+ [346.09868452 169.64968687 188.79625268  53.81047456]
+ [ 16.72293721  19.8382378   21.34151196  21.9       ]
+ [ 28.15260652 378.         196.69992798  22.9184307 ]]
+#####################################################################################################
+The number of iteration: 15 
+
+The solution track:
+[ 80.59996674 100.92822609 305.11840093 309.03746237]  # The position (central angle) of bottom endpoints for four straps
+[346.09868452 169.64968687 188.79625268  53.81047456]  # The position (central angle) of top endpoints for four straps
+[16.72293721 19.8382378  21.34151196 21.8       ]  # The start angles of the waves for four straps
+[ 28. 378. 196.  22.]  # The element numbers for four straps
+
+The gradient track:
+[0.3604441113037993, -0.46383289879209855, 0.6702216632624101, 1.774309979235639]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.6395192317693699, 1.5498943703325523, 0.45637187526202894, 1.249085562590686]  # The derivative (gradient) of top endpoint position for four straps
+[0.760104278889898, 1.0098175883776577, 0.3946701185181851, -0.3336419906958099]  # The derivative (gradient) of the start wave angles for four straps
+[1.009292820912755, 0.983654749668716, 1.2368171184713859, 1.465808662163596]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.17628099, 15.02067988, 27.74510093, 9.72824346]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.3376488432704092, 8.959128776361572]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -55.15729501   -6.42461998 -390.13034287  -43.70876574] # The strap force differences for DL_0 degree for four straps
+[ -44.75253531  -96.95651218 -384.20096177  -42.58926216] # The strap force differences for DL_45 degree for four straps
+[ -53.6412403  -440.45780669 -115.5811849    13.45396527] # The strap force differences for walk for four straps
+[ -27.68069154 -281.84945626 -372.03584308  -25.52891649] # The strap force differences for running for four straps
+
+The cost function track:  51.97554723520704
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.4983937  101.05893406 304.92953267 308.53746237]
+ [345.89237393 169.14968687 188.64902591  53.40751628]
+ [ 16.64766577  19.7382378   21.30242865  21.83303983]
+ [ 27.311443   377.32893373 195.15622199  21.        ]]
+#####################################################################################################
+The number of iteration: 16 
+
+The solution track:
+[ 80.4983937  101.05893406 304.92953267 308.53746237]  # The position (central angle) of bottom endpoints for four straps
+[345.89237393 169.14968687 188.64902591  53.40751628]  # The position (central angle) of top endpoints for four straps
+[16.64766577 19.7382378  21.30242865 21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 195.  21.]  # The element numbers for four straps
+
+The gradient track:
+[0.43667982566946506, 8.509928443116337, -0.4961695202409402, 0.4028353940731151]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.4435851598142406, -0.13952468700215093, -0.5030055951913184, -0.01779150918774519]  # The derivative (gradient) of top endpoint position for four straps
+[0.3240683846897312, 0.38863849036299314, -0.7415488118619535, -1.2466943128225694]  # The derivative (gradient) of the start wave angles for four straps
+[-0.6091512687930773, -1.3170548819687298, -0.4901183710496966, -0.5622821537762945]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.00778822, 14.91912522, 27.73320804, 9.72138553]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.9309172001662285, 9.633783994748791]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.2233269    -3.23364158 -388.28108725  -41.71289693] # The strap force differences for DL_0 degree for four straps
+[ -43.10089128  -93.17058234 -382.39382039  -40.65809224] # The strap force differences for DL_45 degree for four straps
+[ -51.74063145 -422.74590908 -107.01787709   13.03542072] # The strap force differences for walk for four straps
+[ -23.73674488 -263.57987739 -370.32136873  -25.8666514 ] # The strap force differences for running for four straps
+
+The cost function track:  51.83906301098198
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.47273662 100.55893406 304.95868506 308.51379381]
+ [346.33330855 169.28837786 189.14902591  53.42520148]
+ [ 16.62167156  19.70706428  21.36190986  21.9       ]
+ [ 27.46251016 378.         195.37213208  21.42692386]]
+#####################################################################################################
+The number of iteration: 17 
+
+The solution track:
+[ 80.47273662 100.55893406 304.95868506 308.51379381]  # The position (central angle) of bottom endpoints for four straps
+[346.33330855 169.28837786 189.14902591  53.42520148]  # The position (central angle) of top endpoints for four straps
+[16.62167156 19.70706428 21.36190986 21.8       ]  # The start angles of the waves for four straps
+[ 27. 378. 195.  21.]  # The element numbers for four straps
+
+The gradient track:
+[0.7107450129360728, -2.190480333655657, 1.1578200040949511, -0.4511113732115959]  # The derivative (gradient) of bottom endpoint position for four straps
+[0.08489101096402152, 0.13685561524636114, 0.38727146148247016, 1.2687726877907153]  # The derivative (gradient) of top endpoint position for four straps
+[0.8702240984712759, -1.3008195608200737, -0.043347763382286075, -0.8151404564240892]  # The derivative (gradient) of the start wave angles for four straps
+[-0.5948204339112451, 0.15826588410770626, 0.4551259837817412, 1.1067286595887182]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.07767832, 14.84125501, 27.75610627, 9.7310531]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.277506710971781, 11.108331592070218]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.26794607   -7.28351913 -388.56788919  -41.70894125] # The strap force differences for DL_0 degree for four straps
+[ -43.05419593  -95.09826862 -382.65388126  -40.65344301] # The strap force differences for DL_45 degree for four straps
+[ -51.81461627 -447.34824262 -109.93129882   12.86822026] # The strap force differences for walk for four straps
+[ -23.60202314 -255.00163566 -370.32748278  -25.40498945] # The strap force differences for running for four straps
+
+The cost function track:  52.85245016051724
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.31050166 101.05893406 304.69440056 308.61676469]
+ [346.29985456 169.23444558 188.99640935  52.92520148]
+ [ 16.55477342  19.80706428  21.3652422   21.86266361]
+ [ 27.53745824 377.85699667 194.58876462  20.        ]]
+#####################################################################################################
+The number of iteration: 18 
+
+The solution track:
+[ 80.31050166 101.05893406 304.69440056 308.61676469]  # The position (central angle) of bottom endpoints for four straps
+[346.29985456 169.23444558 188.99640935  52.92520148]  # The position (central angle) of top endpoints for four straps
+[16.55477342 19.80706428 21.3652422  21.8       ]  # The start angles of the waves for four straps
+[ 27. 377. 194.  20.]  # The element numbers for four straps
+
+The gradient track:
+[0.3043508629099776, -0.15102591534954257, -0.04068591313318848, 1.6778462578184872]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.5958095082316035, 0.3078606295488555, 0.3190529258768251, -1.070353063761857]  # The derivative (gradient) of top endpoint position for four straps
+[0.11121380009067394, 1.7081075618584407, 0.3533627474140104, -0.6559842903049429]  # The derivative (gradient) of the start wave angles for four straps
+[-0.5468251167608429, 0.40875736355420145, -1.0080715456235865, 1.7577320021624132]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[19.11077365, 14.99592895, 27.73935437, 9.72420936]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.2937662794269946, 9.584063484402359]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.31451936   -3.97058445 -386.67258607  -39.7776504 ] # The strap force differences for DL_0 degree for four straps
+[ -42.30285861  -95.09142359 -380.86558729  -38.7668153 ] # The strap force differences for DL_45 degree for four straps
+[ -51.85259359 -449.98385564 -107.59423145   12.7420204 ] # The strap force differences for walk for four straps
+[ -22.35885013 -275.27310347 -368.92783117  -24.79516058] # The strap force differences for running for four straps
+
+The cost function track:  51.353718412025735
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.21980477 101.10393994 304.70652501 308.11676469]
+ [346.57817838 169.09063293 188.84736837  53.42520148]
+ [ 16.54826248  19.70706428  21.34455482  21.83840416]
+ [ 27.31109698 376.76745183 194.57350696  19.        ]]
+#####################################################################################################
+The number of iteration: 19 
+
+The solution track:
+[ 80.21980477 101.10393994 304.70652501 308.11676469]  # The position (central angle) of bottom endpoints for four straps
+[346.57817838 169.09063293 188.84736837  53.42520148]  # The position (central angle) of top endpoints for four straps
+[16.54826248 19.70706428 21.34455482 21.8       ]  # The start angles of the waves for four straps
+[ 27. 376. 194.  19.]  # The element numbers for four straps
+
+The gradient track:
+[-0.9272093774916286, 2.8903233728326114, -0.4967402165292256, 0.0643928002037768]  # The derivative (gradient) of bottom endpoint position for four straps
+[-0.7095088888248213, -9.182142526008263, -1.0989923068467746, -1.6111688496977195]  # The derivative (gradient) of top endpoint position for four straps
+[-0.2092622962686903, -9.790778155120194, -0.2670457640521633, -1.7176845052862575]  # The derivative (gradient) of the start wave angles for four straps
+[0.027736916436957415, -2.097590187329999, -0.3759303209762521, -0.3747932224053727]  # The derivative (gradient) of the element numbers for four straps
+
+The simulation results track:
+[18.96245218, 14.89227654, 27.73058424, 9.71919558]  # The subtalar angles for DL 0 degree and 45 degree, and ankle angles for DL 0 degree and 45 degree
+[2.439603189589552, 10.027031515201255]  # The muscle demand differences between models with and without AFO for walk and running
+# The strap force differences (max real-time strap forces - fatigue strap forces) for four straps for DL_0 dgree, DL_45 degree, walk and running
+[ -53.37557346    9.7853341  -386.57574267  -37.70242628] # The strap force differences for DL_0 degree for four straps
+[ -42.44641443  -80.34925141 -380.7586793   -36.76002876] # The strap force differences for DL_45 degree for four straps
+[ -51.84370046 -423.52452649 -108.98570426   11.29248475] # The strap force differences for walk for four straps
+[ -20.45983313 -258.96371154 -368.42223848  -24.0505355 ] # The strap force differences for running for four straps
+
+The cost function track:  59.51671445359043
+
+The strap penetration status: 
+ [['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration'], ['No Penetration', 'No Penetration', 'No Penetration', 'No Penetration']]
+The updated solution (solution - gradient * step_size) track: 
+ [[ 80.38020367 100.60393994 304.79245661 308.10562532]
+ [346.61681364 169.59063293 188.90721237  53.51293529]
+ [ 16.55039982  19.80706428  21.34728234  21.8175439 ]
+ [ 26.98677677 377.         194.1792201   19.178678  ]]
+#####################################################################################################
