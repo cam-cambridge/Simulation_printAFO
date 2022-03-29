@@ -159,7 +159,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
 								<!--Body-fixed Euler angle sequence for the orientation of the WrapObject-->
 								<xyz_body_rotation>1.5707963 0 0</xyz_body_rotation>
 								<!--Translation of the WrapObject.-->
-								<translation>-0.00949 -0.3846 0.006</translation>
+								<translation>-0.00949 -0.38 0.006</translation>
 								<!--The name of quadrant over which the wrap object is active. For example, '+x' or '-y' to set the sidedness of the wrapping.-->
 								<quadrant>all</quadrant>
 								<!--Default appearance for this Geometry-->
@@ -179,7 +179,7 @@ def MBDmodel_Gait_AFO (MBD_model, MBD_model_AFO, AFO_representation, AFO_materia
 								<!--The radius of the cylinder.-->
 								<radius>0.0365</radius>
 								<!--The length of the cylinder.-->
-								<length>0.14999999999999999</length>
+								<length>0.18</length>
 							</WrapCylinder>\n'''])
             if line.strip()=='</CoordinateActuator>' and not lines[index].strip().startswith('<CoordinateActuator') and not lines[index].strip().startswith('<PointActuator'):
                 index_t=index
