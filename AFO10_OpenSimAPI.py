@@ -46,11 +46,13 @@ def LigMechanicsMax (Sim_output_folder, Sim_results, osimModel):
         fset=myModel.getForceSet()
         strap1=opensim.Ligament.safeDownCast(fset.get("orthosis_1"))
         strap2=opensim.Ligament.safeDownCast(fset.get("orthosis_2"))
-        strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
-        strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
-        strap_lengths.append([strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)])
+        #strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
+        #strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
+        # strap_lengths.append([strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)])
+        strap_lengths.append([strap1.getLength(state), strap2.getLength(state)])
         myModel.computeStateVariableDerivatives(state)
-        strap_forces.append([strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)])
+        # strap_forces.append([strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)])
+        strap_forces.append([strap1.getTension(state), strap2.getTension(state)])
     strap_lengths_realtime=np.array(strap_lengths).T
     strap_forces_realtime=np.array(strap_forces).T
     strap_lengths_max=np.max(np.array(strap_lengths).T, axis=1)
@@ -68,18 +70,18 @@ def LigSetRestingLength(osimModel):
     fset=myModel.getForceSet()
     strap1=opensim.Ligament.safeDownCast(fset.get("orthosis_1"))
     strap2=opensim.Ligament.safeDownCast(fset.get("orthosis_2"))
-    strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
-    strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
+    # strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
+    # strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
     # Get the lengths of the straps in the MSK model
     strap1_length=strap1.getLength(state)
     strap2_length=strap2.getLength(state)
-    strap3_length=strap3.getLength(state)
-    strap4_length=strap4.getLength(state)
+    # strap3_length=strap3.getLength(state)
+    # strap4_length=strap4.getLength(state)
     # Set the resting lengths for the straps using the extracted lengths
     strap1.set_resting_length(strap1_length)
     strap2.set_resting_length(strap2_length)
-    strap3.set_resting_length(strap3_length)
-    strap4.set_resting_length(strap4_length)
+    # strap3.set_resting_length(strap3_length)
+    # strap4.set_resting_length(strap4_length)
     myModel.printToXML(osimModel)
     #
 def Liginitstates(osimModel):    # Define the raltive path of opensim model, e.g. relative to the python code
@@ -101,11 +103,13 @@ def Liginitstates(osimModel):    # Define the raltive path of opensim model, e.g
     fset=myModel.getForceSet()
     strap1=opensim.Ligament.safeDownCast(fset.get("orthosis_1"))
     strap2=opensim.Ligament.safeDownCast(fset.get("orthosis_2"))
-    strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
-    strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
-    strap_lengths=[strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)]
+    # strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
+    # strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
+    # strap_lengths=[strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)]
+    strap_lengths=[strap1.getLength(state), strap2.getLength(state)]
     myModel.computeStateVariableDerivatives(state)
-    strap_forces=[strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)]
+    # strap_forces=[strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)]
+    strap_forces=[strap1.getTension(state), strap2.getTension(state)]
     return strap_lengths, strap_forces
     #
 def LigMechanicsRealtime (osimModel, motSto_file):
@@ -149,11 +153,13 @@ def LigMechanicsRealtime (osimModel, motSto_file):
         fset=myModel.getForceSet()
         strap1=opensim.Ligament.safeDownCast(fset.get("orthosis_1"))
         strap2=opensim.Ligament.safeDownCast(fset.get("orthosis_2"))
-        strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
-        strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
-        strap_lengths.append([strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)])
+        # strap3=opensim.Ligament.safeDownCast(fset.get("orthosis_3"))
+        # strap4=opensim.Ligament.safeDownCast(fset.get("orthosis_4"))
+        # strap_lengths.append([strap1.getLength(state), strap2.getLength(state), strap3.getLength(state), strap4.getLength(state)])
+        strap_lengths.append([strap1.getLength(state), strap2.getLength(state)])
         myModel.computeStateVariableDerivatives(state)
-        strap_forces.append([strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)])
+        # strap_forces.append([strap1.getTension(state), strap2.getTension(state), strap3.getTension(state), strap4.getTension(state)])
+        strap_forces.append([strap1.getTension(state), strap2.getTension(state)])
     strap_lengths=np.array(strap_lengths).T
     strap_forces=np.array(strap_forces).T
     return strap_lengths, strap_forces
