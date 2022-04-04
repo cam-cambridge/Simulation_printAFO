@@ -53,7 +53,7 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
     # those based on the cylinder surface in the simulation
     #AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
     AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
-    n_waves = 24 # fixed to be able to divide height into wave length that is printable (~5mm)
+    n_waves = 20 # fixed to be able to divide height into wave length that is printable (~5mm)
     # those based on experimental results
     K_element = 0.781 # bending stiffness, in N*mm
     CSA_element = 0.0557332 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
