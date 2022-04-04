@@ -61,14 +61,18 @@ def Main_Simulation (DesignVariables, folder_index):
     # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for drop landing
     # Fatigue strap forces for drop landing of platform 0 degree
     AFO_FL_platform0=AFO9_MeshMechanics.MeshMechanics(osimModel_platform0, theta_0_values, n_elements) # Get the force-length relationship for the four straps
-    FL_length_mesh_max_platfrom0=[max(AFO_FL_platform0[0][0]), max(AFO_FL_platform0[1][0]), max(AFO_FL_platform0[2][0]), max(AFO_FL_platform0[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
-    FL_force_mesh_max_platform0=[max(AFO_FL_platform0[0][1]), max(AFO_FL_platform0[1][1]), max(AFO_FL_platform0[2][1]), max(AFO_FL_platform0[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    # FL_length_mesh_max_platfrom0=[max(AFO_FL_platform0[0][0]), max(AFO_FL_platform0[1][0]), max(AFO_FL_platform0[2][0]), max(AFO_FL_platform0[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_length_mesh_max_platfrom0=[max(AFO_FL_platform0[0][0]), max(AFO_FL_platform0[1][0])] # The maximum lengths (fatigue lengths) for the two straps from AFO9_MeshMechanics
+    # FL_force_mesh_max_platform0=[max(AFO_FL_platform0[0][1]), max(AFO_FL_platform0[1][1]), max(AFO_FL_platform0[2][1]), max(AFO_FL_platform0[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_platform0=[max(AFO_FL_platform0[0][1]), max(AFO_FL_platform0[1][1])] # The maximum forces (fatigue forces) for the two straps from AFO9_MeshMechanics
     #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
     #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
     # Fatigue strap forces for drop landing of platform 45 degree
     AFO_FL_platform45=AFO9_MeshMechanics.MeshMechanics(osimModel_platform45, theta_0_values, n_elements) # Get the force-length relationship for the four straps
-    FL_length_mesh_max_platform45=[max(AFO_FL_platform45[0][0]), max(AFO_FL_platform45[1][0]), max(AFO_FL_platform45[2][0]), max(AFO_FL_platform45[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
-    FL_force_mesh_max_platform45=[max(AFO_FL_platform45[0][1]), max(AFO_FL_platform45[1][1]), max(AFO_FL_platform45[2][1]), max(AFO_FL_platform45[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    # FL_length_mesh_max_platform45=[max(AFO_FL_platform45[0][0]), max(AFO_FL_platform45[1][0]), max(AFO_FL_platform45[2][0]), max(AFO_FL_platform45[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_length_mesh_max_platform45=[max(AFO_FL_platform45[0][0]), max(AFO_FL_platform45[1][0])] # The maximum lengths (fatigue lengths) for the two straps from AFO9_MeshMechanics
+    # FL_force_mesh_max_platform45=[max(AFO_FL_platform45[0][1]), max(AFO_FL_platform45[1][1]), max(AFO_FL_platform45[2][1]), max(AFO_FL_platform45[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_platform45=[max(AFO_FL_platform45[0][1]), max(AFO_FL_platform45[1][1])] # The maximum forces (fatigue forces) for the two straps from AFO9_MeshMechanics
     #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
     #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
     #---------------------------------------------------------------------------------
@@ -116,8 +120,10 @@ def Main_Simulation (DesignVariables, folder_index):
     # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for walk
     # Fatigue strap forces for walk
     AFO_FL_walk=AFO9_MeshMechanics.MeshMechanics(osimModel_walk, theta_0_values, n_elements) # Get the force-length relationship for the four straps
-    FL_length_mesh_max_walk=[max(AFO_FL_walk[0][0]), max(AFO_FL_walk[1][0]), max(AFO_FL_walk[2][0]), max(AFO_FL_walk[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
-    FL_force_mesh_max_walk=[max(AFO_FL_walk[0][1]), max(AFO_FL_walk[1][1]), max(AFO_FL_walk[2][1]), max(AFO_FL_walk[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    # FL_length_mesh_max_walk=[max(AFO_FL_walk[0][0]), max(AFO_FL_walk[1][0]), max(AFO_FL_walk[2][0]), max(AFO_FL_walk[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_length_mesh_max_walk=[max(AFO_FL_walk[0][0]), max(AFO_FL_walk[1][0])] # The maximum lengths (fatigue lengths) for the two straps from AFO9_MeshMechanics
+    # FL_force_mesh_max_walk=[max(AFO_FL_walk[0][1]), max(AFO_FL_walk[1][1]), max(AFO_FL_walk[2][1]), max(AFO_FL_walk[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_walk=[max(AFO_FL_walk[0][1]), max(AFO_FL_walk[1][1])] # The maximum forces (fatigue forces) for the two straps from AFO9_MeshMechanics
     #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
     #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
     #---------------------------------------------------------------------------------
@@ -163,8 +169,10 @@ def Main_Simulation (DesignVariables, folder_index):
     # Collect the fatigue forces for the 4 straps from the AFO mechanics (AFO9_MeshMechanics) for running
     # Fatigue strap forces for running
     AFO_FL_run=AFO9_MeshMechanics.MeshMechanics(osimModel_run, theta_0_values, n_elements) # Get the force-length relationship for the four straps
-    FL_length_mesh_max_run=[max(AFO_FL_run[0][0]), max(AFO_FL_run[1][0]), max(AFO_FL_run[2][0]), max(AFO_FL_run[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
-    FL_force_mesh_max_run=[max(AFO_FL_run[0][1]), max(AFO_FL_run[1][1]), max(AFO_FL_run[2][1]), max(AFO_FL_run[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    # FL_length_mesh_max_run=[max(AFO_FL_run[0][0]), max(AFO_FL_run[1][0]), max(AFO_FL_run[2][0]), max(AFO_FL_run[3][0])] # The maximum lengths (fatigue lengths) for the four straps from AFO9_MeshMechanics
+    FL_length_mesh_max_run=[max(AFO_FL_run[0][0]), max(AFO_FL_run[1][0])] # The maximum lengths (fatigue lengths) for the two straps from AFO9_MeshMechanics
+    # FL_force_mesh_max_run=[max(AFO_FL_run[0][1]), max(AFO_FL_run[1][1]), max(AFO_FL_run[2][1]), max(AFO_FL_run[3][1])] # The maximum forces (fatigue forces) for the four straps from AFO9_MeshMechanics
+    FL_force_mesh_max_run=[max(AFO_FL_run[0][1]), max(AFO_FL_run[1][1])] # The maximum forces (fatigue forces) for the two straps from AFO9_MeshMechanics
     #print('Max lengths from the AFO9_MeshMechanics: %s'  %(FL_length_mesh_max))
     #print('Max forces from the AFO9_MeshMechanics: %s'  %(FL_force_mesh_max))
     #---------------------------------------------------------------------------------
