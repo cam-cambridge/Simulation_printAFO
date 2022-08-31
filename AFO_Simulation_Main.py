@@ -17,14 +17,60 @@ import AFO_Simulation_Optimization
 import AFO9_MeshMechanics
 import AFO10_OpenSimAPI
 
-solution = [[83.57737476, 98.55371026, 314.77547762, 328.07150594],
-                   [270, 117.1889489, 180, 0.],
-                   [16.09500858, 21.5162595, 20.92202382, 21.67107155],
-                   [28, 415, 203, 9]]
+
+solution = [[101, 259],
+                   [101, 259],
+                   [19.02205431, 20.44985441],
+                   [394, 190]]
 # Display the MSK model based on the provided solution (design variables)
-#AFO_Simulation_Optimization.Main_model_demo (solution, 0)
+AFO_Simulation_Optimization.Main_model_demo (solution, 0)
 
 
+"""
+for num_strap4 in range (6, 8):
+    solution = [[78.17011239, 100.73042733, 303.09510209, 304.48512362],
+                    [345.75577512, 170.25159198, 186.60823527, 55.41003946],
+                    [16.39262715, 19.74779624, 21.12849443, 21.76360147],
+                    [26, 378, 193,  num_strap4]]
+    # Run simulation and collect the results
+    Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor=AFO_Simulation_Optimization.Main_Simulation(solution, 00)
+    # print iteration history to txt file
+    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
+    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+    with open (os.path.join(path_simulation, 'log_results_check.txt'), 'a') as f:
+        print('The number of iteration: %d \n' %(35), file=f)
+        print('The number of the strap 4:%d \n' %(num_strap4), file=f)
+        print('Angles_DL=[Subtalar_DL_max_platform0, Subtalar_DL_max_platform45, Ankle_DL_max_platform0, Ankle_DL_max_platform45]:', file=f)
+        print('%s' %(Angles_DL), file=f)
+        print('Muscles_diff=[diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm]:', file=f)
+        print('%s' %(Muscles_diff), file=f)
+        print('strap_forces_diff=[strap_forces_diff_DL_platform0, strap_forces_diff_DL_platform45, strap_forces_diff_Walk, strap_forces_diff_Run]:', file=f)
+        print('%s' %(strap_forces_diff), file=f)
+        print('#####################################################################################################', file=f)
+
+for num_strap4 in range (7, 9):
+    solution = [[77.90326426, 100.87050424, 304.09510209, 304.96437419],
+                    [346.38245762, 170.01525895, 187.60823527, 56.20937242],
+                    [16.38644684, 19.74200634, 21.02849443, 21.8],
+                    [26, 378, 193,  num_strap4]]
+    # Run simulation and collect the results
+    Angles_DL, Muscles_diff, strap_forces_diff, strap_pene_monitor=AFO_Simulation_Optimization.Main_Simulation(solution, 00)
+    # print iteration history to txt file
+    path_script = os.path.realpath(__file__)                                                                                              # The full path for the python scrip folder: python script
+    path_simulation=os.path.dirname(os.path.dirname(path_script))                                                       # The path of the folder including the python script: python simulation
+    with open (os.path.join(path_simulation, 'log_results_check.txt'), 'a') as f:
+        print('The number of iteration: %d \n' %(34), file=f)
+        print('The number of the strap 4:%d \n' %(num_strap4), file=f)
+        print('Angles_DL=[Subtalar_DL_max_platform0, Subtalar_DL_max_platform45, Ankle_DL_max_platform0, Ankle_DL_max_platform45]:', file=f)
+        print('%s' %(Angles_DL), file=f)
+        print('Muscles_diff=[diff_average_musforce_total_walk_norm, diff_average_musforce_total_run_norm]:', file=f)
+        print('%s' %(Muscles_diff), file=f)
+        print('strap_forces_diff=[strap_forces_diff_DL_platform0, strap_forces_diff_DL_platform45, strap_forces_diff_Walk, strap_forces_diff_Run]:', file=f)
+        print('%s' %(strap_forces_diff), file=f)
+        print('#####################################################################################################', file=f)
+"""
+
+"""
 # Simulation of drop landing
 folder_index=0
 [AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]=solution
@@ -103,6 +149,9 @@ plt.subplot(2,2,4)
 plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], color='r', marker='.', label='FL for strap 4')
 plt.plot(DL_FL_matrix[3], DL_strap_forces_realtime_platform0[3], color='b', marker='*', label='Realtime FL for strap 3')
 plt.show()
+"""
+
+
 
 
 
