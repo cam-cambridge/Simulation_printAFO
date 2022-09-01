@@ -6,20 +6,23 @@ import AFO10_OpenSimAPI
 # fixed parameters
 # those based on the cylinder surface in the simulation
 #AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
-global AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
-global n_waves = 1 # for the Vectra brace, the number of wave is 1
-global wave_length = 0.04   # The length of wave
-
+#AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
+n_waves = 1 # for the Vectra brace, the number of wave is 1
+wave_length_ini = 0.04   # The length of wave
 # those parameters are based on experimental results
-global K_element = 0.781 # bending stiffness, in N*mm
-global CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
-global force_limit = 1 # # Max force per element, in N, based on fatigue results for Vectra brace
+K_element = 0.36 # bending stiffness, in N*mm
+CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
+force_limit = 1 # # Max force per element, in N, based on fatigue results for Vectra brace
+slippage=0.11
 
 def MeshMechanics (osimModel, theta_0_values, n_elements):
     def output_mechprops(strap_length, theta_0, n_elements):
+        global wave_length_ini
         theta_0 = math.radians(theta_0) # convert from degrees to radians, starting angle of the wave
         #calculated parameters
         #wave_length = strap_length*1000 / n_waves  # strap_length in mm, wave_length in mm
+        wave_length=wave_length_ini * 1000       # wave length in mm
+        strap_length=strap_length * 1000        # strap length in mm
         wave_height = (wave_length / 2) * math.tan(theta_0) # in mm
         wave_hypotenuse = wave_height / math.sin(theta_0) # in mm
         CSA_total = CSA_element * n_elements # in mm^2
@@ -27,7 +30,7 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
         E_effective=np.around((7505.3-(17474*(theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
         # populate decreasing array of theta based on starting value
         percentage = 0.9 # determines step change in theta values
-        values = 1000 # determines number of values in theta array
+        values = 10 # determines number of values in theta array
         theta_array = theta_0 * np.full(values, percentage).cumprod()
         theta_array = np.insert(theta_array, 0, theta_0)
         # create empty lsts
@@ -71,6 +74,12 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
         Force_array, extension_array, length_array = output_mechprops(strap_length, theta_0, n_elements_values)
         # combine arrays into Force-Length matrix for OpenSim
         FL_matrix = np.vstack((length_array, Force_array))
+
+        # Add slippage to the force-length curve
+        FL_matrix[0] = FL_matrix[0] + slippage    # Add slippage value to the horizontal axis
+        FL_matrix[0]=np.concatenate((FL_matrix[0], 1))
+        FL_matrix[0]=np.append(FL_matrix[0], 1)
+        #FL_matrix_slippage=np.insert(FL_matrix, 0, values=M_slippage_ini, axis=0)
         # add matrix to list
         FL_matrix_lst.append(FL_matrix)
     return FL_matrix_lst
@@ -80,29 +89,22 @@ if __name__ == '__main__':
     import numpy as np
     import pandas as pd
     # The inputs for the module - AFO9_MeshMechanics
-    osimModel='D:\GitHub_xj-hua\Simulation_printAFO_CAMG\Simulation models\Drop landing0\Fullbodymodel_DL_platform0_AFO.osim'
-    theta_0_values=[14.24398141,12.17595211,12.54437899,15.51170568]
-    n_elements=[3, 112, 90,1]
+    osimModel='C:/Users/xh308/Desktop/Drop landing0/SimulationComparisonwithExperiment_20220823/Fullbodymodel_DL_platform0_AFO_comparewithexperiment_withVectra_weight60_CoordinateLimiteForce_20220825 - Copy.osim'
+    theta_0_values=[20.8, 20.8]
+    n_elements=[240, 240]
     # The force-length relationship of the straps
     FL_matrix_lst=MeshMechanics(osimModel, theta_0_values, n_elements)
-    print(np.max(FL_matrix_lst[1]))
     # The plot of force-length relationship in four sub-figures
     plt.figure()
-    plt.subplot(2,2,1)
+    plt.subplot(2,1,1)
     plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], marker='o', label='FL for strap 1')
-    plt.subplot(2,2,2)
+    plt.subplot(2,1,2)
     plt.plot(FL_matrix_lst[1][0], FL_matrix_lst[1][1], marker='o', label='FL for strap 2')
-    plt.subplot(2,2,3)
-    plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], marker='o', label='FL for strap 3')
-    plt.subplot(2,2,4)
-    plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
     plt.show()
     # The plot of the force-length relationship in one figure
     plt.figure()
     plt.plot(FL_matrix_lst[0][0], FL_matrix_lst[0][1], marker='o', label='FL for strap 1')
     plt.plot(FL_matrix_lst[1][0], FL_matrix_lst[1][1], marker='o', label='FL for strap 2')
-    plt.plot(FL_matrix_lst[2][0], FL_matrix_lst[2][1], marker='o', label='FL for strap 3')
-    plt.plot(FL_matrix_lst[3][0], FL_matrix_lst[3][1], marker='o', label='FL for strap 4')
     plt.show()
     # Save results to an excel files
     """
