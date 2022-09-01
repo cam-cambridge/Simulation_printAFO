@@ -2,21 +2,34 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 import AFO10_OpenSimAPI
+
+# fixed parameters
+# those based on the cylinder surface in the simulation
+#AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
+global AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
+global n_waves = 1 # for the Vectra brace, the number of wave is 1
+global wave_length = 0.04   # The length of wave
+
+# those parameters are based on experimental results
+global K_element = 0.781 # bending stiffness, in N*mm
+global CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
+global force_limit = 1 # # Max force per element, in N, based on fatigue results for Vectra brace
+
 def MeshMechanics (osimModel, theta_0_values, n_elements):
     def output_mechprops(strap_length, theta_0, n_elements):
-        theta_0 = math.radians(theta_0) # convert from degrees to radians
+        theta_0 = math.radians(theta_0) # convert from degrees to radians, starting angle of the wave
         #calculated parameters
-        strap_length = strap_length*1000 # in mm
-        wave_length = strap_length / n_waves # in mm
+        #wave_length = strap_length*1000 / n_waves  # strap_length in mm, wave_length in mm
         wave_height = (wave_length / 2) * math.tan(theta_0) # in mm
         wave_hypotenuse = wave_height / math.sin(theta_0) # in mm
         CSA_total = CSA_element * n_elements # in mm^2
-        E_effective = np.around((2135.6 - (2732.2 * (theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
+        # E_effective = np.around((2135.6 - (2732.2 * (theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
+        E_effective=np.around((7505.3-(17474*(theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
         # populate decreasing array of theta based on starting value
         percentage = 0.9 # determines step change in theta values
         values = 1000 # determines number of values in theta array
-        theta_array = theta_0 * np.full(values,percentage).cumprod()
-        theta_array = np.insert(theta_array,0,theta_0)
+        theta_array = theta_0 * np.full(values, percentage).cumprod()
+        theta_array = np.insert(theta_array, 0, theta_0)
         # create empty lsts
         Force_array = []
         extension_array = []
@@ -44,29 +57,19 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
                 Force_array.append(Force)
                 extension_array.append(extension_total)
                 length_array.append(length_factor)
-        #convert lsts to arrays
+        #convert lists to arrays
         Force_array = np.array(Force_array)
         extension_array = np.array(extension_array)
         length_array = np.array(length_array)
-        return Force_array,extension_array,length_array
-    # fixed parameters
-    # those based on the cylinder surface in the simulation
-    #AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
-    AFO_height = 100 #in mm, based ~50mm above baseline of avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
-    n_waves = 24 # fixed to be able to divide height into wave length that is printable (~5mm)
-    # those based on experimental results
-    K_element = 0.781 # bending stiffness, in N*mm
-    CSA_element = 0.0557332 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
-    force_limit = 2 # # Max force per element, in N, based on fatigue results for h = 1mm
+        return Force_array, extension_array, length_array
     FL_matrix_lst = []
-    [strap_lengths, strap_forces]=AFO10_OpenSimAPI.Liginitstates(osimModel)
+    [strap_lengths, strap_forces]=AFO10_OpenSimAPI.Liginitstates(osimModel)   # The original strap length of brace calculated from the MSK model
     for i, theta_0 in enumerate(theta_0_values):
         strap_length=strap_lengths[i]
         n_elements_values = n_elements[i]
         #label = labels[i]
-        Force_array,extension_array,length_array = output_mechprops(strap_length, theta_0, n_elements_values)
+        Force_array, extension_array, length_array = output_mechprops(strap_length, theta_0, n_elements_values)
         # combine arrays into Force-Length matrix for OpenSim
-        #FL_matrix = np.vstack((Force_array,length_array))
         FL_matrix = np.vstack((length_array, Force_array))
         # add matrix to list
         FL_matrix_lst.append(FL_matrix)
