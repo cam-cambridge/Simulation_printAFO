@@ -30,7 +30,7 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
         E_effective=np.around((7505.3-(17474*(theta_0))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
         # populate decreasing array of theta based on starting value
         percentage = 0.9 # determines step change in theta values
-        values = 10 # determines number of values in theta array
+        values = 1000 # determines number of values in theta array
         theta_array = theta_0 * np.full(values, percentage).cumprod()
         theta_array = np.insert(theta_array, 0, theta_0)
         # create empty lsts
@@ -77,10 +77,12 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
 
         # Add slippage to the force-length curve
         FL_matrix[0] = FL_matrix[0] + slippage    # Add slippage value to the horizontal axis
-        FL_matrix[0]=np.concatenate((FL_matrix[0], 1))
-        FL_matrix[0]=np.append(FL_matrix[0], 1)
-        #FL_matrix_slippage=np.insert(FL_matrix, 0, values=M_slippage_ini, axis=0)
-        # add matrix to list
+        FL_firstelement=[1, 0]                                # The first element added to the FL matrix after slippage
+        FL_matrix=[[FL_firstelement[0]]+list(FL_matrix[0]), [FL_firstelement[1]]+list(FL_matrix[1])]    # Add the first element [1, 0] to the FL matrix after slippage
+        FL_matrix=[np.array(FL_matrix[0]), np.array(FL_matrix[1])]         # Transfer the FL matrix from list to array
+        print(FL_matrix)
+
+        # Put the FL matrixes of first and second brace into one matrix
         FL_matrix_lst.append(FL_matrix)
     return FL_matrix_lst
     #
@@ -91,7 +93,7 @@ if __name__ == '__main__':
     # The inputs for the module - AFO9_MeshMechanics
     osimModel='C:/Users/xh308/Desktop/Drop landing0/SimulationComparisonwithExperiment_20220823/Fullbodymodel_DL_platform0_AFO_comparewithexperiment_withVectra_weight60_CoordinateLimiteForce_20220825 - Copy.osim'
     theta_0_values=[20.8, 20.8]
-    n_elements=[240, 240]
+    n_elements=[240, 50]
     # The force-length relationship of the straps
     FL_matrix_lst=MeshMechanics(osimModel, theta_0_values, n_elements)
     # The plot of force-length relationship in four sub-figures
