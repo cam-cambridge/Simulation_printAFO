@@ -10,14 +10,13 @@ import AFO10_OpenSimAPI
 n_waves = 1 # for the Vectra brace, the number of wave is 1
 wave_length_ini = 0.04   # The length of wave
 # those parameters are based on experimental results
-K_element = 0.36 # bending stiffness, in N*mm
+K_element = 0.36# bending stiffness, in N*mm
 CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
 force_limit = 1 # # Max force per element, in N, based on fatigue results for Vectra brace
 slippage=0.11
 
 def MeshMechanics (osimModel, theta_0_values, n_elements):
     def output_mechprops(strap_length, theta_0, n_elements):
-        global wave_length_ini
         theta_0 = math.radians(theta_0) # convert from degrees to radians, starting angle of the wave
         #calculated parameters
         #wave_length = strap_length*1000 / n_waves  # strap_length in mm, wave_length in mm
@@ -54,7 +53,7 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
             strain_total = strain_bending + strain_stretching
             #calculate OpenSim length factor
             length_factor =  1 + strain_total
-            if Force > force_limit * n_elements:
+            if Force > force_limit * n_elements+1:           # provide some spaces for the Force, e.g. if Force > 240 N, it will not include 240 N
                 break
             else:
                 Force_array.append(Force)
@@ -75,15 +74,14 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
         # combine arrays into Force-Length matrix for OpenSim
         FL_matrix = np.vstack((length_array, Force_array))
 
-        # Add slippage to the force-length curve
-        FL_matrix[0] = FL_matrix[0] + slippage    # Add slippage value to the horizontal axis
-        FL_firstelement=[1, 0]                                # The first element added to the FL matrix after slippage
-        FL_matrix=[[FL_firstelement[0]]+list(FL_matrix[0]), [FL_firstelement[1]]+list(FL_matrix[1])]    # Add the first element [1, 0] to the FL matrix after slippage
-        FL_matrix=[np.array(FL_matrix[0]), np.array(FL_matrix[1])]         # Transfer the FL matrix from list to array
-        print(FL_matrix)
-
-        # Put the FL matrixes of first and second brace into one matrix
+        # Add skin movements and slippage to the Force-Length curve
+        FL_matrix[0] = FL_matrix[0] + slippage    # Add skin movements and slippage values to the horizontal axis of Force-Length curve
+        FL_firstelement=[1, 0]                                # The first element added to the Force-Length curve due to skin movements and slippage
+        FL_matrix=[[FL_firstelement[0]]+list(FL_matrix[0]), [FL_firstelement[1]]+list(FL_matrix[1])]    # Add the first element [1, 0] to the Force-length curve after skin movements and slippage
+        FL_matrix=[np.array(FL_matrix[0]), np.array(FL_matrix[1])]         # Transfer the Force-Length curve matrix from list to array
+        # Combine the Force-Length curve for two braces
         FL_matrix_lst.append(FL_matrix)
+        print(FL_matrix_lst)
     return FL_matrix_lst
     #
 if __name__ == '__main__':
