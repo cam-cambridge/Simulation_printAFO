@@ -13,7 +13,7 @@ wave_length_ini = 0.04   # The length of wave
 K_element = 0.36# bending stiffness, in N*mm
 CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
 force_limit = 1 # # Max force per element, in N, based on fatigue results for Vectra brace
-slippage=0.11
+slippage=0.12
 
 def MeshMechanics (osimModel, theta_0_values, n_elements):
     def output_mechprops(strap_length, theta_0, n_elements):
