@@ -21,7 +21,7 @@ from matplotlib.colors import to_rgb
 n_periods=1   # the number of wave period
 period_length=40   # in mm
 # those parameters are based on experimental results
-K_element = 0.4   # bending stiffness, in N*mm
+K_element = 0.267   # bending stiffness, in N*mm
 CSA_element = 0.0294 # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
 force_limit =1   # 1 # # Max force per element, in N, based on fatigue results for Vectra brace
 #slippage=0.0117
@@ -47,28 +47,32 @@ def output_mechprops(strap_length, theta_0, n_elements):
     theta_0_new = math.atan((2*wave_height_new)/wave_length)
     deg_new = math.degrees(theta_0_new)
     wave_hypotenuse_new = wave_height_new / math.sin(theta_0_new)    # in mm
+    wave_hypotenuse = wave_height / math.sin(theta_0_rad)   # in mm
     CSA_total = CSA_element * n_elements # in mm^2
     # The angle used in E_effectivness equation is deg_new which is new theta_0 based on sine wave approximation and in degs (unit)
-    E_effective = np.around((6546.6 - (196.02 * (deg_new))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
+    E_effective = np.around((5404.8 - (128.92 * (theta_0_deg))), decimals=1) # in MPa, effective Youngs as defined by relationship to theta_0
     # populate decreasing array of theta based on starting value
     percentage = 0.95 # determines step change in theta values
     values = 10000 # determines number of values in theta array
-    theta_array = theta_0_new * np.full(values, percentage).cumprod()
-    theta_array = np.insert(theta_array, 0, theta_0_new)
+    theta_array_new = theta_0_new * np.full(values, percentage).cumprod()
+    theta_array_new = np.insert(theta_array_new, 0, theta_0_new)
+
+    theta_array = theta_0_rad* np.full(values, percentage).cumprod()
+    theta_array = np.insert(theta_array, 0, theta_0_rad)
 
     # create empty lsts
     Force_array = []
     extension_array = []
     length_array = []
 
-    for i, theta in enumerate(theta_array):
+    for i, (theta_new, theta) in enumerate(zip(theta_array_new, theta_array)):
         # calculate extension due to bending to angle theta
-        extension_bending = 4 * n_periods * wave_hypotenuse_new * (math.cos(theta) - math.cos(theta_0_new))
+        extension_bending = 4 * n_periods * wave_hypotenuse_new * (math.cos(theta_new) - math.cos(theta_0_new))
         strain_bending = extension_bending / strap_length
         # calculate force required to achieve bending based on balance of moments
         cotcsc_theta = (1 / math.tan(theta)) + (1 / math.sin(theta))
-        cotcsc_theta_0 = (1 / math.tan(theta_0_new)) + (1 / math.sin(theta_0_new))
-        Force = (K_element * n_elements / wave_hypotenuse_new) * (np.log(cotcsc_theta)-np.log(cotcsc_theta_0))
+        cotcsc_theta_0 = (1 / math.tan(theta_0_rad)) + (1 / math.sin(theta_0_rad))
+        Force = (K_element * n_elements / wave_hypotenuse) * (np.log(cotcsc_theta)-np.log(cotcsc_theta_0))
         # calculate extension due to stretching under load based on Young's modulus
         stress_stretching = Force / CSA_total
         strain_stretching = stress_stretching / E_effective
@@ -78,7 +82,7 @@ def output_mechprops(strap_length, theta_0, n_elements):
         strain_total = strain_bending + strain_stretching
         #calculate OpenSim length factor
         length_factor =  1 + strain_total
-        if Force > force_limit * n_elements+1:           # provide some spaces for the Force, e.g. if Force > 240 N, it will not include 240 N
+        if Force > force_limit * n_elements:           # provide some spaces for the Force, e.g. if Force > 240 N, it will not include 240 N
             break
         else:
             Force_array.append(Force)
@@ -120,8 +124,6 @@ def MeshMechanics (osimModel, theta_0_values, n_elements):
         # print(FL_matrix_lst)
     return FL_matrix_lst
     #
-
-
 # Xijin' main code: output were force-length (extension rate) curves for OpenSim model
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
@@ -130,7 +132,7 @@ if __name__ == '__main__':
     # The inputs for the module - AFO9_MeshMechanics
     osimModel='C:/Users/xh308/Desktop/Drop landing0/SimulationComparisonwithExperiment_20220908/Fullbodymodel_DL_platform0_AFO.osim'
     theta_0_values=[21.8, 21.8]
-    n_elements=[240, 50]
+    n_elements=[240, 90]
     # The force-length relationship of the straps
     FL_matrix_lst=MeshMechanics(osimModel, theta_0_values, n_elements)
     # The plot of force-length relationship in four sub-figures
@@ -157,20 +159,21 @@ if __name__ == '__main__':
 
 """
 # Zehao's main code: output were force-extension curves
+# Note: in order to run the main code, it requires to disable the parameters in the hearder part, as these have been included in the main code
 if __name__ == "__main__":
-    theta_0_values = [21.80, 21.80, 21.80, 21.80] #in degrees, wave starting angle, function of sine wave amplitude and period
-    n_elements_values = [16, 16, 16, 16] #number of elements in the mesh
+    theta_0_values = [16.7, 21.80, 26.57] #in degrees, wave starting angle, function of sine wave amplitude and period
+    n_elements_values = [16, 16, 16] #number of elements in the mesh
 
     #fixed parameters
     # those based on the cylinder surface in the simulation
     #AFO_cylinder_radius = 36.5 # in mm, based on radius of ankle girth for height (1.829m) and BMI (25.4) of Walk model  in Table 5 of Yu, C[2009]. Applied Ergonomics
     # AFO_height = 100 #in mm, based on avg antropometric distance from lateral malleous height to ankle girth height in Table 4 of Tu, H.[2014]. Int. J. Indust. Ergonomics
-    n_periods_lst = [1, 1, 1,1] # number of half periods
+    n_periods_lst = [1, 1, 1] # number of half periods
     # those based on experimental results
-    K_element_lst = [0.1, 0.2, 0.3 ,0.4] # bending stiffness, in N*mm
+    K_element_lst = [0.267, 0.267, 0.267] # bending stiffness, in N*mm
     #E_effective_lst = [1951, 783.8]
-    CSA_element_lst = [0.0294, 0.0294, 0.0294, 0.0294]  # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
-    force_limit_lst = [1,1 ,1, 1] # # Max force per element, in N, based on fatigue results for h = 1mm
+    CSA_element_lst = [0.0294, 0.0294, 0.0294]  # average CSA for fibres printed with 0.25mm nozzle and 0.2mm layer height, in mm^2
+    force_limit_lst = [1,1 ,1] # # Max force per element, in N, based on fatigue results for h = 1mm
     FL_matrix_lst = []
 
     #create figure container
@@ -191,7 +194,7 @@ if __name__ == "__main__":
 
         Force_array,extension_array,length_array = output_mechprops(strap_length, theta_0, n_elements)
         Force_perElement = Force_array / n_elements
-        axB.plot(extension_array,Force_perElement,label='{}_{}'.format(label, K_element))
+        axB.plot(extension_array,Force_perElement,label='{}'.format(label))
         Force_array_lst.append(Force_array)
         Extension_array_lst.append(extension_array)
 
@@ -199,10 +202,8 @@ if __name__ == "__main__":
         df = pd.DataFrame(dict)
         df.to_csv("D:\\Xijin Hua_Cambridge project\\Project meeting\\Zehao Ji\\MeshMechanicsCode\\MechanicalModelOutput.csv".format(theta_0, K_element))
 
-
     axB.set_xlabel('Distance [mm]')
     axB.set_ylabel('Force per element [N]')
     axB.legend()
-
     plt.show()
 """
