@@ -28,9 +28,11 @@ force_limit = 1   # 1 # # Max force per element, in N, based on fatigue results 
 #slippage = 0.0125
 slippage = 0.0123
 
+
 def integrand(x, wave_height, wave_period_length):
     w = (2*pi/wave_period_length)
     return sqrt((-1*wave_height*w*sin(w*x))**2+1)
+
 
 def output_mechprops(strap_length, theta_0, n_elements):
     theta_0_deg = theta_0       # starting angle in degrees
@@ -89,7 +91,7 @@ def output_mechprops(strap_length, theta_0, n_elements):
         # calculate OpenSim length factor
         length_factor = 1 + strain_total
         # provide some spaces for the Force, e.g. if Force > 240 N, it will not include 240 N
-        if Force > force_limit * n_elements+1:
+        if Force > force_limit * n_elements:
             break
         else:
             Force_array.append(Force)
@@ -100,6 +102,7 @@ def output_mechprops(strap_length, theta_0, n_elements):
     extension_array = np.array(extension_array)
     length_array = np.array(length_array)
     return Force_array, extension_array, length_array
+
 
 def MeshMechanics(osimModel, theta_0_values, n_elements):
     FL_matrix_lst = []
@@ -141,6 +144,7 @@ def MeshMechanics(osimModel, theta_0_values, n_elements):
         # print(FL_matrix_lst)
     return FL_matrix_lst
     #
+
 
 # Xijin' main code: output were force-length (extension rate) curves for OpenSim model
 if __name__ == '__main__':
