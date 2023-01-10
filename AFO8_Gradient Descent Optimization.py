@@ -23,14 +23,13 @@ def objective(Angles_DL, Muscles_diff, strap_forces_diff, n_elements):
                                   strap_forces_diff_Walk[0], strap_forces_diff_Run[0]])
     strap2_forces_diff = np.array([strap_forces_diff_DL_platform0[1],
                                   strap_forces_diff_Walk[1], strap_forces_diff_Run[1]])
-
-    Func = (MusDiff_walk_norm)**2+(MusDiff_run_norm)**2 + \
+    Func = (MusDiff_walk_norm*10)**2+(MusDiff_run_norm)**2 + \
         (np.maximum(0, (Subtalar_DL_max_platform0-28)))**2*1e4 +\
         np.sum(strap_forces_diff_DL_platform0**2) + np.sum((np.maximum(
-            [0, 0], strap_forces_diff_Walk))**2)*10 + np.sum((np.maximum([0, 0], strap_forces_diff_Run))**2)*10
-    Func_term = [(MusDiff_walk_norm)**2+(MusDiff_run_norm)**2,
+            [0, 0], strap_forces_diff_Walk))**2) + np.sum((np.maximum([0, 0], strap_forces_diff_Run))**2)+np.sum(n_elements)**2/50
+    Func_term = [(MusDiff_walk_norm*10)**2+(MusDiff_run_norm)**2,
                  (np.maximum(0, (Subtalar_DL_max_platform0-28)))**2*1e4,
-                 np.sum(strap_forces_diff_DL_platform0**2) + np.sum((np.maximum([0, 0], strap_forces_diff_Walk))**2)*10 + np.sum((np.maximum([0, 0], strap_forces_diff_Run))**2)*10]
+                 np.sum(strap_forces_diff_DL_platform0**2) + np.sum((np.maximum([0, 0], strap_forces_diff_Walk))**2) + np.sum((np.maximum([0, 0], strap_forces_diff_Run))**2), np.sum(n_elements)**2/50]
     return Func, Func_term
     # ----------------------------------------------------------------------
     #
@@ -147,26 +146,49 @@ def derivative(solution, V_increment):
 # This defines the gradient descent algorithm
 
 
-def gradient_descent(objective, derivative, n_iter, V_increment):
+def gradient_descent(objective, derivative, n_iter, V_increment_initial):
     # generate an initial point
     # solution: This is any combination of design parameters. It doesn't matter what the combination is,
     # solution=[AFO_bottom_location, AFO_top_location, theta_0_values, n_elements]
-    solution = [[72, 270],
-                [100, 270],
-                [17.6, 17.66415383],
-                [60, 24]]
+    solution = [[73, 287],
+                [108, 252],
+                [21.8, 21.8],
+                [240, 90]]
     bounds_low = [[45, 225], [0, 180], [0.1, 0.1], [1, 1]]
-    bounds_upper = [[135, 315], [180, 360], [21.8, 21.8], [350, 350]]
+    bounds_upper = [[135, 315], [180, 360], [28, 28], [600, 600]]
 # it is just a starting point for the optimisation
 # run the gradient descent
-    for i in range(23, n_iter):
+    # round_index = 0                                 ############### need to change for restart based on the round_index value
+    round_index = 0
+    # Obj_r_index = 3                                 ############### need to change for restart based on the results in log file
+    Obj_r_index = 3
+    # Obj_r = [0, 1, 2, 3]                            ############### need to change for restart based on the results in log file
+    Obj_r = [round_index, 1, 2, 3]
+    # step_size = 2                                      ############### need to change for restart based on the round_index value
+    step_size = 2
+    # V_increment = V_increment_initial   ############## need to change for restart based on the round_index value
+    V_increment = V_increment_initial
+
+    for i in range(1, n_iter):  # need to change for restart
         # Using a varied increment during optimization
-        if i < int(n_iter/6):
-            step_size = 2
-        elif int(n_iter/6) <= i < int(n_iter/3*2):
-            step_size = 1
-        else:
-            step_size = 0.5
+        if abs(Obj_r[Obj_r_index]-Obj_r[Obj_r_index-2])/Obj_r[Obj_r_index] < 0.005 and abs(Obj_r[Obj_r_index-1]-Obj_r[Obj_r_index-3])/Obj_r[Obj_r_index-1] < 0.005 or i > 50*(round_index+1):
+            round_index += 1
+            Obj_r_index = 3
+            Obj_r = [round_index, 1, 2, 3]
+            if round_index == 1:
+                step_size = 1
+                V_increment = V_increment_initial
+            elif round_index == 2:
+                step_size = 1
+                V_increment = [i*0.5 for i in V_increment_initial]
+            elif round_index == 3:
+                step_size = 0.5
+                V_increment = [i*0.5 for i in V_increment_initial]
+            elif round_index == 4:
+                if i < 100:
+                    n_iter = 100
+                else:
+                    break
         # calculate gradient
         # Transfer the solution from other types into list type
         solution = list(solution)
@@ -236,24 +258,35 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
                   (simulation_results_tracker[2][1]), file=f)
             print('%s # The strap force differences for running for the two straps\n' %
                   (simulation_results_tracker[2][2]), file=f)
-            print('%s # The individual term1: the sum of square of the muscle differences for walk and running' % (
+            print('%s   # The individual term 1: the sum of square of the muscle differences for walk and running' % (
                 simulation_results_tracker[4][0]), file=f)
-            print('%s # The individual term2: the sum of square of the (subtalar -28) for DL0' %
+            print('%s   # The individual term 2: the sum of square of the (subtalar -28) for DL0' %
                   (simulation_results_tracker[4][1]), file=f)
-            print('%s # The individual term3: the sum of square of the strap force differences for DL, walk and running\n' % (
+            print('%s   # The individual term 3: the sum of square of the strap force differences for DL, walk and running' % (
                 simulation_results_tracker[4][2]), file=f)
+            print('%s   # The individual term 4: the sum of the element numbers\n' %
+                  (simulation_results_tracker[4][3]), file=f)
             print('The cost function track:  %s\n' % (simulation_results_tracker[3]), file=f)
             print('The strap penetration status: \n %s' % (strap_pene_monitor), file=f)
         # --------------------------------------------------------------------------
         # take a step
-        gradient_norm = [[V_increment[0]/max(abs(np.array(gradient[0])))], [V_increment[1]/max(abs(np.array(gradient[1])))],
-                         [V_increment[2]/max(abs(np.array(gradient[2])))], [V_increment[3]/max(abs(np.array(gradient[3])))]]
-        step_size_array = (np.array(gradient_norm)*step_size*2).reshape(-1, 1)
+        if solution[3][1] > 1:
+            gradient_norm = [[V_increment[0]/max(abs(np.array(gradient[0])))], [V_increment[1]/max(abs(np.array(gradient[1])))], [
+                V_increment[2]/max(abs(np.array(gradient[2])))], [V_increment[3]/max(abs(np.array(gradient[3])))]]
+        else:
+            gradient_norm = [[V_increment[0]/max(abs(np.array(gradient[0])))], [V_increment[1]/max(abs(np.array(gradient[1])))], [
+                V_increment[2]/max(abs(np.array(gradient[2])))], [V_increment[3]/(abs(np.array(gradient[3][0])))]]
+        step_size_array = (np.array(gradient_norm)*step_size).reshape(-1, 1)
         solution = np.array(solution) - np.array(gradient)*step_size_array
+        Obj_r.append(simulation_results_tracker[3])
+        Obj_r_index += 1
         with open(os.path.join(path_simulation, 'log.txt'), 'a') as f:
             print('The updated solution (solution - gradient * step_size) track: \n %s' %
                   (solution), file=f)
-            print('#####################################################################################################', file=f)
+            print('##################################################################################################### \n', file=f)
+            print('The object record: %s\n' % (Obj_r), file=f)
+            print('The object record restart: %s' % (Obj_r_index), file=f)
+            print('##################################################################################################### \n', file=f)
     # evaluate final candidate point
     [Angles_DL, Muscles_diff, strap_forces_diff,
         strap_pene_monitor] = AFO_Simulation_Optimization.Main_Simulation(solution, 1000)
@@ -269,15 +302,15 @@ def gradient_descent(objective, derivative, n_iter, V_increment):
 if __name__ == '__main__':
     # define the total iterations
     # n_iter = 120
-    n_iter = 150
+    n_iter = 200
     # define the step size, this value is something you'll probably need to experiment with
     # step_size = 0.5
     # The small change for the variables for calculating the gradient, the step size will be determined based on the V_increment
-    V_increment = [0.5, 0.5, 0.1, 1]
+    V_increment_initial = [1, 1, 0.1, 2]
     # perform the gradient descent search
     # best, score = gradient_descent(objective, derivative, n_iter, step_size)
     solution_tracker, simulation_results_tracker, strap_pene_tracker = gradient_descent(
-        objective, derivative, n_iter, V_increment)
+        objective, derivative, n_iter, V_increment_initial)
     print('Done!')
     # print('f(%s) = %f' % (best, score))
     # print('Solution history: \n %s' %(solution_tracker))
